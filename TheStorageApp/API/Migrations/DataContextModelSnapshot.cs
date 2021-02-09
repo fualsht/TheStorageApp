@@ -68,6 +68,18 @@ namespace TheStorageApp.API.Migrations
                     b.HasIndex("ReceiptId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a558aad5-6e46-48bd-b5b5-e9c0b2279527"),
+                            Color = -1,
+                            CreatedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            CreatedOn = new DateTime(2021, 2, 9, 15, 21, 11, 464, DateTimeKind.Local).AddTicks(3544),
+                            ModifiedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            ModifiedOn = new DateTime(2021, 2, 9, 15, 21, 11, 464, DateTimeKind.Local).AddTicks(4057),
+                            Name = "<DEFAULT>"
+                        });
                 });
 
             modelBuilder.Entity("TheStorageApp.Shared.Models.Receipt", b =>
@@ -193,6 +205,20 @@ namespace TheStorageApp.API.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.ToTable("Shops");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4c4a50ac-dbf4-436f-aeef-7202e116e73d"),
+                            Address = "",
+                            CreatedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            CreatedOn = new DateTime(2021, 2, 9, 15, 21, 11, 468, DateTimeKind.Local).AddTicks(6901),
+                            GPSLocation = "",
+                            ModifiedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            ModifiedOn = new DateTime(2021, 2, 9, 15, 21, 11, 468, DateTimeKind.Local).AddTicks(7378),
+                            Name = "<DEFAULT>",
+                            Website = ""
+                        });
                 });
 
             modelBuilder.Entity("TheStorageApp.Shared.Models.Tag", b =>
@@ -226,6 +252,18 @@ namespace TheStorageApp.API.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.ToTable("Tags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("786759ea-6f4a-4b41-b9ec-276ac980cab2"),
+                            Color = 0,
+                            CreatedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            CreatedOn = new DateTime(2021, 2, 9, 15, 21, 11, 470, DateTimeKind.Local).AddTicks(855),
+                            ModifiedById = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            ModifiedOn = new DateTime(2021, 2, 9, 15, 21, 11, 470, DateTimeKind.Local).AddTicks(1357),
+                            Name = "<DEFAULT>"
+                        });
                 });
 
             modelBuilder.Entity("TheStorageApp.Shared.Models.User", b =>
@@ -262,12 +300,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("942132eb-4035-4184-ad51-0f13426e9fda"),
-                            CreatedOn = new DateTime(2021, 2, 9, 12, 7, 39, 776, DateTimeKind.Local).AddTicks(7913),
+                            Id = new Guid("e0a38d3f-190e-4995-852f-32f483a975d8"),
+                            CreatedOn = new DateTime(2021, 2, 9, 15, 21, 11, 460, DateTimeKind.Local).AddTicks(3713),
                             Email = "system@email.com",
                             FirstName = "system",
                             LastName = "user",
-                            ModifiedOn = new DateTime(2021, 2, 9, 12, 7, 39, 776, DateTimeKind.Local).AddTicks(8448),
+                            ModifiedOn = new DateTime(2021, 2, 9, 15, 21, 11, 460, DateTimeKind.Local).AddTicks(4224),
                             Name = "<SYSTEM>",
                             Password = "password"
                         });

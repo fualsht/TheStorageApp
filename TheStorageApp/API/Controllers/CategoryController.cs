@@ -25,7 +25,7 @@ namespace TheStorageApp.API.Controllers
         [Route("GetCategories")]
         public async Task<Category[]> GetCategories()
         {
-            return await _context.Categories.ToArrayAsync();
+            return await _context.Categories.Include(x => x.ModifiedBy).Include(x => x.CreatedBy).ToArrayAsync();
         }
 
         [HttpGet]

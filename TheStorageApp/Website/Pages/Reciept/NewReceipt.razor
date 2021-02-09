@@ -11,34 +11,34 @@
         Name:
         <input @bind="receipt.Name" />
     </li>
-   <li class="list-group-item">
-            Category:
-            <input @bind="receipt.Category.Name" />
+    <li class="list-group-item">
+        Category:
+        <input @bind="receipt.Category.Name" />
+    </li>
+    <li class="list-group-item">
+        Amount:
+        <input @bind="receipt.Amount" />
+    </li>
+    @*<li class="list-group-item">
+            Owner:
+            <input @bind="receipt.ReceiptHolder" />
         </li>
-        @*<li class="list-group-item">
-                Amount:
-                <input @bind="receipt.Amount" />
-            </li>
-            <li class="list-group-item">
-                Owner:
-                <input @bind="receipt.ReceiptHolder" />
-            </li>
-            <li class="list-group-item">
-                Created By:
-                <input @bind="receipt.CreatedBy" />
-            </li>
-            <li class="list-group-item">
-                Modified By:
-                <input @bind="receipt.ModifiedBy" />
-            </li>
-            <li class="list-group-item">
-                Created On:
-                <input @bind="receipt.CreatedOn" />
-            </li>
-            <li class="list-group-item">
-                Modified On:
-                <input @bind="receipt.ModifiedOn" />
-            </li>*@
+        <li class="list-group-item">
+            Created By:
+            <input @bind="receipt.CreatedBy" />
+        </li>
+        <li class="list-group-item">
+            Modified By:
+            <input @bind="receipt.ModifiedBy" />
+        </li>
+        <li class="list-group-item">
+            Created On:
+            <input @bind="receipt.CreatedOn" />
+        </li>
+        <li class="list-group-item">
+            Modified On:
+            <input @bind="receipt.ModifiedOn" />
+        </li>*@
 </ul>
 <button class="btn btn-primary" @onclick="AddReceiptAsync">Save</button>
 @*<InputFile @onchange="(e) => HandleSelection(e)" />*@

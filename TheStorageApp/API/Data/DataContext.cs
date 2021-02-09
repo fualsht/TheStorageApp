@@ -21,11 +21,11 @@ namespace TheStorageApp.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
+            //base.OnModelCreating(modelBuilder);
+            var guid = Guid.NewGuid();
             modelBuilder.Entity<User>(entity =>
             {
-                Guid id = Guid.NewGuid();
+                Guid id = guid;
                 entity.HasKey(e => e.Id);
                 entity.HasMany(e => e.Receipts).WithOne(e => e.ReceiptHolder).HasForeignKey(e => e.ReceiptHolderId);
                 entity.HasData(new User
@@ -46,6 +46,16 @@ namespace TheStorageApp.API.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(x => x.CreatedBy);
                 entity.HasOne(x => x.ModifiedBy);
+                entity.HasData(new Category
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "<DEFAULT>",
+                    Color = System.Drawing.Color.White.ToArgb(),
+                    CreatedById = guid,
+                    ModifiedById = guid,
+                    CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now
+                });
             });
 
             modelBuilder.Entity<Receipt>(entity =>
@@ -63,6 +73,7 @@ namespace TheStorageApp.API.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(x => x.CreatedBy);
                 entity.HasOne(x => x.ModifiedBy);
+                entity.HasOne(x => x.Receipt);
             });
 
             modelBuilder.Entity<Shop>(entity =>
@@ -70,6 +81,18 @@ namespace TheStorageApp.API.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(x => x.CreatedBy);
                 entity.HasOne(x => x.ModifiedBy);
+                entity.HasData(new Shop
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "<DEFAULT>",
+                    GPSLocation = "",
+                    Address = "",
+                    Website = "",
+                    CreatedById = guid,
+                    ModifiedById = guid,
+                    CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now
+                });
             });
 
             modelBuilder.Entity<Tag>(entity =>
@@ -78,42 +101,16 @@ namespace TheStorageApp.API.Data
                 entity.HasOne(e => e.CreatedBy);
                 entity.HasOne(e => e.ModifiedBy);
                 entity.HasMany<Receipt>(e => e.Receipts).WithMany(x => x.Tags);
+                entity.HasData(new Tag
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "<DEFAULT>",
+                    CreatedById = guid,
+                    ModifiedById = guid,
+                    CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now
+                });
             });
-        }
-
-        public int SeedData()
-        {
-            User defaultUser = Users.SingleOrDefault(x => x.Name == "<SYSTEM>");
-
-            if (defaultUser == null)
-                return -1;
-
-            var user = new Category
-            {
-                Id = Guid.NewGuid(),
-                Name = "<DEFAULT>",
-                Color = System.Drawing.Color.White.ToArgb(),
-                ModifiedById = defaultUser.Id,
-                CreatedById = defaultUser.Id,
-                CreatedOn = DateTime.Now,
-                ModifiedOn = DateTime.Now,
-                IsSelected = false
-            };
-            Categories.Add(user);
-
-            var shop = new Shop
-            {
-                Id = Guid.NewGuid(),
-                Name = "<DEFAULT>",
-                ModifiedById = defaultUser.Id,
-                CreatedById = defaultUser.Id,
-                CreatedOn = DateTime.Now,
-                ModifiedOn = DateTime.Now,
-                IsSelected = false
-            };
-            Shops.Add(shop);
-
-            return base.SaveChanges();
         }
     }
 }
