@@ -1,0 +1,74 @@
+﻿@page "/NewReceipt"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ReceiptsService _receiptsService
+
+<h3>New User</h3>
+
+<ul class="list-group">
+    *
+    <li class="list-group-item">
+        Name:
+        <input @bind="receipt.Name" />
+    </li>
+   <li class="list-group-item">
+            Category:
+            <input @bind="receipt.Category.Name" />
+        </li>
+        @*<li class="list-group-item">
+                Amount:
+                <input @bind="receipt.Amount" />
+            </li>
+            <li class="list-group-item">
+                Owner:
+                <input @bind="receipt.ReceiptHolder" />
+            </li>
+            <li class="list-group-item">
+                Created By:
+                <input @bind="receipt.CreatedBy" />
+            </li>
+            <li class="list-group-item">
+                Modified By:
+                <input @bind="receipt.ModifiedBy" />
+            </li>
+            <li class="list-group-item">
+                Created On:
+                <input @bind="receipt.CreatedOn" />
+            </li>
+            <li class="list-group-item">
+                Modified On:
+                <input @bind="receipt.ModifiedOn" />
+            </li>*@
+</ul>
+<button class="btn btn-primary" @onclick="AddReceiptAsync">Save</button>
+@*<InputFile @onchange="(e) => HandleSelection(e)" />*@
+
+@code {
+        public Receipt receipt = new Receipt
+        {
+            Name = "test",
+            Category = new Category() { Name = "test" }
+        };
+
+    private async Task AddReceiptAsync()
+    {
+        await _receiptsService.AddReceiptAsync(receipt);
+        _navigationManager.NavigateTo("ListUsers");
+
+
+    }
+    string status = "";
+    //void HandleSelection(ChangeEventArgs c)
+    //{
+    //    var file = c.Value;
+    //    if (file != null)
+    //    {
+    //        // Just load into .NET memory to show it can be done
+    //        // Alternatively it could be saved to disk, or parsed in memory, or similar
+    //        var ms = new System.IO.MemoryStream();
+    //        //await file..CopyToAsync(ms);
+
+    //        //status = $"Finished loading {file.Size} bytes from {file.Name}";
+    //    }
+    //}
+}

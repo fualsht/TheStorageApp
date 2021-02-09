@@ -1,0 +1,60 @@
+﻿@page "/EditReceipt"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ReceiptsService _receiptsService
+
+<h3>New User</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        Name:
+        <input @bind="receipt.Name" />
+    </li>
+    <li class="list-group-item">
+        Category:
+        <input @bind="receipt.Category.Name" />
+    </li>
+    <li class="list-group-item">
+        Amount:
+        <input @bind="receipt.Amount" />
+    </li>
+    <li class="list-group-item">
+        Owner:
+        <input @bind="receipt.ReceiptHolder.Name" />
+    </li>
+    <li class="list-group-item">
+        Created By:
+        <input @bind="receipt.CreatedBy.Name" />
+    </li>
+    <li class="list-group-item">
+        Modified By:
+        <input @bind="receipt.ModifiedBy.Name" />
+    </li>
+    <li class="list-group-item">
+        Created On:
+        <input @bind="receipt.CreatedOn" />
+    </li>
+    <li class="list-group-item">
+        Modified On:
+        <input @bind="receipt.ModifiedOn" />
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="() => SaveReceipt()">Save</button>
+
+
+@code {
+    public Receipt receipt = new Receipt();
+
+    protected override Task OnInitializedAsync()
+    {
+        receipt = _receiptsService.Receipts.FirstOrDefault(x => x.IsSelected);
+        return base.OnInitializedAsync();
+
+    }
+
+    private async Task SaveReceipt()
+    {
+        await _receiptsService.UpdateReceiptAsync(receipt);
+        _navigationManager.NavigateTo("Receipts");
+    }
+}

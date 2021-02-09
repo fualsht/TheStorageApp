@@ -1,0 +1,113 @@
+﻿@page "/Receipts"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ReceiptsService _receiptsService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (_receiptsService == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Shop</th>
+                <th>Owner</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var receipt in _receiptsService.Receipts)
+            {
+                if (receipt.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, receipt)">
+                        <td>@receipt.Name</td>
+                        <td>@receipt.Category.Name</td>
+                        <td>@receipt.Shop.Name</td>
+                        <td>@receipt.ReceiptHolder.Name</td>
+                        <td>@receipt.Amount</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, receipt)">
+                        <td>@receipt.Name</td>
+                        <td>@receipt.Category.Name</td>
+                        <td>@receipt.Shop.Name</td>
+                        <td>@receipt.ReceiptHolder.Name</td>
+                        <td>@receipt.Amount</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NewReceipt">New</button>
+
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedReceipt()">Edit</button>
+
+    <button class="btn btn-primary" @onclick="DeleteSeletedReceipts">Delete</button>
+
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _receiptsService.GetReceiptsAsync();
+        if (_receiptsService.Receipts.Count() > 0)
+        {
+            _receiptsService.Receipts[0].IsSelected = true;
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void NewReceipt()
+    {
+        _navigationManager.NavigateTo("NewReceipt");
+    }
+
+    private void OnRowClick(MouseEventArgs e, Receipt receipt)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _receiptsService.Receipts.ToList().IndexOf(_receiptsService.Receipts.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _receiptsService.Receipts.ToList().IndexOf(receipt);
+                if (startIndex <= endIndex)
+                {
+                    _receiptsService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _receiptsService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _receiptsService.ToggleSelect(receipt);
+        }
+        else
+        {
+            _receiptsService.Select(receipt);
+        }
+    }
+
+    public void EditFistSelectedReceipt()
+    {
+        _navigationManager.NavigateTo("EditReceipt");
+    }
+
+    private async Task DeleteSeletedReceipts()
+    {
+        await _receiptsService.DeleteReceiptsAsync();
+        _navigationManager.NavigateTo("ListReceipts");
+    }
+}

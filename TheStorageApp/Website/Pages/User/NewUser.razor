@@ -1,0 +1,42 @@
+﻿@page "/NewUser"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+
+<h3>New User</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        Username:
+        <input @bind="user.Name" />
+    </li>
+    <li class="list-group-item">
+        Password:
+        <input @bind="user.Password" />
+    </li>
+    <li class="list-group-item">
+        Email:
+        <input @bind="user.Email" />
+    </li>
+    <li class="list-group-item">
+        FirstName:
+        <input @bind="user.FirstName" />
+    </li>
+    <li class="list-group-item">
+        LastName:
+        <input @bind="user.LastName" />
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="AddUserAsync">Save</button>
+
+
+@code {
+    public User user = new User();
+
+    private async Task AddUserAsync()
+    {
+        HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Users/AddUser");
+        var client = _clientFactory.CreateClient("TGSClient");
+        await client.PostAsJsonAsync<User>("/api/Users/AddUser", user);
+        _navigationManager.NavigateTo("ListUsers");
+    }
+}

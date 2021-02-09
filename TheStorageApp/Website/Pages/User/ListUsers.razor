@@ -1,0 +1,107 @@
+﻿@page "/ListUsers"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject UsersService _userService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (_userService == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Passwword</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in _userService.Users)
+            {
+                if (user.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, user)">
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.Password</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, user)">
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.Password</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NewUser">New</button>
+
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
+
+    <button class="btn btn-primary" @onclick="DeleteSeletedUsers">Delete</button>
+
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _userService.GetUsersAsync();
+        if (_userService.Users.Count() > 0)
+        {
+            _userService.Users[0].IsSelected = true;
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void NewUser()
+    {
+        _navigationManager.NavigateTo("NewUser");
+    }
+
+    private void OnRowClick(MouseEventArgs e, User user)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _userService.Users.ToList().IndexOf(_userService.Users.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _userService.Users.ToList().IndexOf(user);
+                if (startIndex <= endIndex)
+                {
+                    _userService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _userService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _userService.ToggleSelect(user);
+        }
+        else
+        {
+            _userService.Select(user);
+        }
+    }
+
+    public void EditFistSelectedUser()
+    {
+        _navigationManager.NavigateTo("EditUser");
+    }
+
+    private async Task DeleteSeletedUsers()
+    {
+        await _userService.DeleteUsersAsync();
+        _navigationManager.NavigateTo("ListUsers");
+    }
+}
