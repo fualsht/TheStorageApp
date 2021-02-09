@@ -26,21 +26,39 @@ namespace TheStorageApp.API.Controllers
         [Route("GetReceipts")]
         public async Task<Receipt[]> GetReceipts()
         {
-            return await _context.Receipts.ToArrayAsync();
+            return await _context.Receipts.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                Include(x => x.Category).
+                Include(x => x.Tags).
+                Include(x => x.Shop).
+                ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetReceipt/{id}")]
         public async Task<Receipt> GetReceipt(string id)
         {
-            return await _context.Receipts.SingleOrDefaultAsync(x => x.Id.ToString() == id);
+            return await _context.Receipts.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                Include(x => x.Category).
+                Include(x => x.Tags).
+                Include(x => x.Shop).
+                SingleOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
         [Route("GetReceiptByName/{name}")]
         public async Task<Receipt> GetReceiptByName(string name)
         {
-            return await _context.Receipts.SingleOrDefaultAsync(x => x.Name == name);
+            return await _context.Receipts.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                Include(x => x.Category).
+                Include(x => x.Tags).
+                Include(x => x.Shop).
+                SingleOrDefaultAsync(x => x.Name == name);
         }
 
         [HttpPost]
@@ -70,7 +88,12 @@ namespace TheStorageApp.API.Controllers
         [Route("UpdateReceipt/{id}")]
         public async Task<Receipt> UpdateReceipt(string id, [FromBody]Receipt receipt)
         {
-            Receipt currentReceipt = _context.Receipts.FirstOrDefault(x => x.Id == new Guid(id));
+            Receipt currentReceipt = _context.Receipts.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                Include(x => x.Category).
+                Include(x => x.Tags).
+                Include(x => x.Shop).FirstOrDefault(x => x.Id == new Guid(id));
 
             if (currentReceipt != null)
             {

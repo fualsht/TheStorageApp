@@ -25,21 +25,30 @@ namespace TheGrocerWebApi.Controllers
         [Route("GetReceiptImages")]
         public async Task<ReceiptImage[]> GetReceiptImages()
         {
-            return await _context.ReceiptImages.ToArrayAsync();
+            return await _context.ReceiptImages.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetReceiptImage/{id}")]
         public async Task<ReceiptImage> GetReceiptImage(string id)
         {
-            return await _context.ReceiptImages.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return await _context.ReceiptImages.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
         [Route("GetReceiptImageByName/{name}")]
         public async Task<ReceiptImage> GetReceiptImageByName(string name)
         {
-            return await _context.ReceiptImages.SingleOrDefaultAsync(x => x.Name == name);
+            return await _context.ReceiptImages.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                SingleOrDefaultAsync(x => x.Name == name);
         }
 
         [HttpPost]
@@ -65,7 +74,10 @@ namespace TheGrocerWebApi.Controllers
         [Route("UpdateReceiptImage/{id}")]
         public async Task<ReceiptImage> UpdateReceiptImage(string id, [FromBody]ReceiptImage receiptImage)
         {
-            ReceiptImage receiptImageReceipt = await _context.ReceiptImages.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            ReceiptImage receiptImageReceipt = await _context.ReceiptImages.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                FirstOrDefaultAsync(x => x.Id == new Guid(id));
 
             if (receiptImageReceipt != null)
             {

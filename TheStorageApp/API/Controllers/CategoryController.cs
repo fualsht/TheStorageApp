@@ -8,7 +8,7 @@ using TheStorageApp.Shared.Models;
 
 namespace TheStorageApp.API.Controllers
 {
-    [Route("api/[controller]s")]
+    [Route("api/Categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -25,21 +25,30 @@ namespace TheStorageApp.API.Controllers
         [Route("GetCategories")]
         public async Task<Category[]> GetCategories()
         {
-            return await _context.Categories.Include(x => x.ModifiedBy).Include(x => x.CreatedBy).ToArrayAsync();
+            return await _context.Categories.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetCategory/{id}")]
         public async Task<Category> GetCategory(string id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return await _context.Categories.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
         [Route("GetCategoryByName/{name}")]
         public async Task<Category> GetCategoryByName(string name)
         {
-            return await _context.Categories.SingleOrDefaultAsync(x => x.Name == name);
+            return await _context.Categories.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                SingleOrDefaultAsync(x => x.Name == name);
         }
 
         [HttpPost]
@@ -64,7 +73,10 @@ namespace TheStorageApp.API.Controllers
         [Route("UpdateCategory/{id}")]
         public async Task<Category> UpdateCategory(string id, [FromBody]Category category)
         {
-            Category currentCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            Category currentCategory = await _context.Categories.
+                Include(x => x.ModifiedBy).
+                Include(x => x.CreatedBy).
+                FirstOrDefaultAsync(x => x.Id == new Guid(id));
 
             if (currentCategory != null)
             {
@@ -85,7 +97,9 @@ namespace TheStorageApp.API.Controllers
         [Route("DeleteCategory/{id}")]
         public async Task<Category> DeleteCategory(string id)
         {
-            var categoryToDelete = await _context.Categories.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var categoryToDelete = await _context.Categories.
+                FirstOrDefaultAsync(x => x.Id == new Guid(id));
+
             _context.Categories.Remove(categoryToDelete);
             await _context.SaveChangesAsync();
             return categoryToDelete;

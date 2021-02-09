@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
 
 namespace TheStorageApp.API.Data
@@ -21,7 +19,6 @@ namespace TheStorageApp.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
             var guid = Guid.NewGuid();
             modelBuilder.Entity<User>(entity =>
             {

@@ -25,21 +25,30 @@ namespace TheGrocerWebApi.Controllers
         [Route("GetShops")]
         public async Task<Shop[]> GetShops()
         {
-            return await _context.Shops.ToArrayAsync();
+            return await _context.Shops.
+                Include(x => x.CreatedBy).
+                Include(x => x.ModifiedBy).
+                ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetShop/{id}")]
         public async Task<Shop> GetShop(string id)
         {
-            return await _context.Shops.FirstOrDefaultAsync(e => e.Id == new Guid(id));
+            return await _context.Shops.
+                Include(x => x.CreatedBy).
+                Include(x => x.ModifiedBy).
+                FirstOrDefaultAsync(e => e.Id == new Guid(id));
         }
 
         [HttpGet]
         [Route("GetShop/{name}")]
         public async Task<Shop> GetShopByName(string name)
         {
-            return await _context.Shops.FirstOrDefaultAsync(e => e.Name == name);
+            return await _context.Shops.
+                Include(x => x.CreatedBy).
+                Include(x => x.ModifiedBy).
+                FirstOrDefaultAsync(e => e.Name == name);
         }
 
         [HttpPost]
@@ -67,7 +76,10 @@ namespace TheGrocerWebApi.Controllers
         [Route("UpdateShop/{id}")]
         public async Task<Shop> UpdateShop(string id, [FromBody]Shop shop)
         {
-            Shop currentShop = await _context.Shops.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            Shop currentShop = await _context.Shops.
+                Include(x => x.CreatedBy).
+                Include(x => x.ModifiedBy).
+                FirstOrDefaultAsync(x => x.Id == new Guid(id));
 
             if (currentShop != null)
             {
