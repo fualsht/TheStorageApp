@@ -38,9 +38,11 @@ namespace TheStorageApp.Website
             services.AddServerSideBlazor();
             services.AddHttpClient();
             services.AddHttpClient("TGSClient", endpoint => endpoint.BaseAddress = new Uri(uri));
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<UsersService>();
             services.AddSingleton<ReceiptsService>();
+            services.AddSingleton<CategoriesService>();
+            services.AddSingleton<ShopsService>();
+            services.AddSingleton<TagsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

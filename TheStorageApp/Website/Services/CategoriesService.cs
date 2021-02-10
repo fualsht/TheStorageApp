@@ -9,17 +9,17 @@ namespace TheStorageApp.Website.Services
     public class CategoriesService
     {
         public Category[] Categories { get; set; }
-
         private readonly IHttpClientFactory _httpClientFactory;
 
         public CategoriesService(IHttpClientFactory httpClient)
         {
             _httpClientFactory = httpClient;
-            Categories = new Category[0];
+            Categories = null;
         }
 
         public async Task GetCategoryAsync()
         {
+            Categories = null;
             HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Categories/GetCategories");
 
             var client = _httpClientFactory.CreateClient("TGSClient");
@@ -53,9 +53,14 @@ namespace TheStorageApp.Website.Services
         {
             var client = _httpClientFactory.CreateClient("TGSClient");
             var toDelete = Categories.Where(x => x.IsSelected).ToArray();
-            foreach (var item in toDelete)
+
+            int s = 0;
+            if (toDelete.Count() >= Categories.Count())
+                s = toDelete.Count() - 1;
+
+            for (int i = 0; i < toDelete.Count() - s; i++)
             {
-                var responce = await client.DeleteAsync($"/api/Receipts/DeleteCategory/{item.Id.ToString()}");
+                var responce = await client.DeleteAsync($"/api/Categories/DeleteCategory/{toDelete[i].Id.ToString()}");
             }
             return toDelete;
         }

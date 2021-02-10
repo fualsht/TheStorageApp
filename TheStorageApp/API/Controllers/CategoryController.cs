@@ -59,6 +59,7 @@ namespace TheStorageApp.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 Name = category.Name,
+                Color = category.Color,
                 CreatedBy = await _context.Users.FirstOrDefaultAsync(),
                 ModifiedBy = await _context.Users.FirstOrDefaultAsync(),
                 CreatedOn = DateTime.Now,
@@ -82,6 +83,9 @@ namespace TheStorageApp.API.Controllers
             {
                 if (!string.IsNullOrEmpty(category.Name))
                     currentCategory.Name = category.Name;
+
+                if (!string.IsNullOrEmpty(category.Color))
+                    currentCategory.Color = category.Color;
 
                 currentCategory.ModifiedBy = await _context.Users.FirstOrDefaultAsync();
                 currentCategory.ModifiedOn = DateTime.Now;

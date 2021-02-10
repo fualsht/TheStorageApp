@@ -1,7 +1,121 @@
 ﻿@page "/Categories"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject CategoriesService _categoriesService
 
 <h3>Categories</h3>
 
+@if (_categoriesService.Categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in _categoriesService.Categories)
+            {
+                if (category.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, category)">
+                        <td>@category.Name</td>
+                        <td>
+                            <div style="background: @category.Color; padding:5px">
+                                @category.Color
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, category)">
+                        <td>@category.Name</td>
+                        <td>
+                            <div style="background: @category.Color; padding:5px">
+                                @category.Color
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NewCategory">New</button>
+
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedCategory()">Edit</button>
+
+    @if (_categoriesService.Categories.Count() > 1)
+    {
+        <button class="btn btn-primary" @onclick="DeleteSeletedCategorys">Delete</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="DeleteSeletedCategorys" disabled>Delete</button>
+    }
+
+
+}
+
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+        await _categoriesService.GetCategoryAsync();
+        if (_categoriesService.Categories.Count() > 0)
+        {
+            _categoriesService.Categories[0].IsSelected = true;
+        }
+
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private void NewCategory()
+    {
+        _navigationManager.NavigateTo("NewCategory");
+    }
+
+    private void OnRowClick(MouseEventArgs e, Category category)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _categoriesService.Categories.ToList().IndexOf(_categoriesService.Categories.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _categoriesService.Categories.ToList().IndexOf(category);
+                if (startIndex <= endIndex)
+                {
+                    _categoriesService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _categoriesService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _categoriesService.ToggleSelect(category);
+        }
+        else
+        {
+            _categoriesService.Select(category);
+        }
+    }
+
+    public void EditFistSelectedCategory()
+    {
+        _navigationManager.NavigateTo("EditCategory");
+    }
+
+    private async Task DeleteSeletedCategorys()
+    {
+        var results = await _categoriesService.DeleteCategoryAsync();
+        await _categoriesService.GetCategoryAsync();
+        _navigationManager.NavigateTo("Categories");
+    }
 }

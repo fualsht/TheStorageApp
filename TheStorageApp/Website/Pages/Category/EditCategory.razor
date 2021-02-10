@@ -1,7 +1,54 @@
 ﻿@page "/EditCategory"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject CategoriesService _categoryCervice
 
 <h3>EditCategory</h3>
 
-@code {
+<ul class="list-group">
+    <li class="list-group-item">
+        Username:
+        <input @bind="category.Name" />
+    </li>
+    <li class="list-group-item">
+        Color:
+        <div style="background-color: @category.Color" class="buttonColor"></div>
+        <button class="btn btn-primary" @onclick="OpenModal">
+            Select a Color
+        </button>
+        <ColorPicker Title="My Blazor ColorPicker" IsOpened="isOpened" Closed="ClosedEvent" MyColor="@category.Color">
+        </ColorPicker>
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="() => SaveCategory()">Save</button>
 
+
+@code {
+    public Category category = new Category();
+
+    protected override Task OnInitializedAsync()
+    {
+        category = _categoryCervice.Categories.FirstOrDefault(x => x.IsSelected);
+        return base.OnInitializedAsync();
+
+    }
+
+    private async Task SaveCategory()
+    {
+        await _categoryCervice.UpdateCategoryAsync(category);
+        _navigationManager.NavigateTo("Categories");
+    }
+
+    bool isOpened = false;
+
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+
+    void ClosedEvent(string value)
+    {
+        category.Color = value;
+        isOpened = false;
+    }
 }

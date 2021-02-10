@@ -1,7 +1,52 @@
 ﻿@page "/NewCategory"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
 
-<h3>AddCategory</h3>
+<h3>New Category</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        Username:
+        <input @bind="category.Name" />
+    </li>
+    <li class="list-group-item">
+        Color:
+        <button class="btn btn-primary" @onclick="OpenModal">
+            <div style="background-color: @category.Color" class="buttonColor"></div> Select a Color
+        </button>
+        <ColorPicker Title="My Blazor ColorPicker" IsOpened="isOpened" Closed="ClosedEvent" MyColor="@category.Color">
+        </ColorPicker>
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="AddUserAsync">Save</button>
+
 
 @code {
+    public Category category = new Category();
 
+    protected override Task OnInitializedAsync()
+    {
+        category.Color = "#454545";
+        return base.OnInitializedAsync();
+    }
+
+    private async Task AddUserAsync()
+    {
+        var client = _clientFactory.CreateClient("TGSClient");
+        await client.PostAsJsonAsync<Category>("/api/Categories/AddCategory", category);
+        _navigationManager.NavigateTo("Categories");
+    }
+
+    bool isOpened = false;
+
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+
+    void ClosedEvent(string value)
+    {
+        category.Color = value;
+        isOpened = false;
+    }
 }
