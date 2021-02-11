@@ -1,7 +1,40 @@
-﻿@page "/EditShop"
+﻿@page "/EditCategory"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ShopsService _shopService
 
-<h3>EditShop</h3>
+<h3>EditCategory</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        Username:
+        <input @bind="shop.Name" />
+    </li>
+    <li class="list-group-item">
+        GPS Location:
+        <input @bind="shop.Website" />
+    </li>
+    <li class="list-group-item">
+        GPS Location:
+        <input @bind="shop.Address" />
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="() => SaveCategory()">Save</button>
+
 
 @code {
+    public Shop shop = new Shop();
 
+    protected override Task OnInitializedAsync()
+    {
+        shop = _shopService.Shops.FirstOrDefault(x => x.IsSelected);
+        return base.OnInitializedAsync();
+
+    }
+
+    private async Task SaveCategory()
+    {
+        await _shopService.UpdateShopAsync(shop);
+        _navigationManager.NavigateTo("Shops");
+    }
 }

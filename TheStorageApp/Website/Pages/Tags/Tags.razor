@@ -1,7 +1,112 @@
 ﻿@page "/Tags"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject TagsService _tagsService
 
-<h3>Tags</h3>
+<h1>Tags</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (_tagsService.Tags == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tag in _tagsService.Tags)
+            {
+                if (tag.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, tag)">
+                        <td>@tag.Name</td>
+                        <td>
+                            <div style="background: @tag.Color; padding:5px">
+                                @tag.Color
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, tag)">
+                        <td>@tag.Name</td>
+                        <td>
+                            <div style="background: @tag.Color; padding:5px">
+                                @tag.Color
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NewTag">New</button>
+
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedTag()">Edit</button>
+
+    <button class="btn btn-primary" @onclick="DeleteSeletedTags">Delete</button>
+
+}
 
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+        await _tagsService.GetTagsAsync();
+        if (_tagsService.Tags.Count() > 0)
+        {
+            _tagsService.Tags[0].IsSelected = true;
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void NewTag()
+    {
+        _navigationManager.NavigateTo("NewTag");
+    }
+
+    private void OnRowClick(MouseEventArgs e, Tag tag)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _tagsService.Tags.ToList().IndexOf(_tagsService.Tags.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _tagsService.Tags.ToList().IndexOf(tag);
+                if (startIndex <= endIndex)
+                {
+                    _tagsService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _tagsService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _tagsService.ToggleSelect(tag);
+        }
+        else
+        {
+            _tagsService.Select(tag);
+        }
+    }
+
+    public void EditFistSelectedTag()
+    {
+        _navigationManager.NavigateTo("EditTag");
+    }
+
+    private async Task DeleteSeletedTags()
+    {
+        await _tagsService.DeleteTagsAsync();
+        _navigationManager.NavigateTo("Tags");
+    }
 }

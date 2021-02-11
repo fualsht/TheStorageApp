@@ -1,7 +1,111 @@
 ﻿@page "/Shops"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ShopsService _shopsService
 
-<h3>Shops</h3>
+<h3>Categories</h3>
+
+@if (_shopsService.Shops == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var shop in _shopsService.Shops)
+            {
+                if (shop.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, shop)">
+                        <td>@shop.Name</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, shop)">
+                        <td>@shop.Name</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NewShop">New</button>
+
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedShop()">Edit</button>
+
+    @if (_shopsService.Shops.Count() > 1)
+    {
+        <button class="btn btn-primary" @onclick="DeleteSeletedShops">Delete</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="DeleteSeletedShops" disabled>Delete</button>
+    }
+
+
+}
 
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+        await _shopsService.GetShopsAsync();
+        if (_shopsService.Shops.Count() > 0)
+        {
+            _shopsService.Shops[0].IsSelected = true;
+        }
+
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private void NewShop()
+    {
+        _navigationManager.NavigateTo("NewShop");
+    }
+
+    private void OnRowClick(MouseEventArgs e, Shop shop)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _shopsService.Shops.ToList().IndexOf(_shopsService.Shops.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _shopsService.Shops.ToList().IndexOf(shop);
+                if (startIndex <= endIndex)
+                {
+                    _shopsService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _shopsService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _shopsService.ToggleSelect(shop);
+        }
+        else
+        {
+            _shopsService.Select(shop);
+        }
+    }
+
+    public void EditFistSelectedShop()
+    {
+        _navigationManager.NavigateTo("EditCategory");
+    }
+
+    private async Task DeleteSeletedShops()
+    {
+        var results = await _shopsService.DeleteShopAsync();
+        await _shopsService.GetShopsAsync();
+        _navigationManager.NavigateTo("Categories");
+    }
 }

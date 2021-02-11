@@ -9,8 +9,8 @@ using TheStorageApp.API.Data;
 namespace TheStorageApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210210192611_initial")]
-    partial class initial
+    [Migration("20210211200916_inital")]
+    partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,12 +74,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("04595ee1-f6ba-45b6-9bbe-9cf844fb19cf"),
+                            Id = new Guid("ab4fe9ce-e59a-4707-89cb-79c91c7cc27c"),
                             Color = "555555",
-                            CreatedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            CreatedOn = new DateTime(2021, 2, 10, 21, 26, 11, 516, DateTimeKind.Local).AddTicks(188),
-                            ModifiedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            ModifiedOn = new DateTime(2021, 2, 10, 21, 26, 11, 516, DateTimeKind.Local).AddTicks(694),
+                            CreatedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            CreatedOn = new DateTime(2021, 2, 11, 22, 9, 16, 70, DateTimeKind.Local).AddTicks(1423),
+                            ModifiedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            ModifiedOn = new DateTime(2021, 2, 11, 22, 9, 16, 70, DateTimeKind.Local).AddTicks(1875),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -211,13 +211,13 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("71084f87-5ba1-40e1-b028-3ea575753446"),
+                            Id = new Guid("c2bc1439-d38a-4165-acda-bc44894f9933"),
                             Address = "",
-                            CreatedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            CreatedOn = new DateTime(2021, 2, 10, 21, 26, 11, 519, DateTimeKind.Local).AddTicks(7080),
+                            CreatedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            CreatedOn = new DateTime(2021, 2, 11, 22, 9, 16, 74, DateTimeKind.Local).AddTicks(397),
                             GPSLocation = "",
-                            ModifiedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            ModifiedOn = new DateTime(2021, 2, 10, 21, 26, 11, 519, DateTimeKind.Local).AddTicks(7500),
+                            ModifiedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            ModifiedOn = new DateTime(2021, 2, 11, 22, 9, 16, 74, DateTimeKind.Local).AddTicks(851),
                             Name = "<DEFAULT>",
                             Website = ""
                         });
@@ -229,8 +229,8 @@ namespace TheStorageApp.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
+                    b.Property<string>("Color")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<Guid>("CreatedById")
                         .HasColumnType("char(36)");
@@ -258,12 +258,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3998cd3a-67ea-42b0-8cc4-47a49cd3458c"),
-                            Color = 0,
-                            CreatedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            CreatedOn = new DateTime(2021, 2, 10, 21, 26, 11, 520, DateTimeKind.Local).AddTicks(6570),
-                            ModifiedById = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            ModifiedOn = new DateTime(2021, 2, 10, 21, 26, 11, 520, DateTimeKind.Local).AddTicks(6989),
+                            Id = new Guid("99817b84-7919-4638-8392-9aec1c61b15e"),
+                            Color = "555555",
+                            CreatedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            CreatedOn = new DateTime(2021, 2, 11, 22, 9, 16, 75, DateTimeKind.Local).AddTicks(1051),
+                            ModifiedById = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            ModifiedOn = new DateTime(2021, 2, 11, 22, 9, 16, 75, DateTimeKind.Local).AddTicks(1511),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -302,12 +302,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"),
-                            CreatedOn = new DateTime(2021, 2, 10, 21, 26, 11, 513, DateTimeKind.Local).AddTicks(2332),
+                            Id = new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"),
+                            CreatedOn = new DateTime(2021, 2, 11, 22, 9, 16, 67, DateTimeKind.Local).AddTicks(4484),
                             Email = "system@email.com",
                             FirstName = "system",
                             LastName = "user",
-                            ModifiedOn = new DateTime(2021, 2, 10, 21, 26, 11, 513, DateTimeKind.Local).AddTicks(2801),
+                            ModifiedOn = new DateTime(2021, 2, 11, 22, 9, 16, 67, DateTimeKind.Local).AddTicks(4968),
                             Name = "<SYSTEM>",
                             Password = "password"
                         });

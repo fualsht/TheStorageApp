@@ -102,6 +102,7 @@ namespace TheStorageApp.API.Data
                 {
                     Id = Guid.NewGuid(),
                     Name = "<DEFAULT>",
+                    Color = "555555",
                     CreatedById = guid,
                     ModifiedById = guid,
                     CreatedOn = DateTime.Now,

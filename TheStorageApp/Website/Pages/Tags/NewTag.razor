@@ -1,7 +1,52 @@
 ﻿@page "/NewTag"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
 
-<h3>AddTag</h3>
+<h3>New Category</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        Username:
+        <input @bind="tag.Name" />
+    </li>
+    <li class="list-group-item">
+        Color:
+        <button class="btn btn-primary" @onclick="OpenModal">
+            <div style="background-color: @tag.Color" class="buttonColor"></div> Select a Color
+        </button>
+        <ColorPicker Title="My Blazor ColorPicker" IsOpened="isOpened" Closed="ClosedEvent" MyColor="@tag.Color">
+        </ColorPicker>
+    </li>
+</ul>
+<button class="btn btn-primary" @onclick="AddTagAsync">Save</button>
+
 
 @code {
+    public Tag tag = new Tag();
 
+    protected override Task OnInitializedAsync()
+    {
+        tag.Color = "#454545";
+        return base.OnInitializedAsync();
+    }
+
+    private async Task AddTagAsync()
+    {
+        var client = _clientFactory.CreateClient("TGSClient");
+        await client.PostAsJsonAsync<Tag>("/api/Tags/AddTag", tag);
+        _navigationManager.NavigateTo("Tags");
+    }
+
+    bool isOpened = false;
+
+    void OpenModal()
+    {
+        isOpened = true;
+    }
+
+    void ClosedEvent(string value)
+    {
+        tag.Color = value;
+        isOpened = false;
+    }
 }

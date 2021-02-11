@@ -11,7 +11,7 @@ namespace TheStorageApp.Shared.Models
         public bool IsSelected { get; set; } = false;
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Int32 Color { get; set; }
+        public string Color { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
         public virtual User CreatedBy { get; set; }

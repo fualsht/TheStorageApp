@@ -49,7 +49,7 @@ namespace TheStorageApp.Website.Services
             return updatedRecipet;
         }
 
-        public async Task<Tag[]> DeleteReceiptsAsync()
+        public async Task<Tag[]> DeleteTagsAsync()
         {
             var client = _httpClientFactory.CreateClient("TGSClient");
             var toDelete = Tags.Where(x => x.IsSelected).ToArray();

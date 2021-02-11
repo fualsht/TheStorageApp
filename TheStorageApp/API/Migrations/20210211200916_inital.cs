@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TheStorageApp.API.Migrations
 {
-    public partial class initial : Migration
+    public partial class inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,7 +62,7 @@ namespace TheStorageApp.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Color = table.Column<int>(type: "int", nullable: false),
+                    Color = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<Guid>(type: "char(36)", nullable: false),
@@ -228,22 +228,22 @@ namespace TheStorageApp.API.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedOn", "Email", "FirstName", "LastName", "ModifiedOn", "Name", "Password" },
-                values: new object[] { new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 513, DateTimeKind.Local).AddTicks(2332), "system@email.com", "system", "user", new DateTime(2021, 2, 10, 21, 26, 11, 513, DateTimeKind.Local).AddTicks(2801), "<SYSTEM>", "password" });
+                values: new object[] { new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 67, DateTimeKind.Local).AddTicks(4484), "system@email.com", "system", "user", new DateTime(2021, 2, 11, 22, 9, 16, 67, DateTimeKind.Local).AddTicks(4968), "<SYSTEM>", "password" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name", "ReceiptId" },
-                values: new object[] { new Guid("04595ee1-f6ba-45b6-9bbe-9cf844fb19cf"), "555555", new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 516, DateTimeKind.Local).AddTicks(188), new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 516, DateTimeKind.Local).AddTicks(694), "<DEFAULT>", null });
+                values: new object[] { new Guid("ab4fe9ce-e59a-4707-89cb-79c91c7cc27c"), "555555", new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 70, DateTimeKind.Local).AddTicks(1423), new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 70, DateTimeKind.Local).AddTicks(1875), "<DEFAULT>", null });
 
             migrationBuilder.InsertData(
                 table: "Shops",
                 columns: new[] { "Id", "Address", "CreatedById", "CreatedOn", "GPSLocation", "ModifiedById", "ModifiedOn", "Name", "Website" },
-                values: new object[] { new Guid("71084f87-5ba1-40e1-b028-3ea575753446"), "", new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 519, DateTimeKind.Local).AddTicks(7080), "", new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 519, DateTimeKind.Local).AddTicks(7500), "<DEFAULT>", "" });
+                values: new object[] { new Guid("c2bc1439-d38a-4165-acda-bc44894f9933"), "", new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 74, DateTimeKind.Local).AddTicks(397), "", new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 74, DateTimeKind.Local).AddTicks(851), "<DEFAULT>", "" });
 
             migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name" },
-                values: new object[] { new Guid("3998cd3a-67ea-42b0-8cc4-47a49cd3458c"), 0, new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 520, DateTimeKind.Local).AddTicks(6570), new Guid("ebb3239e-803f-4ee7-bbaa-116c8cd89b9a"), new DateTime(2021, 2, 10, 21, 26, 11, 520, DateTimeKind.Local).AddTicks(6989), "<DEFAULT>" });
+                values: new object[] { new Guid("99817b84-7919-4638-8392-9aec1c61b15e"), "555555", new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 75, DateTimeKind.Local).AddTicks(1051), new Guid("db10742b-4043-42db-a88c-9e3dd93feedc"), new DateTime(2021, 2, 11, 22, 9, 16, 75, DateTimeKind.Local).AddTicks(1511), "<DEFAULT>" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_CreatedById",
