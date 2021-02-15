@@ -28,16 +28,35 @@ namespace TheStorageApp.Website
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(config => 
+            {
+                config.DefaultAuthenticateScheme = "ClientCoockie";
+                config.DefaultSignInScheme = "ClientCoockie";
+                config.DefaultChallengeScheme = "DefaultServer";
+            })
+                .AddCookie("ClientCoockie")
+                .AddOAuth("DefaultServer", options =>
+                {
+                    options.ClientId = "client_id";
+                    options.ClientSecret = "client_secret";
+                    options.CallbackPath = "/OAuth/callback";
+                    options.AuthorizationEndpoint = "http://localhost:56006/Authorization/Login";
+                    options.TokenEndpoint = "http://localhost:56006/Authorization/Token";
+                });
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddControllersWithViews();
+
             string uri = string.Empty;
             if (Debugger.IsAttached)
                 uri = Configuration.GetValue<string>("WebapiEndpointDebug");
             else
                 uri = Configuration.GetValue<string>("WebapiEndpointRelease");
 
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
             services.AddHttpClient();
             services.AddHttpClient("TGSClient", endpoint => endpoint.BaseAddress = new Uri(uri));
+
             services.AddSingleton<UsersService>();
             services.AddSingleton<ReceiptsService>();
             services.AddSingleton<CategoriesService>();
@@ -59,15 +78,20 @@ namespace TheStorageApp.Website
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

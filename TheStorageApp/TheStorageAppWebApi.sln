@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{08B5E8A4-C2DF-454D-90E6-0F067464CD07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{08B5E8A4-C2DF-454D-90E6-0F067464CD07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{47FF0ED3-57F0-4CA7-A03C-2039EB1E4579}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{47FF0ED3-57F0-4CA7-A03C-2039EB1E4579}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheStorageAppWebsite", "Website\TheStorageAppWebsite.csproj", "{369A0213-29E2-44CC-A278-5C0AB389CD2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{47FF0ED3-57F0-4CA7-A03C-2039EB1E4579}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47FF0ED3-57F0-4CA7-A03C-2039EB1E4579}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47FF0ED3-57F0-4CA7-A03C-2039EB1E4579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{369A0213-29E2-44CC-A278-5C0AB389CD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{369A0213-29E2-44CC-A278-5C0AB389CD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{369A0213-29E2-44CC-A278-5C0AB389CD2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{369A0213-29E2-44CC-A278-5C0AB389CD2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
