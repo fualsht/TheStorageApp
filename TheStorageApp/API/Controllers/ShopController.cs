@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheGrocerWebApi.Controllers
 {
@@ -38,7 +38,7 @@ namespace TheGrocerWebApi.Controllers
             return await _context.Shops.
                 Include(x => x.CreatedBy).
                 Include(x => x.ModifiedBy).
-                FirstOrDefaultAsync(e => e.Id == new Guid(id));
+                FirstOrDefaultAsync(e => e.Id == id);
         }
 
         [HttpGet]
@@ -57,7 +57,7 @@ namespace TheGrocerWebApi.Controllers
         {
             Shop newshop = new Shop()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Name = shop.Name,
                 GPSLocation = shop.GPSLocation,
                 Website = shop.Website,
@@ -79,7 +79,7 @@ namespace TheGrocerWebApi.Controllers
             Shop currentShop = await _context.Shops.
                 Include(x => x.CreatedBy).
                 Include(x => x.ModifiedBy).
-                FirstOrDefaultAsync(x => x.Id == new Guid(id));
+                FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentShop != null)
             {
@@ -106,7 +106,7 @@ namespace TheGrocerWebApi.Controllers
         [Route("DeleteShop/{id}")]
         public async Task<Shop> DeleteShop(string id)
         {
-            var shopToDelete = await _context.Shops.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var shopToDelete = await _context.Shops.FirstOrDefaultAsync(x => x.Id == id);
             _context.Shops.Remove(shopToDelete);
             await _context.SaveChangesAsync();
             return shopToDelete;

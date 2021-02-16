@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheGrocerWebApi.Controllers
 {
@@ -24,41 +24,37 @@ namespace TheGrocerWebApi.Controllers
 
         [HttpGet]
         [Route("GetUsers")]
-        public async Task<User[]> GetUsers()
+        public async Task<AppUser[]> GetUsers()
         {
             return await _context.Users.ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetUser/{id}")]
-        public async Task<User> GetUser(string id)
+        public async Task<AppUser> GetUser(string id)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
         [Route("GetUserByName/{name}")]
-        public async Task<User> GetUserByName(string name)
+        public async Task<AppUser> GetUserByName(string name)
         {
-            return await _context.Users.SingleOrDefaultAsync(x => x.Name == name);
+            return await _context.Users.SingleOrDefaultAsync(x => x.UserName == name);
         }
 
         [HttpPost]
         [Route("AddUser")]
-        public async Task<User> AddUser([FromBody]User user)
+        public async Task<AppUser> AddUser([FromBody] AppUser user)
         {
-            string s = "";
             //User user = JsonSerializer.Deserialize<User>(userJson);
-            User newuser = new User()
+            AppUser newuser = new AppUser()
             {
-                Id = Guid.NewGuid(),
-                Name = user.Name,
-                Password = user.Password,
+                Id = Guid.NewGuid().ToString(),
+                UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName,
-                CreatedOn = DateTime.Now,
-                ModifiedOn = DateTime.Now
+                LastName = user.LastName
             };
 
             await _context.Users.AddAsync(newuser);
@@ -68,18 +64,12 @@ namespace TheGrocerWebApi.Controllers
 
         [HttpPut]
         [Route("UpdateUser/{id}")]
-        public async Task<User> UpdateUser(string id, [FromBody]User user)
+        public async Task<AppUser> UpdateUser(string id, [FromBody]AppUser user)
         {
-            User currentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            AppUser currentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentUser != null)
             {
-                if (!string.IsNullOrEmpty(user.Name))
-                    currentUser.Name = user.Name;
-
-                if (!string.IsNullOrEmpty(user.Password))
-                    currentUser.Password = user.Password;
-
                 if (!string.IsNullOrEmpty(user.Email))
                     currentUser.Email = user.Email;
 
@@ -88,8 +78,6 @@ namespace TheGrocerWebApi.Controllers
 
                 if (!string.IsNullOrEmpty(user.LastName))
                     currentUser.LastName = user.LastName;
-
-                currentUser.ModifiedOn = DateTime.Now;
 
                 _context.Update(currentUser);
                 await _context.SaveChangesAsync();
@@ -100,9 +88,9 @@ namespace TheGrocerWebApi.Controllers
 
         [HttpDelete]
         [Route("DeleteUser/{id}")]
-        public async Task<User> DeleteUser(string id)
+        public async Task<AppUser> DeleteUser(string id)
         {
-            var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
             _context.Users.Remove(userToDelete);
             await _context.SaveChangesAsync();
             return userToDelete;

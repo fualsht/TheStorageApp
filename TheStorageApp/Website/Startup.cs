@@ -28,22 +28,6 @@ namespace TheStorageApp.Website
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(config => 
-            {
-                config.DefaultAuthenticateScheme = "ClientCoockie";
-                config.DefaultSignInScheme = "ClientCoockie";
-                config.DefaultChallengeScheme = "DefaultServer";
-            })
-                .AddCookie("ClientCoockie")
-                .AddOAuth("DefaultServer", options =>
-                {
-                    options.ClientId = "client_id";
-                    options.ClientSecret = "client_secret";
-                    options.CallbackPath = "/OAuth/callback";
-                    options.AuthorizationEndpoint = "http://localhost:56006/Authorization/Login";
-                    options.TokenEndpoint = "http://localhost:56006/Authorization/Token";
-                });
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddControllersWithViews();
@@ -78,14 +62,10 @@ namespace TheStorageApp.Website
                 app.UseHsts();
             }
 
-            app.UseAuthentication();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

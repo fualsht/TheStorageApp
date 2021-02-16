@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheStorageApp.API.Controllers
 {
@@ -67,7 +67,7 @@ namespace TheStorageApp.API.Controllers
         {
             Receipt newreceipt = new Receipt
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Name = receipt.Name,
                 Category = receipt.Category,
                 ReceiptHolder = receipt.ReceiptHolder,
@@ -93,7 +93,7 @@ namespace TheStorageApp.API.Controllers
                 Include(x => x.CreatedBy).
                 Include(x => x.Category).
                 Include(x => x.Tags).
-                Include(x => x.Shop).FirstOrDefault(x => x.Id == new Guid(id));
+                Include(x => x.Shop).FirstOrDefault(x => x.Id == id);
 
             if (currentReceipt != null)
             {
@@ -123,7 +123,7 @@ namespace TheStorageApp.API.Controllers
         [Route("DeleteReceipt/{id}")]
         public async Task<Receipt> DeleteReceipt(string id)
         {
-            var receiptToDelete =  await _context.Receipts.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var receiptToDelete =  await _context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
             _context.Receipts.Remove(receiptToDelete);
             await _context.SaveChangesAsync();
             return receiptToDelete;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheGrocerWebApi.Controllers
 {
@@ -57,7 +57,7 @@ namespace TheGrocerWebApi.Controllers
         {
             ReceiptImage currentReceiptImage = new ReceiptImage()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Name = receiptImage.Name,
                 CreatedBy = await _context.Users.FirstOrDefaultAsync(),
                 ModifiedBy = await _context.Users.FirstOrDefaultAsync(),
@@ -77,7 +77,7 @@ namespace TheGrocerWebApi.Controllers
             ReceiptImage receiptImageReceipt = await _context.ReceiptImages.
                 Include(x => x.ModifiedBy).
                 Include(x => x.CreatedBy).
-                FirstOrDefaultAsync(x => x.Id == new Guid(id));
+                FirstOrDefaultAsync(x => x.Id == id);
 
             if (receiptImageReceipt != null)
             {
@@ -98,7 +98,7 @@ namespace TheGrocerWebApi.Controllers
         [Route("DeleteReceiptImage/{id}")]
         public async Task<ReceiptImage> DeleteReceiptImage(string id)
         {
-            var receiptImageToDelete = await _context.ReceiptImages.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var receiptImageToDelete = await _context.ReceiptImages.FirstOrDefaultAsync(x => x.Id == id);
             _context.ReceiptImages.Remove(receiptImageToDelete);
             await _context.SaveChangesAsync();
             return receiptImageToDelete;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheStorageApp.API.Controllers
 {
@@ -57,7 +57,7 @@ namespace TheStorageApp.API.Controllers
         {
             Category newcategory = new Category()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Name = category.Name,
                 Color = category.Color,
                 CreatedBy = await _context.Users.FirstOrDefaultAsync(),
@@ -77,7 +77,7 @@ namespace TheStorageApp.API.Controllers
             Category currentCategory = await _context.Categories.
                 Include(x => x.ModifiedBy).
                 Include(x => x.CreatedBy).
-                FirstOrDefaultAsync(x => x.Id == new Guid(id));
+                FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentCategory != null)
             {
@@ -102,7 +102,7 @@ namespace TheStorageApp.API.Controllers
         public async Task<Category> DeleteCategory(string id)
         {
             var categoryToDelete = await _context.Categories.
-                FirstOrDefaultAsync(x => x.Id == new Guid(id));
+                FirstOrDefaultAsync(x => x.Id == id);
 
             _context.Categories.Remove(categoryToDelete);
             await _context.SaveChangesAsync();

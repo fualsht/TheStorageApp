@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.API.Models;
 
 namespace TheGrocerWebApi.Controllers
 {
@@ -49,7 +49,7 @@ namespace TheGrocerWebApi.Controllers
         {
             Tag newTag = new Tag()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Name = tag.Name,
                 Color = tag.Color,
                 CreatedOn = DateTime.Now,
@@ -65,7 +65,7 @@ namespace TheGrocerWebApi.Controllers
         [Route("UpdateTag/{id}")]
         public async Task<Tag> UpdateTag(string id, [FromBody]Tag tag)
         {
-            Tag currentTag = await _context.Tags.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            Tag currentTag = await _context.Tags.FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentTag != null)
             {
@@ -88,7 +88,7 @@ namespace TheGrocerWebApi.Controllers
         [Route("DeleteTag/{id}")]
         public async Task<Tag> DeleteTag(string id)
         {
-            var tagToDelete = await _context.Tags.FirstOrDefaultAsync(x => x.Id == new Guid(id));
+            var tagToDelete = await _context.Tags.FirstOrDefaultAsync(x => x.Id == id);
             _context.Tags.Remove(tagToDelete);
             await _context.SaveChangesAsync();
             return tagToDelete;
