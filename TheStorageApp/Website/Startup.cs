@@ -46,6 +46,9 @@ namespace TheStorageApp.Website
             services.AddSingleton<CategoriesService>();
             services.AddSingleton<ShopsService>();
             services.AddSingleton<TagsService>();
+
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +64,8 @@ namespace TheStorageApp.Website
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSession();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

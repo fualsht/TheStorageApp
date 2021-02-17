@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -9,10 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
 using TheStorageApp.API.Models;
@@ -36,12 +39,42 @@ namespace TheStorageApp.API
                 options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr));
             });
 
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<DataContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<AppUser, IdentityRole>(config =>
+            {
+                config.Password.RequireUppercase = false;
+                config.Password.RequireDigit = false;
+                config.Password.RequiredLength = 1;
+                config.Password.RequireLowercase = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequiredUniqueChars = 0;
+                config.Password.RequireLowercase = false;
+
+            }).AddEntityFrameworkStores<DataContext>();
+
+            //    .AddDefaultTokenProviders();
+
+            //services.ConfigureApplicationCookie(config =>
+            //{
+            //    config.Cookie.Name = "thestorageapp.Cookie";
+            //    config.LoginPath = "/Authentication/LogIn";
+            //});
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["JWTToken:Issuer"],
+                    ValidAudience = Configuration["JWTToken:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes(Configuration["JWTToken:Key"]))
+                };
+            });
 
             services.AddControllers();
-            services.AddControllersWithViews();
 
             services.AddSwaggerGen(c =>
             {
@@ -66,9 +99,11 @@ namespace TheStorageApp.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
 
+            app.UseAuthentication();
+
             app.UseRouting();
 
-            app.UseHttpsRedirection();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
