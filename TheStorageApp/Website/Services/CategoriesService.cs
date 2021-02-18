@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
+using TheStorageAppWebsite.Utils;
 
 namespace TheStorageApp.Website.Services
 {
@@ -10,19 +13,28 @@ namespace TheStorageApp.Website.Services
     {
         public Category[] Categories { get; set; }
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpContextAccessor _contextFactory;
+        private readonly HttpContextCookieController _httpContextCookieController;
 
-        public CategoriesService(IHttpClientFactory httpClient)
+        public CategoriesService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController)
         {
             _httpClientFactory = httpClient;
+            _contextFactory = contextFactory;
+            _httpContextCookieController = httpContextCookieController;
             Categories = null;
         }
 
         public async Task GetCategoryAsync()
         {
+            string token = _httpContextCookieController.Get("token");
+
             Categories = null;
             HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Categories/GetCategories");
 
             var client = _httpClientFactory.CreateClient("TGSClient");
+            
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await client.SendAsync(httpRequest);
 
             if (response.IsSuccessStatusCode)

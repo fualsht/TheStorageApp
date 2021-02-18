@@ -9,16 +9,19 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
 using TheStorageApp.Website.Models;
+using TheStorageAppWebsite.Utils;
 
 namespace TheStorageAppWebsite.Controllers
 {
     public class AuthorizationController : Controller
     {
         private readonly IHttpClientFactory _httpContextFactory;
+        private readonly HttpContextCookieController _httpContextCookieController;
 
-        public AuthorizationController(IHttpClientFactory httpContextFactory)
+        public AuthorizationController(IHttpClientFactory httpContextFactory, HttpContextCookieController httpContextCookieController)
         {
             _httpContextFactory = httpContextFactory;
+            _httpContextCookieController = httpContextCookieController;
         }
 
         public IActionResult Index()
@@ -45,13 +48,32 @@ namespace TheStorageAppWebsite.Controllers
             userModel.Password = password;
 
             HttpResponseMessage response = await client.PostAsJsonAsync<AppUser>("/Authentication/LogIn", userModel);
-            JWTToken jwt = await response.Content.ReadFromJsonAsync<JWTToken>();
+            if (response.IsSuccessStatusCode)
+            {
+                JWTToken jwt = await response.Content.ReadFromJsonAsync<JWTToken>();
+                _httpContextCookieController.Set("token", jwt.Token, 30);
+                HttpContext.Session.SetString("token", jwt.Token);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
+        }
 
-            HttpContext.Session.SetString("token", jwt.Token);
+        public async Task<IActionResult> LogOut()
+        {
+            HttpClient client = _httpContextFactory.CreateClient("TGSClient");
 
-            ViewBag.Message = "User logged in successfully!";
-
-            return View();
+            HttpResponseMessage response = await client.GetAsync("/Authentication/LogOut");
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session.Remove("token");
+                ViewBag.Message = "User logged out successfully!";
+                return RedirectToAction("Index");
+            }
+            else
+                return Ok();
         }
 
         [HttpGet]

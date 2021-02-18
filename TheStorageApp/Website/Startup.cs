@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheStorageApp.Website.Data;
 using TheStorageApp.Website.Services;
+using TheStorageAppWebsite.Utils;
 
 namespace TheStorageApp.Website
 {
@@ -41,11 +42,14 @@ namespace TheStorageApp.Website
             services.AddHttpClient();
             services.AddHttpClient("TGSClient", endpoint => endpoint.BaseAddress = new Uri(uri));
 
-            services.AddSingleton<UsersService>();
-            services.AddSingleton<ReceiptsService>();
-            services.AddSingleton<CategoriesService>();
-            services.AddSingleton<ShopsService>();
-            services.AddSingleton<TagsService>();
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<HttpContextCookieController>();
+            services.AddScoped<UsersService>();
+            services.AddScoped<ReceiptsService>();
+            services.AddScoped<CategoriesService>();
+            services.AddScoped<ShopsService>();
+            services.AddScoped<TagsService>();
 
             services.AddMemoryCache();
             services.AddSession();

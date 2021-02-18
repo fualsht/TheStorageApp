@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,36 +23,34 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("GetCategories")]
         public async Task<Category[]> GetCategories()
         {
             return await _context.Categories.
-                Include(x => x.ModifiedBy).
-                Include(x => x.CreatedBy).
                 ToArrayAsync();
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetCategory/{id}")]
         public async Task<Category> GetCategory(string id)
         {
             return await _context.Categories.
-                Include(x => x.ModifiedBy).
-                Include(x => x.CreatedBy).
                 FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetCategoryByName/{name}")]
         public async Task<Category> GetCategoryByName(string name)
         {
             return await _context.Categories.
-                Include(x => x.ModifiedBy).
-                Include(x => x.CreatedBy).
                 SingleOrDefaultAsync(x => x.Name == name);
         }
 
         [HttpPost]
+        [Authorize]
         [Route("AddCategory")]
         public async Task<Category> AddCategory([FromBody] Category category)
         {
@@ -71,12 +70,11 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateCategory/{id}")]
         public async Task<Category> UpdateCategory(string id, [FromBody]Category category)
         {
             Category currentCategory = await _context.Categories.
-                Include(x => x.ModifiedBy).
-                Include(x => x.CreatedBy).
                 FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentCategory != null)
@@ -98,6 +96,7 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("DeleteCategory/{id}")]
         public async Task<Category> DeleteCategory(string id)
         {

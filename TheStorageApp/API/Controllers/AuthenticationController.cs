@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -29,23 +30,23 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LogIn([FromBody]object userjson)
+        public async Task<IActionResult> LogIn([FromBody]User userjson)
         {
-            string j = "";
-            //User u = JsonSerializer.Deserialize<User>(userjson);
-            string s = "";
-            //AppUser user = await _userManager.FindByNameAsync(_user.UserName);
+            AppUser user = await _userManager.FindByNameAsync(userjson.UserName);
 
-            //if (user != null)
-            //{
-                //var signInResult = await _signInManager.PasswordSignInAsync(user, _user.Password, false, false);
-                //if (signInResult.Succeeded)
-                //    return RedirectToAction("Index");
-                //else 
-            //        return RedirectToAction("LogIn");
-            //}
-            //else
-                return RedirectToAction("LogIn");
+            if (user != null)
+            {
+                var signInResult = await _signInManager.PasswordSignInAsync(user, userjson.Password, false, false);
+                if (signInResult.Succeeded)
+                {
+                    var tokenString = GenerateJWT();
+                    return Ok(new { token = tokenString });
+                }
+                else
+                    return Unauthorized();
+            }
+            else
+                return Unauthorized();
         }
 
         [HttpPost]
@@ -83,7 +84,7 @@ namespace TheStorageApp.API.Controllers
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index");
+            return Ok();
         }
 
 
