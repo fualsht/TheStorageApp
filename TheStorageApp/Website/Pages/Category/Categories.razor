@@ -46,6 +46,7 @@ else
             }
         </tbody>
     </table>
+
     <button class="btn btn-primary" @onclick="NewCategory">New</button>
 
     <button class="btn btn-primary" @onclick="() => EditFistSelectedCategory()">Edit</button>
@@ -67,7 +68,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await _categoriesService.GetCategoryAsync();
-        if (_categoriesService.Categories.Count() > 0)
+        if (_categoriesService.Categories != null && _categoriesService.Categories.Count() > 0)
         {
             _categoriesService.Categories[0].IsSelected = true;
         }
@@ -114,7 +115,7 @@ else
 
     private async Task DeleteSeletedCategorys()
     {
-        var results = await _categoriesService.DeleteCategoryAsync();
+        var results = await _categoriesService.DeleteCategoryAsync(_categoriesService.Categories.FirstOrDefault(x => x.IsSelected).Id.ToString());
         await _categoriesService.GetCategoryAsync();
         _navigationManager.NavigateTo("Categories");
     }

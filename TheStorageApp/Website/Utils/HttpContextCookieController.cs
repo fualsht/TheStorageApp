@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace TheStorageAppWebsite.Utils
@@ -18,12 +19,14 @@ namespace TheStorageAppWebsite.Utils
 
         public void Delete(string key)
         {
-            throw new NotImplementedException();
+            CookieOptions op = new CookieOptions { Expires = DateTime.Now.AddMinutes(-10) };
+            _HttpContextAccessor.HttpContext.Response.Cookies.Append("token", "", op);
         }
 
         public string Get(string key)
         {
-           return _HttpContextAccessor.HttpContext.Request.Cookies[key];
+            string value = _HttpContextAccessor.HttpContext.Request.Cookies[key];
+            return _HttpContextAccessor.HttpContext.Request.Cookies[key];
         }
 
 

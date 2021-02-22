@@ -9,6 +9,7 @@ using TheStorageApp.API.Models;
 
 namespace TheStorageApp.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Categories")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -32,7 +33,7 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("GetCategory/{id}")]
         public async Task<Category> GetCategory(string id)
         {
@@ -41,7 +42,7 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("GetCategoryByName/{name}")]
         public async Task<Category> GetCategoryByName(string name)
         {
@@ -50,7 +51,7 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("AddCategory")]
         public async Task<Category> AddCategory([FromBody] Category category)
         {
@@ -70,12 +71,12 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPut]
-        [Authorize]
-        [Route("UpdateCategory/{id}")]
-        public async Task<Category> UpdateCategory(string id, [FromBody]Category category)
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Route("UpdateCategory")]
+        public async Task<Category> UpdateCategory([FromBody]Category category)
         {
             Category currentCategory = await _context.Categories.
-                FirstOrDefaultAsync(x => x.Id == id);
+                FirstOrDefaultAsync(x => x.Id == category.Id);
 
             if (currentCategory != null)
             {
@@ -96,7 +97,7 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("DeleteCategory/{id}")]
         public async Task<Category> DeleteCategory(string id)
         {

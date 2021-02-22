@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheStorageApp.Website.Data;
 using TheStorageApp.Website.Services;
+using TheStorageAppWebsite.Services;
 using TheStorageAppWebsite.Utils;
 
 namespace TheStorageApp.Website
@@ -43,6 +45,7 @@ namespace TheStorageApp.Website
             services.AddHttpClient("TGSClient", endpoint => endpoint.BaseAddress = new Uri(uri));
 
             services.AddHttpContextAccessor();
+
 
             services.AddScoped<HttpContextCookieController>();
             services.AddScoped<UsersService>();

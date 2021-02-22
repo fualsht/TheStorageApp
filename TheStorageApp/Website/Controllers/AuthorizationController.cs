@@ -68,7 +68,7 @@ namespace TheStorageAppWebsite.Controllers
             HttpResponseMessage response = await client.GetAsync("/Authentication/LogOut");
             if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.Remove("token");
+                _httpContextCookieController.Delete("token");
                 ViewBag.Message = "User logged out successfully!";
                 return RedirectToAction("Index");
             }
