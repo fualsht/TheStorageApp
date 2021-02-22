@@ -1,21 +1,21 @@
-﻿using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json; // for HttpClientJsonExtensions
 using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class UsersService
+    public class UsersService : ApiServiceBase<User>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-
         public User[] Users { get; set; }
 
-        public UsersService(IHttpClientFactory httpClient)
+        public UsersService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
+            base(httpClient, contextFactory, httpContextCookieController)
         {
-            _httpClientFactory = httpClient;
-            Users = new User[0];
+
         }
 
         public async Task GetUsersAsync()

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace TheStorageAppWebsite.Utils
+namespace TheStorageApp.Website.Utils
 {
     public class HttpContextCookieController : IHttpContextCookieController
     {

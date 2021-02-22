@@ -1,21 +1,20 @@
-﻿using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class TagsService
+    public class TagsService : ApiServiceBase<Tag>
     {
         public Tag[] Tags { get; set; }
 
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public TagsService(IHttpClientFactory httpClient)
+        public TagsService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
+            base(httpClient, contextFactory, httpContextCookieController)
         {
-            _httpClientFactory = httpClient;
-            Tags = new Tag[0];
         }
 
         public async Task GetTagsAsync()

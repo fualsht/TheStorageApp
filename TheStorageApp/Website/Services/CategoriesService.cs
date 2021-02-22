@@ -5,8 +5,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Shared.Models;
-using TheStorageAppWebsite.Services;
-using TheStorageAppWebsite.Utils;
+using TheStorageApp.Website.Utils;
+using TheStorageApp.Website.Services;
 
 namespace TheStorageApp.Website.Services
 {
@@ -47,8 +47,7 @@ namespace TheStorageApp.Website.Services
 
         public async Task<Category> UpdateCategoryAsync(Category category)
         {
-            string url = "/api/Categories/UpdateCategory";
-            var responce = await ApiUpdate(url, category);
+            var responce = await ApiUpdate("/api/Categories/UpdateCategory", category);
 
             if (responce.IsSuccessStatusCode)
             {
@@ -61,7 +60,7 @@ namespace TheStorageApp.Website.Services
 
         public async Task<bool> DeleteCategoryAsync(string id)
         {
-            var responce = await ApiDelete($"/api/Categories/DeleteCategory{id}");
+            var responce = await ApiDelete($"/api/Categories/DeleteCategory", id);
 
             if (responce.IsSuccessStatusCode)
                 return true;

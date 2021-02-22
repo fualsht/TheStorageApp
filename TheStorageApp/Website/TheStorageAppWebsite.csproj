@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>TheStorageApp.Website</AssemblyName>
+    <RootNamespace>TheStorageApp.lWebsite</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
