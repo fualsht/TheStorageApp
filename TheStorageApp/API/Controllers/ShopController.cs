@@ -25,10 +25,18 @@ namespace TheGrocerWebApi.Controllers
         [Route("GetShops")]
         public async Task<Shop[]> GetShops()
         {
-            return await _context.Shops.
+            try
+            {
+                return await _context.Shops.
                 Include(x => x.CreatedBy).
                 Include(x => x.ModifiedBy).
                 ToArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, new { });
+                return null;
+            }
         }
 
         [HttpGet]

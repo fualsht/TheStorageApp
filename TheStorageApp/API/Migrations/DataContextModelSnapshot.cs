@@ -232,16 +232,16 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fc0b6c71-cc4a-4919-b66e-485c4f269b3e",
+                            Id = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9b588f24-786e-4aea-bfd3-ccf8215b6b05",
+                            ConcurrencyStamp = "44067204-ce00-447e-aa62-e64578b771cb",
                             Email = "system@email.com",
                             EmailConfirmed = false,
                             FirstName = "system",
                             LastName = "user",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "71977818-4818-462f-a6b2-ec0bd47dff99",
+                            SecurityStamp = "960203d5-d5f6-4333-b54c-d0a7b2fd7f30",
                             TwoFactorEnabled = false,
                             UserName = "<SYSTEM>"
                         });
@@ -255,14 +255,14 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("ModifiedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime(6)");
@@ -275,6 +275,10 @@ namespace TheStorageApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
                     b.HasIndex("ReceiptId");
 
                     b.ToTable("Categories");
@@ -282,14 +286,46 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3b0e5ff8-138f-4895-aaff-52c43820e499",
+                            Id = "c3f28ac9-41a2-40cc-ad41-f1af2ade333d",
                             Color = "555555",
-                            CreatedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            CreatedOn = new DateTime(2021, 2, 16, 23, 9, 42, 233, DateTimeKind.Local).AddTicks(399),
-                            ModifiedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            ModifiedOn = new DateTime(2021, 2, 16, 23, 9, 42, 233, DateTimeKind.Local).AddTicks(841),
+                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1447),
+                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1900),
                             Name = "<DEFAULT>"
                         });
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.LogEntry", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("ErrorCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ModifiedById1")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById1");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>
@@ -300,20 +336,17 @@ namespace TheStorageApp.API.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("CategoryId1")
+                    b.Property<string>("CategoryId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("ModifiedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime(6)");
@@ -324,19 +357,20 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("ReceiptHolderId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("ShopId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ShopId1")
+                    b.Property<string>("ShopId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
 
                     b.HasIndex("ReceiptHolderId");
 
-                    b.HasIndex("ShopId1");
+                    b.HasIndex("ShopId");
 
                     b.ToTable("Receipts");
                 });
@@ -346,8 +380,8 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
@@ -355,8 +389,8 @@ namespace TheStorageApp.API.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("longblob");
 
-                    b.Property<Guid>("ModifiedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime(6)");
@@ -369,6 +403,10 @@ namespace TheStorageApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
                     b.ToTable("ReceiptImages");
                 });
 
@@ -380,8 +418,8 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
@@ -389,8 +427,8 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("GPSLocation")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("ModifiedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime(6)");
@@ -403,18 +441,22 @@ namespace TheStorageApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
                     b.ToTable("Shops");
 
                     b.HasData(
                         new
                         {
-                            Id = "93fda6de-3d68-4fea-83ff-f6576e561ff3",
+                            Id = "97176ee6-6301-4af1-b0cd-52c0b0222bb8",
                             Address = "",
-                            CreatedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            CreatedOn = new DateTime(2021, 2, 16, 23, 9, 42, 240, DateTimeKind.Local).AddTicks(2168),
+                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5049),
                             GPSLocation = "",
-                            ModifiedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            ModifiedOn = new DateTime(2021, 2, 16, 23, 9, 42, 240, DateTimeKind.Local).AddTicks(2588),
+                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5475),
                             Name = "<DEFAULT>",
                             Website = ""
                         });
@@ -428,14 +470,14 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<Guid>("CreatedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("ModifiedById")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime(6)");
@@ -445,17 +487,21 @@ namespace TheStorageApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
                     b.ToTable("Tags");
 
                     b.HasData(
                         new
                         {
-                            Id = "e1a19112-f8ff-4eb5-9fbb-08a46ed0971e",
+                            Id = "a32a340f-8c59-4fec-8569-cf7fe0efa671",
                             Color = "555555",
-                            CreatedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            CreatedOn = new DateTime(2021, 2, 16, 23, 9, 42, 241, DateTimeKind.Local).AddTicks(4481),
-                            ModifiedById = new Guid("fc0b6c71-cc4a-4919-b66e-485c4f269b3e"),
-                            ModifiedOn = new DateTime(2021, 2, 16, 23, 9, 42, 241, DateTimeKind.Local).AddTicks(4896),
+                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3470),
+                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3900),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -528,16 +574,51 @@ namespace TheStorageApp.API.Migrations
 
             modelBuilder.Entity("TheStorageApp.API.Models.Category", b =>
                 {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByCategories")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByCategories")
+                        .HasForeignKey("ModifiedById");
+
                     b.HasOne("TheStorageApp.API.Models.Receipt", null)
                         .WithMany("Categories")
                         .HasForeignKey("ReceiptId");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.LogEntry", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByLogEntries")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById1");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>
                 {
                     b.HasOne("TheStorageApp.API.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1");
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByReceipts")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByReceipts")
+                        .HasForeignKey("ModifiedById");
 
                     b.HasOne("TheStorageApp.API.Models.AppUser", "ReceiptHolder")
                         .WithMany("Receipts")
@@ -545,9 +626,13 @@ namespace TheStorageApp.API.Migrations
 
                     b.HasOne("TheStorageApp.API.Models.Shop", "Shop")
                         .WithMany()
-                        .HasForeignKey("ShopId1");
+                        .HasForeignKey("ShopId");
 
                     b.Navigation("Category");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
 
                     b.Navigation("ReceiptHolder");
 
@@ -556,17 +641,81 @@ namespace TheStorageApp.API.Migrations
 
             modelBuilder.Entity("TheStorageApp.API.Models.ReceiptImage", b =>
                 {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByReceiptImages")
+                        .HasForeignKey("CreatedById");
+
                     b.HasOne("TheStorageApp.API.Models.Receipt", "Receipt")
                         .WithMany("RecipetImages")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByReceiptImages")
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
                     b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Shop", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByShops")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByShops")
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Tag", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByTags")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByTags")
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.AppUser", b =>
                 {
+                    b.Navigation("CreatedByCategories");
+
+                    b.Navigation("CreatedByLogEntries");
+
+                    b.Navigation("CreatedByReceiptImages");
+
+                    b.Navigation("CreatedByReceipts");
+
+                    b.Navigation("CreatedByShops");
+
+                    b.Navigation("CreatedByTags");
+
+                    b.Navigation("ModifiedByCategories");
+
+                    b.Navigation("ModifiedByReceiptImages");
+
+                    b.Navigation("ModifiedByReceipts");
+
+                    b.Navigation("ModifiedByShops");
+
+                    b.Navigation("ModifiedByTags");
+
                     b.Navigation("Receipts");
                 });
 

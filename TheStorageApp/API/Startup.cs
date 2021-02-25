@@ -51,14 +51,6 @@ namespace TheStorageApp.API
 
             }).AddEntityFrameworkStores<DataContext>();
 
-            //    .AddDefaultTokenProviders();
-
-            //services.ConfigureApplicationCookie(config =>
-            //{
-            //    config.Cookie.Name = "thestorageapp.Cookie";
-            //    config.LoginPath = "/Authentication/LogIn";
-            //});
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

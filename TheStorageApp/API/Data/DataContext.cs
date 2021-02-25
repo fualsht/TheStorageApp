@@ -7,16 +7,19 @@ namespace TheStorageApp.API.Data
 {
     public class DataContext : IdentityDbContext<AppUser>
     {
-        //public DbSet<AppUser> Users { get; set; }
         public DbSet<Shop> Shops { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<ReceiptImage> ReceiptImages { get; set; }        
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<LogEntry> Logs { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {  }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
+        {
+
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,17 +44,15 @@ namespace TheStorageApp.API.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
-
-                entity.Ignore(x => x.CreatedBy);                
-                entity.Ignore(x => x.ModifiedBy);
-
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByCategories).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByCategories).HasForeignKey(x => x.ModifiedById);
                 entity.HasData(new Category
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "<DEFAULT>",
                     Color = "555555",
-                    CreatedById = guid,
-                    ModifiedById = guid,
+                    CreatedById = guid.ToString(),
+                    ModifiedById = guid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
@@ -61,8 +62,8 @@ namespace TheStorageApp.API.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
-                entity.Ignore(x => x.CreatedBy);
-                entity.Ignore(x => x.ModifiedBy);
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByReceipts).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByReceipts).HasForeignKey(x => x.ModifiedById);
                 entity.HasOne<Shop>(x => x.Shop);
                 entity.HasMany<ReceiptImage>(x => x.RecipetImages).WithOne(x => x.Receipt).HasForeignKey(e => e.Id);
 
@@ -73,8 +74,8 @@ namespace TheStorageApp.API.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
-                entity.Ignore(x => x.CreatedBy);
-                entity.Ignore(x => x.ModifiedBy);
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByReceiptImages).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByReceiptImages).HasForeignKey(x => x.ModifiedById);
 
             });
 
@@ -82,8 +83,8 @@ namespace TheStorageApp.API.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
-                entity.Ignore(x => x.CreatedBy);
-                entity.Ignore(x => x.ModifiedBy);
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByShops).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByShops).HasForeignKey(x => x.ModifiedById);
                 entity.HasData(new Shop
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -91,8 +92,8 @@ namespace TheStorageApp.API.Data
                     GPSLocation = "",
                     Address = "",
                     Website = "",
-                    CreatedById = guid,
-                    ModifiedById = guid,
+                    CreatedById = guid.ToString(),
+                    ModifiedById = guid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
@@ -102,19 +103,28 @@ namespace TheStorageApp.API.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
-                entity.Ignore(x => x.CreatedBy);
-                entity.Ignore(x => x.ModifiedBy);
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByTags).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByTags).HasForeignKey(x => x.ModifiedById);
                 entity.HasMany<Receipt>(e => e.Receipts).WithMany(x => x.Tags);
                 entity.HasData(new Tag
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "<DEFAULT>",
                     Color = "555555",
-                    CreatedById = guid,
-                    ModifiedById = guid,
+                    CreatedById = guid.ToString(),
+                    ModifiedById = guid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
+            });
+
+            modelBuilder.Entity<LogEntry>(entity => 
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(p => p.Id).ValueGeneratedNever();
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByLogEntries).HasForeignKey(x => x.CreatedById);
+                entity.Ignore(e => e.ModifiedById);
+                entity.Ignore(e => e.ModifiedOn);
             });
 
             base.OnModelCreating(modelBuilder);

@@ -13,8 +13,8 @@ namespace TheStorageApp.API.Models
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
         public virtual AppUser CreatedBy { get; set; }
-        public Guid CreatedById { get; set; }
+        public string CreatedById { get; set; }
         public virtual AppUser ModifiedBy { get; set; }
-        public Guid ModifiedById { get; set; }
+        public string ModifiedById { get; set; }
     }
 }

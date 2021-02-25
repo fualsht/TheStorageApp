@@ -11,7 +11,8 @@ namespace TheStorageApp.Website.Services
 {
     public class ShopsService : ApiServiceBase<Shop>
     {
-        protected const string getEndpoint = "/api/Shops/GetShop";
+        protected const string getSingleEndpoint = "/api/Shops/GetShop";
+        protected const string getMultipleEndpoint = "/api/Shops/GetShops";
         protected const string addSingleEndpoint = "/api/Shops/AddShop";
         protected const string addMultipleEndpoint = "/api/Shops/AddShops";
         protected const string updateSingleEndpoint = "/api/Shops/UpdateShop";
@@ -30,7 +31,7 @@ namespace TheStorageApp.Website.Services
         {
             Shop returnShop = null;
 
-            var response = await ApiGet(getEndpoint);
+            var response = await ApiGet(getMultipleEndpoint);
 
             if (response.IsSuccessStatusCode)
             {
@@ -44,7 +45,7 @@ namespace TheStorageApp.Website.Services
         {
             Shop returnShop = null;
 
-            var response = await ApiGet(getEndpoint);
+            var response = await ApiGet(getMultipleEndpoint + "/" + shop.Id.ToString());
 
             if (response.IsSuccessStatusCode)
             {
@@ -54,7 +55,7 @@ namespace TheStorageApp.Website.Services
             return returnShop;
         }
 
-        public async Task<Shop[]> GetShopAsync(Shop[] shops)
+        public async Task<Shop[]> GetShopsAsync(Shop[] shops)
         {
             Shop[] returnShops = null;
 
@@ -63,7 +64,7 @@ namespace TheStorageApp.Website.Services
             foreach (var item in shops)
                 ids.Add(item.Id.ToString());
 
-            var response = await ApiGet(getEndpoint, ids.ToArray());
+            var response = await ApiGet(getMultipleEndpoint, ids.ToArray());
 
             if (response.IsSuccessStatusCode)
             {

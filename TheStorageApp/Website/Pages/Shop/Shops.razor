@@ -104,7 +104,7 @@ else
 
     private async Task DeleteSeletedShops()
     {
-        var results = await _shopsService.DeleteShopAsync();
+        var results = await _shopsService.DeleteShopAsync(_shopsService.Shops.FirstOrDefault(x => x.IsSelected));
         await _shopsService.GetShopsAsync();
         _navigationManager.NavigateTo("Categories");
     }
