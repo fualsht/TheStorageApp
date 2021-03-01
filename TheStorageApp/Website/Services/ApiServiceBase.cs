@@ -48,6 +48,7 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var response = await client.PostAsJsonAsync<string[]>(uri, ids);
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Models;
 using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services

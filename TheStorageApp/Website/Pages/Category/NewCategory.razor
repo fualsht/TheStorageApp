@@ -1,6 +1,7 @@
 ﻿@page "/NewCategory"
 @inject IHttpClientFactory _clientFactory
 @inject NavigationManager _navigationManager
+@inject CategoriesService _categoryService
 
 <h3>New Category</h3>
 
@@ -32,8 +33,8 @@
 
     private async Task AddUserAsync()
     {
-        var client = _clientFactory.CreateClient("TGSClient");
-        await client.PostAsJsonAsync<Category>("/api/Categories/AddCategory", category);
+        await _categoryService.AddCategoryAsync(category);
+
         _navigationManager.NavigateTo("Categories");
     }
 

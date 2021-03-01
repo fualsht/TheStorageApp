@@ -4,9 +4,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Models;
 using TheStorageApp.Website.Utils;
 using TheStorageApp.Website.Services;
+using System;
 
 namespace TheStorageApp.Website.Services
 {
@@ -22,13 +23,21 @@ namespace TheStorageApp.Website.Services
 
         public async Task GetCategoryAsync()
         {
-            Categories = null;
-
-            var response = await ApiGet("/api/Categories/GetCategories");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                Categories = await response.Content.ReadFromJsonAsync<Category[]>();
+                Categories = null;
+
+                var response = await ApiGet("/api/Categories/GetCategories");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    //var v = response.Headers.FirstOrDefault(x => x.Key == "user");
+                    Categories = await response.Content.ReadFromJsonAsync<Category[]>();
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -38,6 +47,7 @@ namespace TheStorageApp.Website.Services
 
             if (responce.IsSuccessStatusCode)
             {
+                var v = responce.Headers.FirstOrDefault(x => x.Key == "user");
                 var newitem = await responce.Content.ReadFromJsonAsync<Category>();
                 return newitem;
             }

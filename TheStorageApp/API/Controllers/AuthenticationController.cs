@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -11,18 +13,22 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TheStorageApp.API.Data;
 using TheStorageApp.API.Models;
-using TheStorageApp.Shared.Models;
 
 namespace TheStorageApp.API.Controllers
 {
-    public class AuthenticationController : Controller
+    [Route("api/Authentication")]
+    public class AuthenticationController : APIControllerBase<AppUser>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration)
+        public AuthenticationController(ILogger<AuthenticationController> logger,
+            DataContext dataContext, IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager, IConfiguration configuration)
+            : base(logger, dataContext, httpContextAccessor)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -30,7 +36,8 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LogIn([FromBody]User userjson)
+        [Route("LogIn")]
+        public async Task<IActionResult> LogIn([FromBody]AppUser userjson)
         {
             AppUser user = await _userManager.FindByNameAsync(userjson.UserName);
 
@@ -40,7 +47,7 @@ namespace TheStorageApp.API.Controllers
                 if (signInResult.Succeeded)
                 {
                     var tokenString = GenerateJWT();
-                    return Ok(new { token = tokenString });
+                    return Ok(new { token = tokenString, userid = user.Id });
                 }
                 else
                     return Unauthorized();
@@ -50,37 +57,33 @@ namespace TheStorageApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(
-            string username, 
-            string firstname,
-            string lastname,
-            string email, 
-            string password)
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody]AppUser user)
         {
-            
-            var user = new AppUser()
+            try
             {
-                UserName = username,
-                FirstName = firstname,
-                LastName = lastname,
-                Email = email
-            };
+                var result = await _userManager.CreateAsync(user, user.Password);
 
-            var result = await _userManager.CreateAsync(user, password);
-
-            if (result.Succeeded)
-            {
-                var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
-                if (signInResult.Succeeded)
+                if (result.Succeeded)
                 {
-                    return RedirectToAction("Index");
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, user.Password, false, false);
+                    if (signInResult.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
-            }
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (Exception exception)
+            {
+                return this.InternalServerError(exception, "Error registering user");
+            }
+            
         }
 
         [HttpGet]
+        [Route("LogOut")]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();

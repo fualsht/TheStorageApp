@@ -3,14 +3,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json; // for HttpClientJsonExtensions
 using System.Threading.Tasks;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Models;
 using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class UsersService : ApiServiceBase<User>
+    public class UsersService : ApiServiceBase<AppUser>
     {
-        public User[] Users { get; set; }
+        public AppUser[] Users { get; set; }
 
         public UsersService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
@@ -27,31 +27,31 @@ namespace TheStorageApp.Website.Services
 
             if (response.IsSuccessStatusCode)
             {
-                Users = await response.Content.ReadFromJsonAsync<User[]>();
+                Users = await response.Content.ReadFromJsonAsync<AppUser[]>();
             }
         }
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<AppUser> AddUserAsync(AppUser user)
         {
             var client = _httpClientFactory.CreateClient("TGSClient");
-            var responce = await client.PostAsJsonAsync<User>("/api/Users/AddUser", user);
-            var newUser = await responce.Content.ReadFromJsonAsync<User>();
+            var responce = await client.PostAsJsonAsync<AppUser>("/api/Users/AddUser", user);
+            var newUser = await responce.Content.ReadFromJsonAsync<AppUser>();
 
             return newUser;
         }
 
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task<AppUser> UpdateUserAsync(AppUser user)
         {
             var client = _httpClientFactory.CreateClient("TGSClient");
-            var responce = await client.PutAsJsonAsync<User>($"/api/Users/UpdateUser/{user.Id.ToString()}", user);
-            var updatedUser = await responce.Content.ReadFromJsonAsync<User>();
+            var responce = await client.PutAsJsonAsync<AppUser>($"/api/Users/UpdateUser/{user.Id}", user);
+            var updatedUser = await responce.Content.ReadFromJsonAsync<AppUser>();
 
             return updatedUser;
         }
 
-        public async Task<User[]> DeleteUsersAsync()
+        public async Task<AppUser[]> DeleteUsersAsync()
         {
-            var userss = Users.ToList<User>();
+            var userss = Users.ToList<AppUser>();
 
             var client = _httpClientFactory.CreateClient("TGSClient");
             var toDelete = userss.Where(x => x.IsSelected).ToArray();
@@ -64,7 +64,7 @@ namespace TheStorageApp.Website.Services
             return toDelete;
         }
 
-        public void Select(User user)
+        public void Select(AppUser user)
         {
             foreach (var item in Users)
             {
@@ -73,7 +73,7 @@ namespace TheStorageApp.Website.Services
             user.IsSelected = true;
         }
 
-        public void ToggleSelect(User user)
+        public void ToggleSelect(AppUser user)
         {
             user.IsSelected = !user.IsSelected;
         }

@@ -14,15 +14,10 @@ namespace TheStorageApp.API.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/Categories")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController : APIControllerBase<Category>
     {
-        private readonly ILogger<CategoryController> _logger;
-        private readonly DataContext _context;
-
-        public CategoryController(ILogger<CategoryController> logger, DataContext dataContext)
+        public CategoryController(ILogger<CategoryController> logger, DataContext dataContext, IHttpContextAccessor httpContextAccessor) : base (logger,dataContext,httpContextAccessor)
         {
-            _logger = logger;
-            _context = dataContext;
         }
 
         [HttpGet]
@@ -32,7 +27,8 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                return await _context.Categories.ToArrayAsync();
+                var val = await _dataContext.Categories.ToArrayAsync();
+                return Ok(val);
             }
             catch (Exception exception)
             {
@@ -47,7 +43,7 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                return await _context.Categories.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+                return await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id.ToString() == id);
             }
             catch (Exception exception)
             {
@@ -62,7 +58,7 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                return await _context.Categories.SingleOrDefaultAsync(x => x.Name == name);
+                return await _dataContext.Categories.SingleOrDefaultAsync(x => x.Name == name);
             }
             catch (Exception exception)
             {
@@ -82,13 +78,13 @@ namespace TheStorageApp.API.Controllers
                     Id = Guid.NewGuid().ToString(),
                     Name = category.Name,
                     Color = category.Color,
-                    CreatedBy = await _context.Users.FirstOrDefaultAsync(),
-                    ModifiedBy = await _context.Users.FirstOrDefaultAsync(),
+                    CreatedById = HttpContext.Response.Headers["user"],
+                    ModifiedById = HttpContext.Response.Headers["user"],
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now,
                 };
-                await _context.Categories.AddAsync(newcategory);
-                await _context.SaveChangesAsync();
+                await _dataContext.Categories.AddAsync(newcategory);
+                await _dataContext.SaveChangesAsync();
                 return newcategory;
             }
             catch (Exception exception)
@@ -113,8 +109,8 @@ namespace TheStorageApp.API.Controllers
                         Id = Guid.NewGuid().ToString(),
                         Name = category.Name,
                         Color = category.Color,
-                        CreatedBy = await _context.Users.FirstOrDefaultAsync(),
-                        ModifiedBy = await _context.Users.FirstOrDefaultAsync(),
+                        //CreatedById = this._contextCookieController.Get("user"),
+                        //ModifiedById = this._contextCookieController.Get("user"),
                         CreatedOn = DateTime.Now,
                         ModifiedOn = DateTime.Now,
                     };
@@ -122,8 +118,8 @@ namespace TheStorageApp.API.Controllers
                 }
 
                 
-                await _context.Categories.AddRangeAsync(newCategories.ToArray());
-                await _context.SaveChangesAsync();
+                await _dataContext.Categories.AddRangeAsync(newCategories.ToArray());
+                await _dataContext.SaveChangesAsync();
 
                 return newCategories.ToArray();
             }
@@ -140,8 +136,7 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                Category currentCategory = await _context.Categories.
-                            FirstOrDefaultAsync(x => x.Id == category.Id);
+                Category currentCategory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
 
                 if (currentCategory != null)
                 {
@@ -151,11 +146,11 @@ namespace TheStorageApp.API.Controllers
                     if (!string.IsNullOrEmpty(category.Color))
                         currentCategory.Color = category.Color;
 
-                    currentCategory.ModifiedBy = await _context.Users.FirstOrDefaultAsync();
+                    //currentCategory.ModifiedById = this._contextCookieController.Get("user");
                     currentCategory.ModifiedOn = DateTime.Now;
 
-                    _context.Update(currentCategory);
-                    await _context.SaveChangesAsync();
+                    _dataContext.Update(currentCategory);
+                    await _dataContext.SaveChangesAsync();
                 }
 
                 return currentCategory;
@@ -177,7 +172,7 @@ namespace TheStorageApp.API.Controllers
 
                 foreach (var category in categories)
                 {
-                    Category currentCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
+                    Category currentCategory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == category.Id);
 
                     if (currentCategory != null)
                     {
@@ -187,15 +182,15 @@ namespace TheStorageApp.API.Controllers
                         if (!string.IsNullOrEmpty(category.Color))
                             currentCategory.Color = category.Color;
 
-                        currentCategory.ModifiedBy = await _context.Users.FirstOrDefaultAsync();
+                        //currentCategory.ModifiedById = this._contextCookieController.Get("user");
                         currentCategory.ModifiedOn = DateTime.Now;
 
                         updatedCategories.Add(currentCategory);
                     }
                 }
 
-                  _context.UpdateRange(updatedCategories);
-                  await _context.SaveChangesAsync();
+                  _dataContext.UpdateRange(updatedCategories);
+                  await _dataContext.SaveChangesAsync();
 
                 return updatedCategories.ToArray();
             }
@@ -212,10 +207,10 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                var categoryToDelete = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+                var categoryToDelete = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
 
-                _context.Categories.Remove(categoryToDelete);
-                await _context.SaveChangesAsync();
+                _dataContext.Categories.Remove(categoryToDelete);
+                await _dataContext.SaveChangesAsync();
                 return categoryToDelete;
             }
             catch (Exception exception)
@@ -235,12 +230,12 @@ namespace TheStorageApp.API.Controllers
 
                 foreach (var id in ids)
                 {
-                    categories.Add(await _context.Categories.FirstOrDefaultAsync(x => x.Id == id));
+                    categories.Add(await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == id));
                 } 
                 
-                _context.Categories.RemoveRange(categories);
+                _dataContext.Categories.RemoveRange(categories);
 
-                await _context.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
 
                 return Ok(categories.ToArray());
             }

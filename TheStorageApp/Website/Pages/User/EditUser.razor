@@ -8,7 +8,7 @@
 <ul class="list-group">
     <li class="list-group-item">
         Username:
-        <input @bind="user.Name" />
+        <input @bind="user.UserName" />
     </li>
     <li class="list-group-item">
         Password:
@@ -31,7 +31,7 @@
 
 
 @code {
-    public User user = new User();
+    public AppUser user = new AppUser();
 
     protected override Task OnInitializedAsync()
     {

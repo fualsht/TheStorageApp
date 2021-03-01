@@ -67,6 +67,7 @@ namespace TheStorageApp.API
             });
 
             services.AddControllers();
+            services.AddHttpContextAccessor();
 
             services.AddSwaggerGen(c =>
             {

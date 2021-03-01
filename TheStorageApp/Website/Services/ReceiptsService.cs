@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using TheStorageApp.Shared.Models;
+using TheStorageApp.Website.Models;
 
 namespace TheStorageApp.Website.Services
 {

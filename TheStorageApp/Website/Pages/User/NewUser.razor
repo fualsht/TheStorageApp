@@ -7,7 +7,7 @@
 <ul class="list-group">
     <li class="list-group-item">
         Username:
-        <input @bind="user.Name" />
+        <input @bind="user.UserName" />
     </li>
     <li class="list-group-item">
         Password:
@@ -30,13 +30,13 @@
 
 
 @code {
-    public User user = new User();
+    public AppUser user = new AppUser();
 
     private async Task AddUserAsync()
     {
         HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Users/AddUser");
         var client = _clientFactory.CreateClient("TGSClient");
-        await client.PostAsJsonAsync<User>("/api/Users/AddUser", user);
+        await client.PostAsJsonAsync<AppUser>("/api/Users/AddUser", user);
         _navigationManager.NavigateTo("ListUsers");
     }
 }

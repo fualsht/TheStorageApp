@@ -28,6 +28,7 @@ namespace TheStorageApp.API.Data
             {
                 Guid id = guid;
                 entity.HasKey(e => e.Id);
+                entity.Ignore(e => e.Password);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
                 entity.HasMany(e => e.Receipts).WithOne(e => e.ReceiptHolder).HasForeignKey(e => e.ReceiptHolderId);
                 entity.HasData(new AppUser

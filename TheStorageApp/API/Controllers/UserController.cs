@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TheStorageApp.API.Controllers;
 using TheStorageApp.API.Data;
 using TheStorageApp.API.Models;
 
@@ -11,36 +13,31 @@ namespace TheGrocerWebApi.Controllers
 {
     [Route("api/[controller]s")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : APIControllerBase<AppUser>
     {
-        private readonly ILogger<UserController> _logger;
-        private readonly DataContext _context;
-
-        public UserController(ILogger<UserController> logger, DataContext dataContext)
+        public UserController(ILogger<APIControllerBase<AppUser>> logger, DataContext dataContext, IHttpContextAccessor httpContextAccessor) : base(logger, dataContext, httpContextAccessor)
         {
-            _logger = logger;
-            _context = dataContext;
         }
 
         [HttpGet]
         [Route("GetUsers")]
         public async Task<AppUser[]> GetUsers()
         {
-            return await _context.Users.ToArrayAsync();
+            return await _dataContext.Users.ToArrayAsync();
         }
 
         [HttpGet]
         [Route("GetUser/{id}")]
         public async Task<AppUser> GetUser(string id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return await _dataContext.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
         [HttpGet]
         [Route("GetUserByName/{name}")]
         public async Task<AppUser> GetUserByName(string name)
         {
-            return await _context.Users.SingleOrDefaultAsync(x => x.UserName == name);
+            return await _dataContext.Users.SingleOrDefaultAsync(x => x.UserName == name);
         }
 
         [HttpPost]
@@ -57,8 +54,8 @@ namespace TheGrocerWebApi.Controllers
                 LastName = user.LastName
             };
 
-            await _context.Users.AddAsync(newuser);
-            await _context.SaveChangesAsync();
+            await _dataContext.Users.AddAsync(newuser);
+            await _dataContext.SaveChangesAsync();
             return newuser;// JsonSerializer.Serialize<User>(user);
         }
 
@@ -66,7 +63,7 @@ namespace TheGrocerWebApi.Controllers
         [Route("UpdateUser/{id}")]
         public async Task<AppUser> UpdateUser(string id, [FromBody]AppUser user)
         {
-            AppUser currentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            AppUser currentUser = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (currentUser != null)
             {
@@ -79,8 +76,8 @@ namespace TheGrocerWebApi.Controllers
                 if (!string.IsNullOrEmpty(user.LastName))
                     currentUser.LastName = user.LastName;
 
-                _context.Update(currentUser);
-                await _context.SaveChangesAsync();
+                _dataContext.Update(currentUser);
+                await _dataContext.SaveChangesAsync();
             }
 
             return currentUser;
@@ -90,9 +87,9 @@ namespace TheGrocerWebApi.Controllers
         [Route("DeleteUser/{id}")]
         public async Task<AppUser> DeleteUser(string id)
         {
-            var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-            _context.Users.Remove(userToDelete);
-            await _context.SaveChangesAsync();
+            var userToDelete = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            _dataContext.Users.Remove(userToDelete);
+            await _dataContext.SaveChangesAsync();
             return userToDelete;
         }
     }
