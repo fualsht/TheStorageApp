@@ -36,14 +36,11 @@ namespace TheStorageApp.Website.Utils
         /// <param name="key">key (unique indentifier)</param>  
         /// <param name="value">value to store in cookie object</param>  
         /// <param name="expireTime">expiration time</param>  
-        public void Set(string key, string value, int? expireTime)
+        public void Set(string key, string value, DateTime expire)
         {
             CookieOptions option = new CookieOptions();
 
-            if (expireTime.HasValue)
-                option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
-            else
-                option.Expires = DateTime.Now.AddMilliseconds(10);
+            option.Expires = expire;
 
             _HttpContextAccessor.HttpContext.Response.Cookies.Append(key, value, option);
         }

@@ -2,6 +2,7 @@
 @inject IHttpClientFactory _clientFactory
 @inject NavigationManager _navigationManager
 @inject CategoriesService _categoriesService
+@inject HttpContextCookieController _cookieController
 
 <h3>Categories</h3>
 
@@ -11,6 +12,8 @@
 }
 else
 {
+
+
     <table class="table table-hover">
         <thead>
             <tr>
@@ -73,6 +76,7 @@ else
             _categoriesService.Categories[0].IsSelected = true;
         }
 
+        System.IdentityModel.Tokens.Jwt.JwtSecurityToken handle = JWTUtils.DecodeJWTToken(_cookieController.Get("token"));
 
 
         await base.OnInitializedAsync();

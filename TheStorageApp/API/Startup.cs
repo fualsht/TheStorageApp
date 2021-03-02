@@ -66,6 +66,8 @@ namespace TheStorageApp.API
                 };
             });
 
+           
+
             services.AddControllers();
             services.AddHttpContextAccessor();
 

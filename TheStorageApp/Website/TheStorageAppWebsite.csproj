@@ -3,12 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>TheStorageApp.Website</AssemblyName>
-    <RootNamespace>TheStorageApp.lWebsite</RootNamespace>
+    <RootNamespace>TheStorageApp.Website</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BlazorColorPicker" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 

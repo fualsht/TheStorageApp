@@ -31,7 +31,6 @@ namespace TheStorageApp.Website.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    //var v = response.Headers.FirstOrDefault(x => x.Key == "user");
                     Categories = await response.Content.ReadFromJsonAsync<Category[]>();
                 }
             }

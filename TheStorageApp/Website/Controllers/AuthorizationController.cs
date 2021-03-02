@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Website.Models;
 using TheStorageApp.Website.Utils;
 
-namespace TheStorageAppWebsite.Controllers
+namespace TheStorageApp.Website.Controllers
 {
     public class AuthorizationController : Controller
     {
@@ -36,9 +36,6 @@ namespace TheStorageAppWebsite.Controllers
         {
             HttpClient client = _httpContextFactory.CreateClient("TGSClient");
 
-            //var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            //client.DefaultRequestHeaders.Accept.Add(contentType);
-
             AppUser userModel = new AppUser();
             userModel.UserName = username;
             userModel.Password = password;
@@ -47,8 +44,7 @@ namespace TheStorageAppWebsite.Controllers
             if (response.IsSuccessStatusCode)
             {
                 JWTToken jwt = await response.Content.ReadFromJsonAsync<JWTToken>();
-                _httpContextCookieController.Set("token", jwt.Token, 30);
-                _httpContextCookieController.Set("user", jwt.UserId, 30);
+                _httpContextCookieController.Set("token", jwt.Token, jwt.Expire);
                 return RedirectToAction("Index");
             }
             else
@@ -65,7 +61,6 @@ namespace TheStorageAppWebsite.Controllers
             if (response.IsSuccessStatusCode)
             {
                 _httpContextCookieController.Delete("token");
-                _httpContextCookieController.Delete("user");
                 return RedirectToAction("Index");
             }
             else
@@ -103,7 +98,10 @@ namespace TheStorageAppWebsite.Controllers
         {
             public string Token { get; set; }
 
-            public string UserId { get; set; }
+
+            public DateTime Expire { get; set; }
+            
+           
         }
     }
 }

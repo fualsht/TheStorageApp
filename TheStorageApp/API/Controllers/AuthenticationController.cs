@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -37,23 +38,36 @@ namespace TheStorageApp.API.Controllers
 
         [HttpPost]
         [Route("LogIn")]
-        public async Task<IActionResult> LogIn([FromBody]AppUser userjson)
+        public async Task<IActionResult> LogIn([FromBody] AppUser user)
         {
-            AppUser user = await _userManager.FindByNameAsync(userjson.UserName);
-
-            if (user != null)
+            try
             {
-                var signInResult = await _signInManager.PasswordSignInAsync(user, userjson.Password, false, false);
-                if (signInResult.Succeeded)
+                AppUser result = await _userManager.FindByNameAsync(user.UserName);
+
+                if (result != null)
                 {
-                    var tokenString = GenerateJWT();
-                    return Ok(new { token = tokenString, userid = user.Id });
+                    var signInResult = await _signInManager.PasswordSignInAsync(result, user.Password, true, false);
+                    if (signInResult.Succeeded)
+                    {
+                        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(result);
+
+                        var expireDate = DateTime.Now.AddMinutes(120);
+
+                        var tokenString = GenerateJWT(claimsPrincipal, expireDate);
+
+                        return Ok(new { token = tokenString, expire = expireDate });
+                    }
+                    else
+                        return Unauthorized();
                 }
                 else
-                    return Unauthorized();
+                    return NotFound();
             }
-            else
-                return Unauthorized();
+            catch (Exception ex)
+            {
+                return this.InternalServerError(ex, "Fatal error logging in user: " + user.UserName);
+            }
+
         }
 
         [HttpPost]
@@ -77,7 +91,7 @@ namespace TheStorageApp.API.Controllers
             }
             catch (Exception exception)
             {
-                return this.InternalServerError(exception, "Error registering user");
+                return this.InternalServerError(exception, "Error registering user: " + user.UserName);
             }
             
         }
@@ -91,15 +105,14 @@ namespace TheStorageApp.API.Controllers
         }
 
 
-        private string GenerateJWT()
+        private string GenerateJWT(ClaimsPrincipal claimsPrincipal, DateTime expiry)
         {
             var issuer = _configuration["JWTToken:Issuer"];
             var audience = _configuration["JWTToken:Audience"];
-            var expiry = DateTime.Now.AddMinutes(120);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTToken:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(issuer: issuer, audience: audience, expires: expiry, signingCredentials: credentials);
+            
+            var token = new JwtSecurityToken(issuer: issuer , audience: audience, claimsPrincipal.Claims, expires: expiry, signingCredentials: credentials);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var stringToken = tokenHandler.WriteToken(token);
