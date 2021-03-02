@@ -38,9 +38,9 @@ namespace TheStorageApp.Website
 
             services.AddHttpContextAccessor();
 
-
-            services.AddScoped<HttpContextCookieController>();
             services.AddScoped<UsersService>();
+            services.AddScoped<RolesService>();
+            services.AddScoped<CookieController>();            
             services.AddScoped<ReceiptsService>();
             services.AddScoped<CategoriesService>();
             services.AddScoped<ShopsService>();
@@ -64,8 +64,6 @@ namespace TheStorageApp.Website
                 app.UseHsts();
             }
 
-            app.UseSession();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -77,6 +75,8 @@ namespace TheStorageApp.Website
                 endpoints.MapFallbackToPage("/_Host");
                 endpoints.MapDefaultControllerRoute();
             });
+
+            app.UseSession();
         }
     }
 }

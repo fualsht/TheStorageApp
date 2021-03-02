@@ -8,11 +8,11 @@ using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class TagsService : ApiServiceBase<Tag>
+    public class TagsService : WebServiceBase<Tag>
     {
         public Tag[] Tags { get; set; }
 
-        public TagsService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
+        public TagsService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
         {
         }

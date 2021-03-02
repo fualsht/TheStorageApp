@@ -22,6 +22,7 @@ namespace TheStorageApp.API.Controllers
     [Route("api/Authentication")]
     public class AuthenticationController : APIControllerBase<AppUser>
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
@@ -52,7 +53,7 @@ namespace TheStorageApp.API.Controllers
                         var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(result);
 
                         var expireDate = DateTime.Now.AddMinutes(120);
-
+                        _httpContextAccessor.HttpContext.User = claimsPrincipal;
                         var tokenString = GenerateJWT(claimsPrincipal, expireDate);
 
                         return Ok(new { token = tokenString, expire = expireDate });
@@ -104,6 +105,13 @@ namespace TheStorageApp.API.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("Roles")]
+        public IdentityRole[] GetUserRoles([FromBody] AppUser user)
+        {
+            User.IsInRole("Admin");
+            return new IdentityRole[0];
+        }
 
         private string GenerateJWT(ClaimsPrincipal claimsPrincipal, DateTime expiry)
         {
@@ -118,5 +126,7 @@ namespace TheStorageApp.API.Controllers
             var stringToken = tokenHandler.WriteToken(token);
             return stringToken;
         }
+
+        
     }
 }

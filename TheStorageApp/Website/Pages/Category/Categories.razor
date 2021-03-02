@@ -2,7 +2,8 @@
 @inject IHttpClientFactory _clientFactory
 @inject NavigationManager _navigationManager
 @inject CategoriesService _categoriesService
-@inject HttpContextCookieController _cookieController
+@inject CookieController _cookieController
+@inject RolesService _rolesService
 
 <h3>Categories</h3>
 
@@ -12,8 +13,6 @@
 }
 else
 {
-
-
     <table class="table table-hover">
         <thead>
             <tr>
@@ -77,9 +76,9 @@ else
         }
 
         System.IdentityModel.Tokens.Jwt.JwtSecurityToken handle = JWTUtils.DecodeJWTToken(_cookieController.Get("token"));
+        if(_rolesService.UserIsInRoles("", ""))
 
-
-        await base.OnInitializedAsync();
+            await base.OnInitializedAsync();
     }
 
     private void NewCategory()

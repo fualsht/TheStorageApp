@@ -9,7 +9,7 @@ using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class ShopsService : ApiServiceBase<Shop>
+    public class ShopsService : WebServiceBase<Shop>
     {
         protected const string getSingleEndpoint = "/api/Shops/GetShop";
         protected const string getMultipleEndpoint = "/api/Shops/GetShops";
@@ -22,7 +22,7 @@ namespace TheStorageApp.Website.Services
 
         public Shop[] Shops { get; set; }
 
-        public ShopsService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
+        public ShopsService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
         {
         }

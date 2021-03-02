@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TheStorageApp.Website.Utils
 {
-    public interface IHttpContextCookieController
+    public interface ICookieController
     {
         string Get(string key);
         void Set(string key, string value, DateTime expire);

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace TheStorageApp.Website.Utils
 {
-    public class HttpContextCookieController : IHttpContextCookieController
+    public class CookieController : ICookieController
     {
         private readonly IHttpContextAccessor _HttpContextAccessor;
-        public HttpContextCookieController(IHttpContextAccessor httpContextAccessor)
+        public CookieController(IHttpContextAccessor httpContextAccessor)
         {
             _HttpContextAccessor = httpContextAccessor;
         }

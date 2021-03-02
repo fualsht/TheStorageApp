@@ -8,11 +8,11 @@ using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class UsersService : ApiServiceBase<AppUser>
+    public class UsersService : WebServiceBase<AppUser>
     {
         public AppUser[] Users { get; set; }
 
-        public UsersService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController) : 
+        public UsersService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
         {
 

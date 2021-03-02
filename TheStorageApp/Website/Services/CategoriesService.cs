@@ -11,11 +11,11 @@ using System;
 
 namespace TheStorageApp.Website.Services
 {
-    public class CategoriesService : ApiServiceBase<Category>
+    public class CategoriesService : WebServiceBase<Category>
     {
         public Category[] Categories { get; set; }
 
-        public CategoriesService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController):
+        public CategoriesService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController):
             base(httpClient, contextFactory, httpContextCookieController)
         {
             Categories = null;

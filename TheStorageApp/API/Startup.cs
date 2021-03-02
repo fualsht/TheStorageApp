@@ -66,7 +66,6 @@ namespace TheStorageApp.API
                 };
             });
 
-           
 
             services.AddControllers();
             services.AddHttpContextAccessor();
@@ -75,6 +74,9 @@ namespace TheStorageApp.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
+
+            //services.AddMemoryCache();
+            //services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +96,7 @@ namespace TheStorageApp.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
 
+
             app.UseAuthentication();
 
             app.UseRouting();
@@ -105,6 +108,8 @@ namespace TheStorageApp.API
                 //endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
+
+            //app.UseSession();
         }
     }
 }

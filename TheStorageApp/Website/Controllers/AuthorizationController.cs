@@ -12,9 +12,9 @@ namespace TheStorageApp.Website.Controllers
     public class AuthorizationController : Controller
     {
         private readonly IHttpClientFactory _httpContextFactory;
-        private readonly HttpContextCookieController _httpContextCookieController;
+        private readonly CookieController _httpContextCookieController;
 
-        public AuthorizationController(IHttpClientFactory httpContextFactory, HttpContextCookieController httpContextCookieController)
+        public AuthorizationController(IHttpClientFactory httpContextFactory, CookieController httpContextCookieController)
         {
             _httpContextFactory = httpContextFactory;
             _httpContextCookieController = httpContextCookieController;

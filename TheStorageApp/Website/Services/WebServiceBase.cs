@@ -8,13 +8,13 @@ using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public abstract class ApiServiceBase<T> : IApiService<T>
+    public abstract class WebServiceBase<T> : IApiService<T>
     {
         protected readonly IHttpClientFactory _httpClientFactory;
         protected readonly IHttpContextAccessor _contextFactory;
-        protected readonly HttpContextCookieController _httpContextCookieController;
+        protected readonly CookieController _httpContextCookieController;
 
-        public ApiServiceBase(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, HttpContextCookieController httpContextCookieController)
+        public WebServiceBase(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController)
         {
             _httpClientFactory = httpClient;
             _contextFactory = contextFactory;
