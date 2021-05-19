@@ -49,7 +49,7 @@ namespace TheStorageApp.API
                 config.Password.RequiredUniqueChars = 0;
                 config.Password.RequireLowercase = false;
 
-            }).AddEntityFrameworkStores<DataContext>();
+            }).AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -74,9 +74,6 @@ namespace TheStorageApp.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
-
-            //services.AddMemoryCache();
-            //services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,8 +105,6 @@ namespace TheStorageApp.API
                 //endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
-
-            //app.UseSession();
         }
     }
 }

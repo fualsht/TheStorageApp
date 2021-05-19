@@ -1,7 +1,34 @@
-﻿<h1>Login Page</h1>
+﻿@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
 
-<form action="/Authorization/LogIn" method="post">
-    <input type="text" name="username" value="" />
-    <input type="text" name="password" value="" />
-    <button type="submit">Login</button>
-</form>
+@using (@Html.BeginForm("Login", "Authorization", FormMethod.Post))
+{
+    <div class="d-flex justify-content-center align-items-center container mt-5">
+        <div class="card" style="width: 24rem;">
+            <div class="card-header text-center" style="background: #0d6efd" ))>
+                <h1 style="color: white">Login</h1>
+            </div>
+            <div class="card-body justify-content-center">
+
+                <div class="input-group mb-3">
+                    <input name="username" type="text" class="form-control" placeholder="Username" aria-label="Username">
+                </div>
+                <div class="input-group mb-3">
+                    <input name="password" type="text" class="form-control" placeholder="Password" aria-label="Password">
+                </div>
+
+                <div class="row justify-content-end m-1" style="width: inherit">
+                    @Html.ActionLink("Forgot Password", "ResetPassword", "Authorization", null, new { @class = "btn link-primary", @style = "width: auto" })
+                    <input name="submitbutton" class="btn btn-primary" type="submit" value="Login" style="width: auto">
+                </div>
+            </div>
+            <div class="card-footer justify-content-center" style="width: inherit">
+                <div class="text-muted text-xl-end" style="width: auto">
+                    @DateTime.Now.ToLongDateString()
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/js/bootstrap.js"></script>

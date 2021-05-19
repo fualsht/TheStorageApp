@@ -1,7 +1,47 @@
 ﻿@page "/"
+@inject ServerControllerService _serverController
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div>
+    <ul>
+        <li>
+            <div>
+                <textarea style="resize: both; height: 250px; width: 600px">
+                    @result
+                </textarea>
+            </div>
+        </li>
+        <li>
+            <div>
+                <input type="text" @bind="command" />
+            </div>
+        </li>
+        <li>
+            <div>
+                <button @onclick="() => executeCommandAsync()">ExecuteCommand</button>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code
+{
+    string result = "";
+    string command = "dir";
+
+    public async Task executeCommandAsync()
+    {
+        result = string.Empty;
+        var stream = await _serverController.RunCommand(command);
+
+        while (!stream.EndOfStream)
+        {
+            result += stream.ReadLine() + "\n";
+        }
+    }
+}

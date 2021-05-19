@@ -4,22 +4,35 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TheStorageApp.API.Migrations
 {
-    public partial class inital : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    Name = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
                 });
 
             migrationBuilder.CreateTable(
@@ -29,6 +42,7 @@ namespace TheStorageApp.API.Migrations
                     Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
                     FirstName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     LastName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
@@ -50,24 +64,25 @@ namespace TheStorageApp.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
+                name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Discriminator = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
+                    AppUserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    Name = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        name: "FK_AspNetRoles_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,30 +120,6 @@ namespace TheStorageApp.API.Migrations
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
-                    RoleId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -385,29 +376,49 @@ namespace TheStorageApp.API.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[] { "28f0f34f-9425-4d43-8f2e-2afe9775d3e9", null, "739f3b63-d958-43d7-b452-fe783030c7e8", "AppRole", "Admin", null });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[] { "c39512d1-4264-4efd-ba52-64f9d7b177ee", null, "e1b48499-bfef-4439-a723-1a55ee680d94", "AppRole", "Guest", null });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
+                values: new object[] { "883ebd7e-9e7f-4d44-a674-85e746f5505a", null, "477110c1-0ccd-45c4-8dd3-6eb9c125102e", "AppRole", "User", null });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "607183e7-b778-4ce1-9754-89a0e5f3d7bf", 0, "44067204-ce00-447e-aa62-e64578b771cb", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "960203d5-d5f6-4333-b54c-d0a7b2fd7f30", false, "<SYSTEM>" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", 0, "c15f63ec-09c1-41e0-bfc2-17cc31690dc9", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "28f0f34f-9425-4d43-8f2e-2afe9775d3e9", "b5f70895-c011-4493-b792-c29fd3f513da", false, "<SYSTEM>" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name", "ReceiptId" },
-                values: new object[] { "c3f28ac9-41a2-40cc-ad41-f1af2ade333d", "555555", "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1447), "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1900), "<DEFAULT>", null });
+                values: new object[] { "b1d73032-80fb-4388-a3b4-70143942d911", "555555", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8293), "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8760), "<DEFAULT>", null });
 
             migrationBuilder.InsertData(
                 table: "Shops",
                 columns: new[] { "Id", "Address", "CreatedById", "CreatedOn", "GPSLocation", "ModifiedById", "ModifiedOn", "Name", "Website" },
-                values: new object[] { "97176ee6-6301-4af1-b0cd-52c0b0222bb8", "", "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5049), "", "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5475), "<DEFAULT>", "" });
+                values: new object[] { "23fdc902-8d97-468a-ad35-d3f8935ebec7", "", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4266), "", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4718), "<DEFAULT>", "" });
 
             migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name" },
-                values: new object[] { "a32a340f-8c59-4fec-8569-cf7fe0efa671", "555555", "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3470), "607183e7-b778-4ce1-9754-89a0e5f3d7bf", new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3900), "<DEFAULT>" });
+                values: new object[] { "eda3f35d-1f4e-4668-882e-499faf537265", "555555", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(7685), "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(8129), "<DEFAULT>" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoles_AppUserId",
+                table: "AspNetRoles",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -434,6 +445,11 @@ namespace TheStorageApp.API.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_RoleId",
+                table: "AspNetUsers",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -527,6 +543,38 @@ namespace TheStorageApp.API.Migrations
                 column: "ModifiedById");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId",
+                principalTable: "AspNetRoles",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId",
+                principalTable: "AspNetRoles",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                table: "AspNetUserRoles",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_AspNetRoles_RoleId",
+                table: "AspNetUsers",
+                column: "RoleId",
+                principalTable: "AspNetRoles",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Receipts_ReceiptId",
                 table: "Categories",
                 column: "ReceiptId",
@@ -537,6 +585,10 @@ namespace TheStorageApp.API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_AspNetRoles_RoleId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Categories_AspNetUsers_CreatedById",
                 table: "Categories");
@@ -594,10 +646,10 @@ namespace TheStorageApp.API.Migrations
                 name: "ReceiptTag");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

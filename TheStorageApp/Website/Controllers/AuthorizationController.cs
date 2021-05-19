@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TheStorageApp.Website.Models;
 using TheStorageApp.Website.Utils;
@@ -32,7 +34,7 @@ namespace TheStorageApp.Website.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LogIn(string username, string password)
+        public async Task<IActionResult> LogIn(string submitbutton, string username, string password)
         {
             HttpClient client = _httpContextFactory.CreateClient("TGSClient");
 
@@ -40,12 +42,17 @@ namespace TheStorageApp.Website.Controllers
             userModel.UserName = username;
             userModel.Password = password;
 
-            HttpResponseMessage response = await client.PostAsJsonAsync<AppUser>("api/Authentication/LogIn", userModel);
+            HttpResponseMessage response = await client.PostAsJsonAsync<AppUser>("api/Authorization/LogIn", userModel);
             if (response.IsSuccessStatusCode)
             {
                 JWTToken jwt = await response.Content.ReadFromJsonAsync<JWTToken>();
+                System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(jwt.Token);
+                HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(jwtSecurityToken.Claims));
+
                 _httpContextCookieController.Set("token", jwt.Token, jwt.Expire);
-                return RedirectToAction("Index");
+                
+                
+                return Redirect("/home/index");
             }
             else
             {
@@ -57,7 +64,7 @@ namespace TheStorageApp.Website.Controllers
         {
             HttpClient client = _httpContextFactory.CreateClient("TGSClient");
 
-            HttpResponseMessage response = await client.GetAsync("api/Authentication/LogOut");
+            HttpResponseMessage response = await client.GetAsync("api/Authorization/LogOut");
             if (response.IsSuccessStatusCode)
             {
                 _httpContextCookieController.Delete("token");
@@ -84,7 +91,7 @@ namespace TheStorageApp.Website.Controllers
             user.Email = email;
 
             HttpClient client = _httpContextFactory.CreateClient("TGSClient");
-            var responce = await client.PostAsJsonAsync<AppUser>("api/Authentication/Register", user);
+            var responce = await client.PostAsJsonAsync<AppUser>("api/Authorization/Register", user);
 
             if (responce.IsSuccessStatusCode)
             {
@@ -92,6 +99,12 @@ namespace TheStorageApp.Website.Controllers
             }
 
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return Ok();
         }
 
         public class JWTToken

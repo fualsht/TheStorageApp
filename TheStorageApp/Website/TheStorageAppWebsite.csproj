@@ -8,9 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorColorPicker" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0-preview.2.21154.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +20,9 @@
     <Content Update="Views\Authorization\LogIn.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\user.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

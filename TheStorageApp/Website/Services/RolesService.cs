@@ -1,47 +1,71 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using TheStorageApp.Website.Model;
+using TheStorageApp.Website.Models;
+using TheStorageApp.Website.Utils;
 
 namespace TheStorageApp.Website.Services
 {
-    public class RolesService : IApiService<Role>
+    public class RolesService : WebServiceBase<AppRole>
     {
-        public Task<HttpResponseMessage> ApiDelete(string uri, string id)
+        public List<AppRole> Roles { get; set; }
+        public RolesService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) :
+             base(httpClient, contextFactory, httpContextCookieController)
         {
-            throw new NotImplementedException();
+
         }
 
-        public Task<HttpResponseMessage> ApiDelete(string uri, string[] ids)
+        public async Task GetUserRolesAsync()
         {
-            throw new NotImplementedException();
+            var responce = await this.ApiGet("api/Users/GetUserRoles");
+            Roles = new List<AppRole>();
+
+            if (responce.IsSuccessStatusCode)
+            {
+                var roles = await responce.Content.ReadFromJsonAsync<AppRole[]>();
+                Roles = roles.ToList();
+            }
         }
 
-        public Task<HttpResponseMessage> ApiGet(string uri)
+        public async Task DeleteUserRolesAsync()
         {
-            throw new NotImplementedException();
+            //var responce = await this.ApiGet("api/Users/GetUserRoles");
+            //Roles = new List<AppRole>();
+
+            //if (responce.IsSuccessStatusCode)
+            //{
+            //    var roles = await responce.Content.ReadFromJsonAsync<AppRole[]>();
+            //    Roles = roles.ToList();
+            //}
         }
 
-        public Task<HttpResponseMessage> ApiPost(string uri, Role t)
+        public void Select(AppRole role)
         {
-            throw new NotImplementedException();
+            foreach (var item in Roles)
+            {
+                item.IsSelected = false;
+            }
+            role.IsSelected = true;
         }
 
-        public Task<HttpResponseMessage> ApiPost(string uri, Role[] t)
+        public void ToggleSelect(AppRole role)
         {
-            throw new NotImplementedException();
+            role.IsSelected = !role.IsSelected;
         }
-
-        public Task<HttpResponseMessage> ApiUpdate(string uri, Role t)
+        public void SelectRange(int start, int end)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<HttpResponseMessage> ApiUpdate(string uri, Role[] t)
-        {
-            throw new NotImplementedException();
+            foreach (var item in Roles)
+            {
+                item.IsSelected = false;
+            }
+            for (int i = start; i < end; i++)
+            {
+                Roles[i].IsSelected = true;
+            }
         }
     }
 }

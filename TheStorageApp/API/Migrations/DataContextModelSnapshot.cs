@@ -15,7 +15,7 @@ namespace TheStorageApp.API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.3");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -24,6 +24,10 @@ namespace TheStorageApp.API.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
@@ -41,6 +45,8 @@ namespace TheStorageApp.API.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -208,6 +214,9 @@ namespace TheStorageApp.API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -227,21 +236,24 @@ namespace TheStorageApp.API.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
                         new
                         {
-                            Id = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
+                            Id = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "44067204-ce00-447e-aa62-e64578b771cb",
+                            ConcurrencyStamp = "c15f63ec-09c1-41e0-bfc2-17cc31690dc9",
                             Email = "system@email.com",
                             EmailConfirmed = false,
                             FirstName = "system",
                             LastName = "user",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "960203d5-d5f6-4333-b54c-d0a7b2fd7f30",
+                            RoleId = "28f0f34f-9425-4d43-8f2e-2afe9775d3e9",
+                            SecurityStamp = "b5f70895-c011-4493-b792-c29fd3f513da",
                             TwoFactorEnabled = false,
                             UserName = "<SYSTEM>"
                         });
@@ -286,12 +298,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c3f28ac9-41a2-40cc-ad41-f1af2ade333d",
+                            Id = "b1d73032-80fb-4388-a3b4-70143942d911",
                             Color = "555555",
-                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1447),
-                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 929, DateTimeKind.Local).AddTicks(1900),
+                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8293),
+                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8760),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -450,13 +462,13 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "97176ee6-6301-4af1-b0cd-52c0b0222bb8",
+                            Id = "23fdc902-8d97-468a-ad35-d3f8935ebec7",
                             Address = "",
-                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5049),
+                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4266),
                             GPSLocation = "",
-                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 943, DateTimeKind.Local).AddTicks(5475),
+                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4718),
                             Name = "<DEFAULT>",
                             Website = ""
                         });
@@ -496,13 +508,45 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a32a340f-8c59-4fec-8569-cf7fe0efa671",
+                            Id = "eda3f35d-1f4e-4668-882e-499faf537265",
                             Color = "555555",
-                            CreatedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            CreatedOn = new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3470),
-                            ModifiedById = "607183e7-b778-4ce1-9754-89a0e5f3d7bf",
-                            ModifiedOn = new DateTime(2021, 2, 25, 20, 33, 21, 947, DateTimeKind.Local).AddTicks(3900),
+                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(7685),
+                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(8129),
                             Name = "<DEFAULT>"
+                        });
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.AppRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasDiscriminator().HasValue("AppRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "28f0f34f-9425-4d43-8f2e-2afe9775d3e9",
+                            ConcurrencyStamp = "739f3b63-d958-43d7-b452-fe783030c7e8",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = "c39512d1-4264-4efd-ba52-64f9d7b177ee",
+                            ConcurrencyStamp = "e1b48499-bfef-4439-a723-1a55ee680d94",
+                            Name = "Guest"
+                        },
+                        new
+                        {
+                            Id = "883ebd7e-9e7f-4d44-a674-85e746f5505a",
+                            ConcurrencyStamp = "477110c1-0ccd-45c4-8dd3-6eb9c125102e",
+                            Name = "User"
                         });
                 });
 
@@ -570,6 +614,15 @@ namespace TheStorageApp.API.Migrations
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.AppUser", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppRole", "Role")
+                        .WithMany("RoleUsers")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Category", b =>
@@ -692,6 +745,13 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
+            modelBuilder.Entity("TheStorageApp.API.Models.AppRole", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("TheStorageApp.API.Models.AppUser", b =>
                 {
                     b.Navigation("CreatedByCategories");
@@ -717,6 +777,8 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("ModifiedByTags");
 
                     b.Navigation("Receipts");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>
@@ -724,6 +786,11 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("Categories");
 
                     b.Navigation("RecipetImages");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.AppRole", b =>
+                {
+                    b.Navigation("RoleUsers");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,7 +1,5 @@
 ﻿@namespace TheStorageApp.Website.Shared
 
-
-
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">TheStorageApp.Website</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -11,40 +9,49 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Users">
-                <span class="oi oi-people" aria-hidden="true"></span> Users
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Receipts">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Receipts
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Categories">
-                <span class="oi oi-people" aria-hidden="true"></span> Categories
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Shops">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Shops
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Tags">
-                <span class="oi oi-people" aria-hidden="true"></span> Tags
-            </NavLink>
-        </li>
+        @foreach (var topMenuItem in NavMenuItems.Where(x => x.Parent == ""))
+        {
+            <li class="nav-item px-3" @onclick="() => ToggleMenu(topMenuItem)">
+                <NavLink class="nav-link" href="@topMenuItem.Path" Match="NavLinkMatch.All">
+                    @if (NavMenuItems.Where(x => x.Parent == topMenuItem.Id).Count() > 0)
+                    {
+                        
+                        @if (topMenuItem.IsExpanded)
+                        {
+                            <span class="oi oi-caret-bottom" aria-hidden="true"></span>
+                        }
+                        else
+                        {
+                            <span class="oi oi-caret-right" aria-hidden="true"></span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="oi @topMenuItem.Icon" aria-hidden="true"></span>
+                    }
+                    <span aria-hidden="true">
+                        @topMenuItem.Name
+                    </span>
+                </NavLink>
+            </li>
+            if (topMenuItem.IsExpanded)
+            {
+                @foreach (var firstMenuItem in NavMenuItems.Where(x => x.Parent == topMenuItem.Id))
+                {
+                    <li class="nav-item px-3 offset-1">
+                        <NavLink class="nav-link" href="@firstMenuItem.Path" Match="NavLinkMatch.All">
+                            <span class="oi @firstMenuItem.Icon" aria-hidden="true"></span>@firstMenuItem.Name
+                        </NavLink>
+                    </li>
+                }
+            }
+        }
     </ul>
 </div>
 
 @code {
+    private List<NavItem> NavMenuItems { get; set; }
+
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -52,5 +59,32 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        NavMenuItems = new List<NavItem>
+        {
+            new NavItem{ Id = "0", Name = "Home", Parent = "", Path = "", Icon = "oi-media-record" },
+            new NavItem{ Id = "1", Name = "Security", Parent = "", Path = "", Icon = "oi-shield" },
+                new NavItem{ Id = "2", Name = "Users", Parent = "1", Path = "users", Icon = "oi-people" },
+                new NavItem{ Id = "3", Name = "Roles", Parent = "1", Path = "roles", Icon = "oi-key" }
+        };
+        return base.OnInitializedAsync();
+    }
+
+    private void ToggleMenu(NavItem item)
+    {
+        item.IsExpanded = !item.IsExpanded;
+    }
+
+    public class NavItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Parent { get; set; }
+        public string Path { get; set; }
+        public bool IsExpanded { get; set; } = false;
+        public string Icon { get; set; }
     }
 }

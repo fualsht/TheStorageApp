@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json; // for HttpClientJsonExtensions
@@ -10,7 +11,7 @@ namespace TheStorageApp.Website.Services
 {
     public class UsersService : WebServiceBase<AppUser>
     {
-        public AppUser[] Users { get; set; }
+        public List<AppUser> Users { get; set; }
 
         public UsersService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
@@ -20,14 +21,13 @@ namespace TheStorageApp.Website.Services
 
         public async Task GetUsersAsync()
         {
-            HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, "api/Users/GetUsers");
+            var responce = await this.ApiGet("api/Users/GetUsers");
+            Users = new List<AppUser>();
 
-            var client = _httpClientFactory.CreateClient("TGSClient");
-            var response = await client.SendAsync(httpRequest);
-
-            if (response.IsSuccessStatusCode)
+            if (responce.IsSuccessStatusCode)
             {
-                Users = await response.Content.ReadFromJsonAsync<AppUser[]>();
+                var users = await responce.Content.ReadFromJsonAsync<AppUser[]>();
+                Users = users.ToList();
             }
         }
 
@@ -60,7 +60,7 @@ namespace TheStorageApp.Website.Services
                 var responce = await client.DeleteAsync($"/api/Users/DeleteUser/{item.Id.ToString()}");
                 userss.Remove(item);
             }
-            Users = userss.ToArray();
+            Users = userss;
             return toDelete;
         }
 

@@ -76,9 +76,9 @@ else
         }
 
         System.IdentityModel.Tokens.Jwt.JwtSecurityToken handle = JWTUtils.DecodeJWTToken(_cookieController.Get("token"));
-        if(_rolesService.UserIsInRoles("", ""))
+        //if(_rolesService.UserIsInRoles("", ""))
 
-            await base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
     private void NewCategory()

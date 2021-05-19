@@ -19,15 +19,15 @@ using TheStorageApp.API.Models;
 
 namespace TheStorageApp.API.Controllers
 {
-    [Route("api/Authentication")]
-    public class AuthenticationController : APIControllerBase<AppUser>
+    [Route("api/Authorization")]
+    public class AuthorizationController : APIControllerBase<AppUser>
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger,
+        public AuthorizationController(ILogger<AuthorizationController> logger,
             DataContext dataContext, IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager, IConfiguration configuration)
             : base(logger, dataContext, httpContextAccessor)
@@ -51,11 +51,12 @@ namespace TheStorageApp.API.Controllers
                     if (signInResult.Succeeded)
                     {
                         var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(result);
-
+                        // Add new Claims to the JWT Token
+                        // claimsPrincipal.Claims.Append<Claim>(new Claim("", ""));
                         var expireDate = DateTime.Now.AddMinutes(120);
                         _httpContextAccessor.HttpContext.User = claimsPrincipal;
+                        
                         var tokenString = GenerateJWT(claimsPrincipal, expireDate);
-
                         return Ok(new { token = tokenString, expire = expireDate });
                     }
                     else
@@ -77,6 +78,7 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
+                user.Id = Guid.NewGuid().ToString();
                 var result = await _userManager.CreateAsync(user, user.Password);
 
                 if (result.Succeeded)
@@ -84,7 +86,7 @@ namespace TheStorageApp.API.Controllers
                     var signInResult = await _signInManager.PasswordSignInAsync(user, user.Password, false, false);
                     if (signInResult.Succeeded)
                     {
-                        return RedirectToAction("Index");
+                        return Ok();
                     }
                 }
 
@@ -119,7 +121,12 @@ namespace TheStorageApp.API.Controllers
             var audience = _configuration["JWTToken:Audience"];
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTToken:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            
+
+            Claim[] s = new Claim[] { new Claim("role", "adminrole") };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(s);
+
+            claimsPrincipal.AddIdentity(claimsIdentity);
+
             var token = new JwtSecurityToken(issuer: issuer , audience: audience, claimsPrincipal.Claims, expires: expiry, signingCredentials: credentials);
 
             var tokenHandler = new JwtSecurityTokenHandler();

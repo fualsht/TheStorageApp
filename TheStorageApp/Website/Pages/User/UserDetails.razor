@@ -1,0 +1,33 @@
+﻿@page "/UserDetails"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject CookieController _cookieController
+
+<h3>New User</h3>
+
+<ul class="list-group">
+    @for (int i = 0; i < userClaims.Count; i++)
+    {
+    <li class="list-group-item">
+        new { Type = @userClaims[i].Type, Value = @userClaims[i].Value }
+    </li>
+    }
+</ul>
+
+
+@code {
+
+    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
+
+    protected override Task OnInitializedAsync()
+    {
+        string jsonToken = _cookieController.Get("token");
+        if (jsonToken != null)
+        {
+            System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(jsonToken);
+            userClaims = jwtToken.Claims.ToList();
+        }
+
+        return base.OnInitializedAsync();
+    }
+}

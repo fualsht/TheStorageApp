@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,9 +22,20 @@ namespace TheGrocerWebApi.Controllers
 
         [HttpGet]
         [Route("GetUsers")]
-        public async Task<AppUser[]> GetUsers()
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<AppUser[]>> GetUsers()
         {
-            return await _dataContext.Users.ToArrayAsync();
+            try
+            {
+                var users = _dataContext.Users;
+                var usersarray = await users.ToArrayAsync();
+                return Ok(usersarray);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         [HttpGet]
@@ -51,7 +63,8 @@ namespace TheGrocerWebApi.Controllers
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                UserRoles = user.UserRoles
             };
 
             await _dataContext.Users.AddAsync(newuser);
@@ -61,9 +74,9 @@ namespace TheGrocerWebApi.Controllers
 
         [HttpPut]
         [Route("UpdateUser/{id}")]
-        public async Task<AppUser> UpdateUser(string id, [FromBody]AppUser user)
+        public async Task<AppUser> UpdateUser([FromBody]AppUser user)
         {
-            AppUser currentUser = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            AppUser currentUser = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
 
             if (currentUser != null)
             {
@@ -75,6 +88,9 @@ namespace TheGrocerWebApi.Controllers
 
                 if (!string.IsNullOrEmpty(user.LastName))
                     currentUser.LastName = user.LastName;
+
+                // ToDo: Add, Delete and Update roles
+                currentUser.UserRoles = user.UserRoles;
 
                 _dataContext.Update(currentUser);
                 await _dataContext.SaveChangesAsync();

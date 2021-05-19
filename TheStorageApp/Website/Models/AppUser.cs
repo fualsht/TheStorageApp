@@ -16,6 +16,6 @@ namespace TheStorageApp.Website.Models
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
+        public AppRole Role { get; set; }
     }
 }

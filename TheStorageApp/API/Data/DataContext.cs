@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using TheStorageApp.API.Models;
@@ -13,6 +14,8 @@ namespace TheStorageApp.API.Data
         public DbSet<ReceiptImage> ReceiptImages { get; set; }        
         public DbSet<Tag> Tags { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
+        public DbSet<Model> Models { get; set; }
+        public DbSet<Field> Fields { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
@@ -23,21 +26,45 @@ namespace TheStorageApp.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var guid = Guid.NewGuid();
+            var adminid = Guid.NewGuid().ToString();
+            var guestid = Guid.NewGuid().ToString();
+            var userroleid = Guid.NewGuid().ToString();
+            modelBuilder.Entity<AppRole>(entity =>
+            {
+                entity.HasData(new AppRole
+                {
+                    Id = adminid,
+                    Name = "Admin"
+                });
+                entity.HasData(new AppRole
+                {
+                    Id = guestid,
+                    Name = "Guest"
+                });
+                entity.HasData(new AppRole
+                {
+                    Id = userroleid,
+                    Name = "User"
+                });
+            });
+
+            var userid = Guid.NewGuid();
             modelBuilder.Entity<AppUser>(entity =>
             {
-                Guid id = guid;
+                Guid id = userid;
                 entity.HasKey(e => e.Id);
                 entity.Ignore(e => e.Password);
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
                 entity.HasMany(e => e.Receipts).WithOne(e => e.ReceiptHolder).HasForeignKey(e => e.ReceiptHolderId);
+                entity.HasOne<AppRole>(e => e.Role).WithMany(e => e.RoleUsers).HasForeignKey(e => e.RoleId);
                 entity.HasData(new AppUser
                 {
                     Id = id.ToString(),
                     UserName = "<SYSTEM>",
                     FirstName = "system",
                     LastName = "user",
-                    Email = "system@email.com"
+                    Email = "system@email.com",
+                    RoleId = adminid
                 });
             });
 
@@ -52,8 +79,8 @@ namespace TheStorageApp.API.Data
                     Id = Guid.NewGuid().ToString(),
                     Name = "<DEFAULT>",
                     Color = "555555",
-                    CreatedById = guid.ToString(),
-                    ModifiedById = guid.ToString(),
+                    CreatedById = userid.ToString(),
+                    ModifiedById = userid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
@@ -93,8 +120,8 @@ namespace TheStorageApp.API.Data
                     GPSLocation = "",
                     Address = "",
                     Website = "",
-                    CreatedById = guid.ToString(),
-                    ModifiedById = guid.ToString(),
+                    CreatedById = userid.ToString(),
+                    ModifiedById = userid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
@@ -112,8 +139,8 @@ namespace TheStorageApp.API.Data
                     Id = Guid.NewGuid().ToString(),
                     Name = "<DEFAULT>",
                     Color = "555555",
-                    CreatedById = guid.ToString(),
-                    ModifiedById = guid.ToString(),
+                    CreatedById = userid.ToString(),
+                    ModifiedById = userid.ToString(),
                     CreatedOn = DateTime.Now,
                     ModifiedOn = DateTime.Now
                 });
@@ -122,10 +149,39 @@ namespace TheStorageApp.API.Data
             modelBuilder.Entity<LogEntry>(entity => 
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(p => p.Id).ValueGeneratedNever();
+                entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
                 entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByLogEntries).HasForeignKey(x => x.CreatedById);
                 entity.Ignore(e => e.ModifiedById);
                 entity.Ignore(e => e.ModifiedOn);
+            });
+
+            modelBuilder.Entity<Model>(entity => 
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByModels).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByModels).HasForeignKey(x => x.ModifiedById);
+                entity.HasMany<Field>(x => x.Fields).WithOne(x => x.Model).HasForeignKey(e => e.Id);
+            });
+
+            modelBuilder.Entity<Field>(entity => 
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByFields).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByFields).HasForeignKey(x => x.ModifiedById);
+            });
+
+            modelBuilder.Entity<ModelRelationship>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
+                entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByModelRelationships).HasForeignKey(x => x.CreatedById);
+                entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByModelRelationships).HasForeignKey(x => x.ModifiedById);
+                entity.HasOne<Model>(x => x.SorceModel).WithMany(x => x.SourceModelRelationships).HasForeignKey(x => x.SorceModelId);
+                entity.HasOne<Model>(x => x.RelatedModel).WithMany(x => x.RelatedModelRelationships).HasForeignKey(x => x.RelatedModelId);
+                entity.HasOne<Field>(x => x.SourceField).WithMany(x => x.SourceModelRelationships).HasForeignKey(x => x.SorceModelId);
+                entity.HasOne<Field>(x => x.RelatedField).WithMany(x => x.RelatedModelRelationships).HasForeignKey(x => x.RelatedModelId);
             });
 
             base.OnModelCreating(modelBuilder);

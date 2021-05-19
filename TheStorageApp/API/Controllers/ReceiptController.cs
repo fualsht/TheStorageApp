@@ -28,13 +28,14 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                return await _dataContext.Receipts.
+                var reciepts = await _dataContext.Receipts.
                 Include(x => x.ModifiedBy).
                 Include(x => x.CreatedBy).
                 Include(x => x.Category).
                 Include(x => x.Tags).
                 Include(x => x.Shop).
                 ToArrayAsync();
+                return Ok(reciepts);
             }
             catch (Exception exception)
             {
