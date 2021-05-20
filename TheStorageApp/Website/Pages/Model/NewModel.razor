@@ -1,0 +1,109 @@
+﻿@page "/NewModel"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ModelService _ModelService
+
+<div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-secondary">
+                    <h3>New Model</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row mb-3">
+                            <label for="nameField" class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" id="nameField" @bind="_model.Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row mb-3">
+                            <label for="pluralNameField" class="col-sm-3 col-form-label">Plural Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" id="pluralNameField" @bind="_model.PluralName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row mb-3">
+                            <label for="PrimaryColorInput" class="col-sm-3 col-form-label">Primary Color</label>
+                            <div class="col-sm-9">
+                                <button id="PrimaryColorInput" class="btn btn-primary" @onclick="() => OpenModal()" style="width:100%; height:100%; background-color:@_model.PrimaryColor" />
+                                <ColorPicker Title="Primary" IsOpened="isPrimaryOpened" Closed="(val) => ClosedEvent(val)" MyColor="@_model.PrimaryColor"></ColorPicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row mb-3">
+                            <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Secondary Color</label>
+                            <div class="col-sm-9">
+                                <button id="SecondaryColorInput" class="btn btn-primary" @onclick="() => OpenModal(true)" style="width:100%; height:100%; background-color:@_model.SecondaryColor" />
+                                <ColorPicker Title="Secondary" IsOpened="isSecondaryOpened" Closed="(val) => ClosedEvent(val, true)" MyColor="@_model.SecondaryColor"></ColorPicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row mb-3">
+                            <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" aria-label="With textarea">@_model.Description</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+</div>
+
+@code {
+    public Model _model { get; set; }
+    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
+
+    protected override Task OnInitializedAsync()
+    {
+        string id = _ModelService.GetUserClaim(JWTUserClaims.UserId);        
+
+        _model = _ModelService.NewModel(id);
+        return base.OnInitializedAsync();
+    }
+
+    bool isPrimaryOpened = false;
+    bool isSecondaryOpened = false;
+
+    void OpenModal(bool openSecondary = false)
+    {
+        if (openSecondary)
+        {
+            isSecondaryOpened = true;
+        }
+        else
+        {
+            isPrimaryOpened = true;
+        }
+    }
+
+    void ClosedEvent(string value, bool setSecondary = false)
+    {
+        if (setSecondary)
+        {
+            _model.SecondaryColor = value;
+            isSecondaryOpened = false;
+        }
+        else
+        {
+            _model.PrimaryColor = value;
+            isPrimaryOpened = false;
+        }
+    }
+
+}

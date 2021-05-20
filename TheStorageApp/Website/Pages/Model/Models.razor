@@ -1,0 +1,118 @@
+﻿@page "/Models"
+@inject IHttpClientFactory _clientFactory
+@inject CookieController _cookieController
+@inject NavigationManager _navigationManager
+@inject ModelService _modelService
+
+<h3>Models</h3>
+
+@if (_modelService == null || _modelService.Models == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Passwword</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var model in _modelService.Models)
+            {
+                if (model.IsSelected)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, model)">
+                        <td>@model.Name</td>
+                        <td>@model.PluralName</td>
+                        <td>@model.Description</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, model)">
+                        <td>@model.Name</td>
+                        <td>@model.PluralName</td>
+                        <td>@model.Description</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    @if (userClaims.FindAll(s => s.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" && s.Value.Contains("admin")).Count > 0)
+    {
+        <button class="btn btn-primary" @onclick="NewModel">New</button>
+    }
+    <button class="btn btn-primary" @onclick="NewModel">New</button>
+    <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
+
+    <button class="btn btn-primary" @onclick="DeleteSeletedUsers">Delete</button>
+
+}
+
+@code {
+    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string jsonToken = _cookieController.Get("token");
+
+        if (jsonToken != null)
+        {
+            System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(jsonToken);
+            userClaims = jwtToken.Claims.ToList();
+        }
+
+        await _modelService.GetModelsAsync();
+        if (_modelService.Models.Count() > 0)
+        {
+            //_modelService.Users[0].IsSelected = true;
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void NewModel()
+    {
+        _navigationManager.NavigateTo("NewModel");
+    }
+
+    private void OnRowClick(MouseEventArgs e, Model model)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = _modelService.Models.ToList().IndexOf(_modelService.Models.FirstOrDefault(x => x.IsSelected));
+                int endIndex = _modelService.Models.ToList().IndexOf(model);
+                if (startIndex <= endIndex)
+                {
+                    //_modelService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    //_modelService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            //_modelService.ToggleSelect(model);
+        }
+        else
+        {
+            //_modelService.Select(model);
+        }
+    }
+
+    public void EditFistSelectedUser()
+    {
+        _navigationManager.NavigateTo("EditUser");
+    }
+
+    private async Task DeleteSeletedUsers()
+    {
+        //await _modelService.DeleteModelsAsync();
+        //_navigationManager.NavigateTo("Models");
+    }
+}

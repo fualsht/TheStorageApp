@@ -1,0 +1,66 @@
+﻿@*<h3>StaticListComponent</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            @foreach (var field in ListDataObjects)
+            {
+                <td>@field.Value.Name</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ListDataObject.ItemList)
+        {
+            if (item.IsSelected)
+            {
+                @foreach (var field in ListDataObject.Fields)
+                {
+                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
+                        <td>@field.Value.ToString()</td>
+                    </tr>
+
+                }
+            }
+            else
+            {
+                @foreach (var field in ListDataObject.Fields)
+                {
+                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
+                        <td>@field.Value.ToString()</td>
+                    </tr>
+                }
+            }
+        }
+        </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<KeyValuePair<string, IModel>> ListDataObjects { get; set; }
+
+    private void OnRowClick(MouseEventArgs e, IModel model)
+    {
+        if (e.AltKey || e.ShiftKey)
+        {
+            if (e.ShiftKey)
+            {
+                int startIndex = ListDataObjects.IndexOf(ListDataObjects.FirstOrDefault(x => x.Value.IsSelected));
+                int endIndex = ListDataObjects.IndexOf(model);
+                if (startIndex <= endIndex)
+                {
+                    _userService.SelectRange(startIndex, endIndex);
+                }
+                else
+                {
+                    _userService.SelectRange(endIndex + 1, startIndex + 1);
+                }
+            }
+            _userService.ToggleSelect(user);
+        }
+        else
+        {
+            _userService.Select(user);
+        }
+    }
+}*@

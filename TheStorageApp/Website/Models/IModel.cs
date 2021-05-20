@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace TheStorageApp.Website.Models
 {
-    interface IModel
+    public interface IModel
     {
+        bool IsSelected { get; set; }
         string Id { get; set; }
         string Name { get; set; }
         DateTime CreatedOn { get; set; }

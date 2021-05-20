@@ -46,6 +46,7 @@ namespace TheStorageApp.Website
             services.AddScoped<ShopsService>();
             services.AddScoped<TagsService>();
             services.AddScoped<ServerControllerService>();
+            services.AddScoped<ModelService>();
 
             services.AddMemoryCache();
             services.AddSession();

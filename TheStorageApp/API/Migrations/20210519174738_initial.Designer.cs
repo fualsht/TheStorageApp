@@ -9,7 +9,7 @@ using TheStorageApp.API.Data;
 namespace TheStorageApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210427174909_initial")]
+    [Migration("20210519174738_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,17 +245,17 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
+                            Id = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c15f63ec-09c1-41e0-bfc2-17cc31690dc9",
+                            ConcurrencyStamp = "e5e628fe-3439-4807-bc76-1eb15107da4c",
                             Email = "system@email.com",
                             EmailConfirmed = false,
                             FirstName = "system",
                             LastName = "user",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            RoleId = "28f0f34f-9425-4d43-8f2e-2afe9775d3e9",
-                            SecurityStamp = "b5f70895-c011-4493-b792-c29fd3f513da",
+                            RoleId = "3bde63db-ea28-4bc8-8681-6caafd168810",
+                            SecurityStamp = "a6955a31-6c2b-4a4f-9630-35008703b415",
                             TwoFactorEnabled = false,
                             UserName = "<SYSTEM>"
                         });
@@ -300,14 +300,67 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b1d73032-80fb-4388-a3b4-70143942d911",
+                            Id = "274c6b22-0253-4ef6-9218-2f8ea31c376f",
                             Color = "555555",
-                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8293),
-                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8760),
+                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(868),
+                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(1311),
                             Name = "<DEFAULT>"
                         });
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Field", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("DataType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DataTypeId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("MaxSize")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinSize")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModelId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Requiered")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Unique")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("Fields");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.LogEntry", b =>
@@ -340,6 +393,101 @@ namespace TheStorageApp.API.Migrations
                     b.HasIndex("ModifiedById1");
 
                     b.ToTable("Logs");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Model", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<byte[]>("LargeImage")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PluralName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("PrimaryColor")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SecondaryColor")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("SmallImage")
+                        .HasColumnType("longblob");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.ModelRelationship", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("RelatedFieldId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("RelatedModelId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("SorceModelId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("SourceFieldId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("RelatedModelId");
+
+                    b.HasIndex("SorceModelId");
+
+                    b.ToTable("ModelRelationship");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>
@@ -464,13 +612,13 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "23fdc902-8d97-468a-ad35-d3f8935ebec7",
+                            Id = "47f8e1bc-dd4f-4c49-bc9c-6349531be3bc",
                             Address = "",
-                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4266),
+                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7253),
                             GPSLocation = "",
-                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4718),
+                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7674),
                             Name = "<DEFAULT>",
                             Website = ""
                         });
@@ -510,12 +658,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eda3f35d-1f4e-4668-882e-499faf537265",
+                            Id = "4cf76393-93bf-4b1c-9e96-b3bc02339a2f",
                             Color = "555555",
-                            CreatedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            CreatedOn = new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(7685),
-                            ModifiedById = "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642",
-                            ModifiedOn = new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(8129),
+                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(4613),
+                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(5060),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -534,20 +682,20 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "28f0f34f-9425-4d43-8f2e-2afe9775d3e9",
-                            ConcurrencyStamp = "739f3b63-d958-43d7-b452-fe783030c7e8",
+                            Id = "3bde63db-ea28-4bc8-8681-6caafd168810",
+                            ConcurrencyStamp = "9a62e004-9248-45a3-8bcf-581ddb746b21",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "c39512d1-4264-4efd-ba52-64f9d7b177ee",
-                            ConcurrencyStamp = "e1b48499-bfef-4439-a723-1a55ee680d94",
+                            Id = "dcdb914f-5957-4786-9f63-0768eeb8feed",
+                            ConcurrencyStamp = "2024f0f8-94fa-4f5f-bfd0-3f4c8246e0b0",
                             Name = "Guest"
                         },
                         new
                         {
-                            Id = "883ebd7e-9e7f-4d44-a674-85e746f5505a",
-                            ConcurrencyStamp = "477110c1-0ccd-45c4-8dd3-6eb9c125102e",
+                            Id = "2ea741b4-f8f1-49d0-9f43-8fa057b48fe6",
+                            ConcurrencyStamp = "c549ba7f-62e4-4411-b54b-85d28fc9928d",
                             Name = "User"
                         });
                 });
@@ -646,6 +794,29 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
+            modelBuilder.Entity("TheStorageApp.API.Models.Field", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByFields")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.Model", "Model")
+                        .WithMany("Fields")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByFields")
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Model");
+
+                    b.Navigation("ModifiedBy");
+                });
+
             modelBuilder.Entity("TheStorageApp.API.Models.LogEntry", b =>
                 {
                     b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
@@ -659,6 +830,60 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Model", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByModels")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByModels")
+                        .HasForeignKey("ModifiedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.ModelRelationship", b =>
+                {
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "CreatedBy")
+                        .WithMany("CreatedByModelRelationships")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TheStorageApp.API.Models.AppUser", "ModifiedBy")
+                        .WithMany("ModifiedByModelRelationships")
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("TheStorageApp.API.Models.Field", "RelatedField")
+                        .WithMany("RelatedModelRelationships")
+                        .HasForeignKey("RelatedModelId");
+
+                    b.HasOne("TheStorageApp.API.Models.Model", "RelatedModel")
+                        .WithMany("RelatedModelRelationships")
+                        .HasForeignKey("RelatedModelId");
+
+                    b.HasOne("TheStorageApp.API.Models.Field", "SourceField")
+                        .WithMany("SourceModelRelationships")
+                        .HasForeignKey("SorceModelId");
+
+                    b.HasOne("TheStorageApp.API.Models.Model", "SorceModel")
+                        .WithMany("SourceModelRelationships")
+                        .HasForeignKey("SorceModelId");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("RelatedField");
+
+                    b.Navigation("RelatedModel");
+
+                    b.Navigation("SorceModel");
+
+                    b.Navigation("SourceField");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>
@@ -758,7 +983,13 @@ namespace TheStorageApp.API.Migrations
                 {
                     b.Navigation("CreatedByCategories");
 
+                    b.Navigation("CreatedByFields");
+
                     b.Navigation("CreatedByLogEntries");
+
+                    b.Navigation("CreatedByModelRelationships");
+
+                    b.Navigation("CreatedByModels");
 
                     b.Navigation("CreatedByReceiptImages");
 
@@ -769,6 +1000,12 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("CreatedByTags");
 
                     b.Navigation("ModifiedByCategories");
+
+                    b.Navigation("ModifiedByFields");
+
+                    b.Navigation("ModifiedByModelRelationships");
+
+                    b.Navigation("ModifiedByModels");
 
                     b.Navigation("ModifiedByReceiptImages");
 
@@ -781,6 +1018,22 @@ namespace TheStorageApp.API.Migrations
                     b.Navigation("Receipts");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Field", b =>
+                {
+                    b.Navigation("RelatedModelRelationships");
+
+                    b.Navigation("SourceModelRelationships");
+                });
+
+            modelBuilder.Entity("TheStorageApp.API.Models.Model", b =>
+                {
+                    b.Navigation("Fields");
+
+                    b.Navigation("RelatedModelRelationships");
+
+                    b.Navigation("SourceModelRelationships");
                 });
 
             modelBuilder.Entity("TheStorageApp.API.Models.Receipt", b =>

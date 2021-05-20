@@ -176,6 +176,40 @@ namespace TheStorageApp.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Models",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    PluralName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    SmallImage = table.Column<byte[]>(type: "longblob", nullable: true),
+                    LargeImage = table.Column<byte[]>(type: "longblob", nullable: true),
+                    PrimaryColor = table.Column<int>(type: "int", nullable: false),
+                    SecondaryColor = table.Column<int>(type: "int", nullable: false),
+                    CreatedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ModifiedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Models", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Models_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Models_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Shops",
                 columns: table => new
                 {
@@ -231,6 +265,105 @@ namespace TheStorageApp.API.Migrations
                         name: "FK_Tags_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Fields",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    CreatedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ModifiedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DataTypeId = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    DataType = table.Column<int>(type: "int", nullable: false),
+                    MinSize = table.Column<int>(type: "int", nullable: false),
+                    MaxSize = table.Column<int>(type: "int", nullable: false),
+                    Unique = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Requiered = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ModelId = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fields", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Fields_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Fields_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Fields_Models_Id",
+                        column: x => x.Id,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ModelRelationship",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: false),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    CreatedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ModifiedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    SorceModelId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    RelatedModelId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
+                    SourceFieldId = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    RelatedFieldId = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModelRelationship", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_Fields_RelatedModelId",
+                        column: x => x.RelatedModelId,
+                        principalTable: "Fields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_Fields_SorceModelId",
+                        column: x => x.SorceModelId,
+                        principalTable: "Fields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_Models_RelatedModelId",
+                        column: x => x.RelatedModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModelRelationship_Models_SorceModelId",
+                        column: x => x.SorceModelId,
+                        principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -378,37 +511,37 @@ namespace TheStorageApp.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "28f0f34f-9425-4d43-8f2e-2afe9775d3e9", null, "739f3b63-d958-43d7-b452-fe783030c7e8", "AppRole", "Admin", null });
+                values: new object[] { "3bde63db-ea28-4bc8-8681-6caafd168810", null, "9a62e004-9248-45a3-8bcf-581ddb746b21", "AppRole", "Admin", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "c39512d1-4264-4efd-ba52-64f9d7b177ee", null, "e1b48499-bfef-4439-a723-1a55ee680d94", "AppRole", "Guest", null });
+                values: new object[] { "dcdb914f-5957-4786-9f63-0768eeb8feed", null, "2024f0f8-94fa-4f5f-bfd0-3f4c8246e0b0", "AppRole", "Guest", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "883ebd7e-9e7f-4d44-a674-85e746f5505a", null, "477110c1-0ccd-45c4-8dd3-6eb9c125102e", "AppRole", "User", null });
+                values: new object[] { "2ea741b4-f8f1-49d0-9f43-8fa057b48fe6", null, "c549ba7f-62e4-4411-b54b-85d28fc9928d", "AppRole", "User", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", 0, "c15f63ec-09c1-41e0-bfc2-17cc31690dc9", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "28f0f34f-9425-4d43-8f2e-2afe9775d3e9", "b5f70895-c011-4493-b792-c29fd3f513da", false, "<SYSTEM>" });
+                values: new object[] { "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", 0, "e5e628fe-3439-4807-bc76-1eb15107da4c", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "3bde63db-ea28-4bc8-8681-6caafd168810", "a6955a31-6c2b-4a4f-9630-35008703b415", false, "<SYSTEM>" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name", "ReceiptId" },
-                values: new object[] { "b1d73032-80fb-4388-a3b4-70143942d911", "555555", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8293), "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 235, DateTimeKind.Local).AddTicks(8760), "<DEFAULT>", null });
+                values: new object[] { "274c6b22-0253-4ef6-9218-2f8ea31c376f", "555555", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(868), "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(1311), "<DEFAULT>", null });
 
             migrationBuilder.InsertData(
                 table: "Shops",
                 columns: new[] { "Id", "Address", "CreatedById", "CreatedOn", "GPSLocation", "ModifiedById", "ModifiedOn", "Name", "Website" },
-                values: new object[] { "23fdc902-8d97-468a-ad35-d3f8935ebec7", "", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4266), "", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 251, DateTimeKind.Local).AddTicks(4718), "<DEFAULT>", "" });
+                values: new object[] { "47f8e1bc-dd4f-4c49-bc9c-6349531be3bc", "", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7253), "", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7674), "<DEFAULT>", "" });
 
             migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name" },
-                values: new object[] { "eda3f35d-1f4e-4668-882e-499faf537265", "555555", "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(7685), "d4f9f0d5-b3f2-4179-b3b3-6ede0b179642", new DateTime(2021, 4, 27, 19, 49, 9, 255, DateTimeKind.Local).AddTicks(8129), "<DEFAULT>" });
+                values: new object[] { "4cf76393-93bf-4b1c-9e96-b3bc02339a2f", "555555", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(4613), "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(5060), "<DEFAULT>" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -473,6 +606,16 @@ namespace TheStorageApp.API.Migrations
                 column: "ReceiptId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Fields_CreatedById",
+                table: "Fields",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Fields_ModifiedById",
+                table: "Fields",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Logs_CreatedById",
                 table: "Logs",
                 column: "CreatedById");
@@ -481,6 +624,36 @@ namespace TheStorageApp.API.Migrations
                 name: "IX_Logs_ModifiedById1",
                 table: "Logs",
                 column: "ModifiedById1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModelRelationship_CreatedById",
+                table: "ModelRelationship",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModelRelationship_ModifiedById",
+                table: "ModelRelationship",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModelRelationship_RelatedModelId",
+                table: "ModelRelationship",
+                column: "RelatedModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModelRelationship_SorceModelId",
+                table: "ModelRelationship",
+                column: "SorceModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Models_CreatedById",
+                table: "Models",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Models_ModifiedById",
+                table: "Models",
+                column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiptImages_CreatedById",
@@ -640,13 +813,22 @@ namespace TheStorageApp.API.Migrations
                 name: "Logs");
 
             migrationBuilder.DropTable(
+                name: "ModelRelationship");
+
+            migrationBuilder.DropTable(
                 name: "ReceiptImages");
 
             migrationBuilder.DropTable(
                 name: "ReceiptTag");
 
             migrationBuilder.DropTable(
+                name: "Fields");
+
+            migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "Models");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
