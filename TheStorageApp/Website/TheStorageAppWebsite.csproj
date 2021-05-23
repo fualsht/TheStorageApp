@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorColorPicker" Version="1.1.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
-    <PackageReference Include="System.Net.Http.Json" Version="6.0.0-preview.2.21154.6" />
+    <PackageReference Include="BlazorColorPicker" Version="1.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0-preview.3.21201.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +24,10 @@
     <Content Update="wwwroot\Images\user.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

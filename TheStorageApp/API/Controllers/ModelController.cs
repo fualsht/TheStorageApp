@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +8,16 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
 using TheStorageApp.API.Models;
 
 namespace TheStorageApp.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Route("api/Models")]
+    [ApiController]    
     public class ModelController : APIControllerBase<Model>
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -34,19 +37,27 @@ namespace TheStorageApp.API.Controllers
         [HttpGet]
         //[Authorize(AuthenticationSchemes = "Bearer")]
         [Route("GetModels")]
-        public ActionResult<Model[]> GetModels()
+        public async Task<ActionResult<Model[]>> GetModels()
         {
-            var v = _dataContext.Models.AsEnumerable().ToArray();
-            return Ok(v);
+            try
+            {
+                var models = await _dataContext.Models.ToArrayAsync();
+                return Ok(models);
+            }
+            catch (Exception ex)
+            {
+                return this.InternalServerError(ex, "");
+            }
         }
 
         [HttpGet]
         //[Authorize(AuthenticationSchemes = "Bearer")]
         [Route("GetModel")]
-        public ActionResult<Model> GetModel(string id)
+        public async Task<ActionResult<Model>> GetModel(string id)
         {
-            var v = _dataContext.Models.SingleOrDefault(x => x.Id == id);
-            return Ok(v);
+            var model = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == id);
+            model.CreatedBy = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedById);
+            return Ok(model);
         }
 
         [HttpGet]
@@ -58,29 +69,20 @@ namespace TheStorageApp.API.Controllers
 
         [HttpPost]
         [Route("AddModel")]
-        public async Task<Model> AddModel([FromBody] Model model)
+        //[Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult<Model>> AddModel([FromBody]Model model)
         {
-            Model newModel = new Model()
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                CreatedById = "",
-                CreatedBy = null,
-                CreatedOn = DateTime.Now,
-                ModifiedById = Guid.NewGuid().ToString(),
-                ModifiedBy = null,
-                ModifiedOn = DateTime.Now,
-                Description = "",
-                LargeImage = new byte[0],
-                SmallImage = new byte[0],
-                Name = "",
-                PluralName = "",
-                SecondaryColor = 0,
-                PrimaryColor = 0
-            };
-
-            await _dataContext.Models.AddAsync(newModel);
-            await _dataContext.SaveChangesAsync();
-            return newModel;
+                await _dataContext.Models.AddAsync(model);
+                await _dataContext.SaveChangesAsync();
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return this.InternalServerError(ex, "Error");
+            }
+            
         }
 
         [HttpPost]

@@ -20,7 +20,7 @@ namespace TheStorageApp.Website.Services
 
         public async Task GetModelsAsync()
         {
-            var responce = await this.ApiGet("api/Model/GetModels");
+            var responce = await this.ApiGet("api/Models/GetModels");
             Models = new List<Model>();
 
             if (responce.IsSuccessStatusCode)
@@ -31,13 +31,12 @@ namespace TheStorageApp.Website.Services
         }
         public async Task<Model> AddModelAsync(Model model)
         {
-            var httpClient = _httpClientFactory.CreateClient("TGSClient");
-            var responce = await httpClient.PostAsJsonAsync<Model>("/api/Users/AddModel", model);
+            var responce = await ApiPost("api/Models/AddModel", model);
             var newModel = await responce.Content.ReadFromJsonAsync<Model>();
             return newModel;
         }
 
-        public async Task<Model> UpdateUserAsync(Model model)
+        public async Task<Model> UpdateModelAsync(Model model)
         {
             var client = _httpClientFactory.CreateClient("TGSClient");
             var responce = await client.PutAsJsonAsync<Model>($"/api/Users/UpdateUser/{model.Id}", model);
@@ -89,8 +88,10 @@ namespace TheStorageApp.Website.Services
         public Model NewModel(string userid)
         {
             Model model = new Model();
-            model.Name = "";
-            model.PluralName = "";
+            model.Id = Guid.NewGuid().ToString();
+            model.Name = "New";
+            model.PluralName = "News";
+            model.Description = "";
             model.PrimaryColor = "ffffff";
             model.SecondaryColor = "ffffff";
             model.SmallImage = new byte[0];
@@ -104,6 +105,7 @@ namespace TheStorageApp.Website.Services
             model.CreatedById = userid;
             model.ModifiedById = userid;
             model.IsSelected = true;
+
             return model;
         }
     }

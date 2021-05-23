@@ -1,8 +1,8 @@
 ﻿@page "/Models"
 @inject IHttpClientFactory _clientFactory
-@inject CookieController _cookieController
 @inject NavigationManager _navigationManager
 @inject ModelService _modelService
+@inject AuthorizationController _authorizationController
 
 <h3>Models</h3>
 
@@ -12,65 +12,92 @@
 }
 else
 {
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Passwword</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var model in _modelService.Models)
-            {
-                if (model.IsSelected)
-                {
-                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, model)">
-                        <td>@model.Name</td>
-                        <td>@model.PluralName</td>
-                        <td>@model.Description</td>
-                    </tr>
-                }
-                else
-                {
-                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, model)">
-                        <td>@model.Name</td>
-                        <td>@model.PluralName</td>
-                        <td>@model.Description</td>
-                    </tr>
-                }
-
-            }
-        </tbody>
-    </table>
-    @if (userClaims.FindAll(s => s.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" && s.Value.Contains("admin")).Count > 0)
+    @if (_authorizationController.IsInRole("adminrole"))
     {
-        <button class="btn btn-primary" @onclick="NewModel">New</button>
-    }
-    <button class="btn btn-primary" @onclick="NewModel">New</button>
-    <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Primary Color</th>
+                    <th>Secondary Color</th>
+                    <th>Name</th>
+                    <th>Plural Name</th>
+                    <th>Description</th>
+                    <td>Created On</td>
+                    <th>Created By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var model in _modelService.Models)
+                {
+                    if (model.IsSelected)
+                    {
+                        <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, model)">
+                            <td>
+                                <div class="media">
+                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit" >
+                                        @model.PrimaryColor;
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="media">
+                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit" >
+                                        @model.SecondaryColor;
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@model.Name</td>
+                            <td>@model.PluralName</td>
+                            <td>@model.Description</td>
+                            @*<td>@model.CreatedOn</td>
+                            <td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="clickable-row" @onclick="(e) => OnRowClick(e, model)">
+                            <td>
+                                <div class="media">
+                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit">
+                                        @model.PrimaryColor;
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="media">
+                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit" >
+                                        @model.SecondaryColor;
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@model.Name</td>
+                            <td>@model.PluralName</td>
+                            <td>@model.Description</td>
+                            @*<td>@model.CreatedOn</td>
+                            <td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
+                        </tr>
+                    }
 
-    <button class="btn btn-primary" @onclick="DeleteSeletedUsers">Delete</button>
+                }
+            </tbody>
+        </table>
+
+        <button class="btn btn-primary" @onclick="NewModel">New</button>
+        <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
+        <button class="btn btn-primary" @onclick="DeleteSeletedUsers">Delete</button>
+    }
+
 
 }
 
 @code {
-    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
 
     protected override async Task OnInitializedAsync()
     {
-        string jsonToken = _cookieController.Get("token");
-
-        if (jsonToken != null)
-        {
-            System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(jsonToken);
-            userClaims = jwtToken.Claims.ToList();
-        }
-
         await _modelService.GetModelsAsync();
         if (_modelService.Models.Count() > 0)
         {
-            //_modelService.Users[0].IsSelected = true;
+            _modelService.Models[0].IsSelected = true;
         }
         await base.OnInitializedAsync();
     }
@@ -90,18 +117,18 @@ else
                 int endIndex = _modelService.Models.ToList().IndexOf(model);
                 if (startIndex <= endIndex)
                 {
-                    //_modelService.SelectRange(startIndex, endIndex);
+                    _modelService.SelectRange(startIndex, endIndex);
                 }
                 else
                 {
-                    //_modelService.SelectRange(endIndex + 1, startIndex + 1);
+                    _modelService.SelectRange(endIndex + 1, startIndex + 1);
                 }
             }
-            //_modelService.ToggleSelect(model);
+            _modelService.ToggleSelect(model);
         }
         else
         {
-            //_modelService.Select(model);
+            _modelService.Select(model);
         }
     }
 

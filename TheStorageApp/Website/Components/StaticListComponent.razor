@@ -1,33 +1,41 @@
-﻿@*<h3>StaticListComponent</h3>
-
-<table class="table table-hover">
+﻿<!--<h3>StaticListComponent</h3>-->
+@* 
+Acceps a list of models inherited from IModel.
+    Column Names come from a ViewTable
+Renders a list of each model item in table form.
+Handles Selection and appeariance of list Items.
+*@
+<!--<table class="table table-hover">
     <thead>
         <tr>
-            @foreach (var field in ListDataObjects)
+            @foreach (var field in DataObject.ModelViewModel)
             {
-                <td>@field.Value.Name</td>
+                @if (field.IsVizibile)
+                {
+                    <td>@field.FieldName</td>
+                }
             }
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in ListDataObject.ItemList)
+        @foreach (var item in DataObject.ModelViewModel)
         {
             if (item.IsSelected)
             {
-                @foreach (var field in ListDataObject.Fields)
+                @foreach (var field in DataObject)
                 {
                     <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
-                        <td>@field.Value.ToString()</td>
+                        <td>@field.ToString()</td>
                     </tr>
 
                 }
             }
             else
             {
-                @foreach (var field in ListDataObject.Fields)
+                @foreach (var field in DataObject)
                 {
                     <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
-                        <td>@field.Value.ToString()</td>
+                        <td>@field.ToString()</td>
                     </tr>
                 }
             }
@@ -37,7 +45,12 @@
 
 @code {
     [Parameter]
-    public List<KeyValuePair<string, IModel>> ListDataObjects { get; set; }
+    public List<IModel> Source { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
 
     private void OnRowClick(MouseEventArgs e, IModel model)
     {
@@ -45,22 +58,48 @@
         {
             if (e.ShiftKey)
             {
-                int startIndex = ListDataObjects.IndexOf(ListDataObjects.FirstOrDefault(x => x.Value.IsSelected));
-                int endIndex = ListDataObjects.IndexOf(model);
+                int startIndex = DataObject.IndexOf(DataObject.FirstOrDefault(x => x.IsSelected));
+                int endIndex = DataObject.IndexOf(model);
                 if (startIndex <= endIndex)
                 {
-                    _userService.SelectRange(startIndex, endIndex);
+                    SelectRange(startIndex, endIndex);
                 }
                 else
                 {
-                    _userService.SelectRange(endIndex + 1, startIndex + 1);
+                    SelectRange(endIndex + 1, startIndex + 1);
                 }
             }
-            _userService.ToggleSelect(user);
+            ToggleSelect(model);
         }
         else
         {
-            _userService.Select(user);
+            Select(model);
         }
     }
-}*@
+
+    public void SelectRange(int start, int end)
+    {
+        foreach (var item in DataObject)
+        {
+            item.IsSelected = false;
+        }
+        for (int i = start; i < end; i++)
+        {
+            DataObject[i].IsSelected = true;
+        }
+    }
+
+    public void Select(IModel model)
+    {
+        foreach (var item in DataObject)
+        {
+            item.IsSelected = false;
+        }
+        model.IsSelected = true;
+    }
+
+    public void ToggleSelect(IModel model)
+    {
+        model.IsSelected = !model.IsSelected;
+    }
+}-->

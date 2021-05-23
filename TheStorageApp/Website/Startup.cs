@@ -38,6 +38,7 @@ namespace TheStorageApp.Website
 
             services.AddHttpContextAccessor();
 
+            services.AddScoped<AuthorizationController>();
             services.AddScoped<UsersService>();
             services.AddScoped<RolesService>();
             services.AddScoped<CookieController>();            

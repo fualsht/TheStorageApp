@@ -1,7 +1,8 @@
 ﻿@page "/NewModel"
 @inject IHttpClientFactory _clientFactory
 @inject NavigationManager _navigationManager
-@inject ModelService _ModelService
+@inject ModelService _modelService
+@inject AuthorizationController _authorizationController
 
 <div>
     <div class="row">
@@ -57,7 +58,73 @@
             </div>
         </div>
         <div class="col">
-
+            <div class="card">
+                <div class="card-header text-secondary">
+                    <h3>Fields</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    DataType
+                                </th>
+                                <th>
+                                    Unique
+                                </th>
+                                <th>
+                                    Requiered
+                                </th>
+                                <th>
+                                    Model
+                                </th>
+                                <th>
+                                    MinSize
+                                </th>
+                                <th>
+                                    MaxSize
+                                </th>
+                            </tr>
+                            @*@foreach (Field item in _model.Fields)
+                            {
+                                @if (item.IsSelected)
+                                {
+                                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
+                                        <td>@item.Name</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.DataType</td>
+                                        <td>@item.Unique</td>
+                                        <td>@item.Requiered</td>
+                                        <td>@item.Model</td>
+                                        <td>@item.MinSize</td>
+                                        <td>@item.MaxSize</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
+                                        <td>@item.Name</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.DataType</td>
+                                        <td>@item.Unique</td>
+                                        <td>@item.Requiered</td>
+                                        <td>@item.Model</td>
+                                        <td>@item.MinSize</td>
+                                        <td>@item.MaxSize</td>
+                                    </tr>
+                                }
+                            }*@
+                        </table>
+                        <button type="button" class="btn btn-primary" @onclick="(e) => SaveModelAsync(e)">Save</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col">
 
@@ -67,13 +134,10 @@
 
 @code {
     public Model _model { get; set; }
-    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
-
     protected override Task OnInitializedAsync()
     {
-        string id = _ModelService.GetUserClaim(JWTUserClaims.UserId);        
-
-        _model = _ModelService.NewModel(id);
+        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
+        _model = _modelService.NewModel(userId);
         return base.OnInitializedAsync();
     }
 
@@ -104,6 +168,36 @@
             _model.PrimaryColor = value;
             isPrimaryOpened = false;
         }
+    }
+
+    private void OnRowClick(MouseEventArgs e, Field item)
+    {
+        //if (e.AltKey || e.ShiftKey)
+        //{
+        //    if (e.ShiftKey)
+        //    {
+        //        int startIndex = _model.Fields.ToList().IndexOf(_model.Fields.FirstOrDefault(x => x.IsSelected));
+        //        int endIndex = _model.Fields.ToList().IndexOf(item);
+        //        if (startIndex <= endIndex)
+        //        {
+        //            //_roleService.SelectRange(startIndex, endIndex);
+        //        }
+        //        else
+        //        {
+        //            //_roleService.SelectRange(endIndex + 1, startIndex + 1);
+        //        }
+        //    }
+        //    //_roleService.ToggleSelect(role);
+        //}
+        //else
+        //{
+        //    //_roleService.Select(role);
+        //}
+    }
+
+    private async Task SaveModelAsync(MouseEventArgs e)
+    {
+        await _modelService.AddModelAsync(_model);
     }
 
 }

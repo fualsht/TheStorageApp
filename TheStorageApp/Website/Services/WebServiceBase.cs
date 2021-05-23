@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TheStorageApp.Website.Services;
 using TheStorageApp.Website.Utils;
@@ -71,7 +73,10 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
+            string jsonString = JsonSerializer.Serialize(t);
+            //var responce = await client.PostAsync(uri, new StringContent(jsonString, Encoding.UTF8, "application/json"));
             var responce = await client.PostAsJsonAsync<T>(uri, t);
 
             return responce;
@@ -89,6 +94,7 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var responce = await client.PostAsJsonAsync<T[]>(uri, t);
 
@@ -107,6 +113,7 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var responce = await client.PutAsJsonAsync<T>(uri, t);
 
@@ -125,6 +132,7 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var responce = await client.PutAsJsonAsync<T[]>(uri, t);
 
@@ -143,6 +151,7 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var responce = await client.DeleteAsync(uri + "/" + id);
 
@@ -161,39 +170,11 @@ namespace TheStorageApp.Website.Services
 
             string token = _httpContextCookieController.Get("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
             var responce = await client.PostAsJsonAsync<string[]>(uri, ids);
 
             return responce;
         }
-
-        
-        public string GetUserClaim(JWTUserClaims claim)
-        {
-            string jsonToken = _httpContextCookieController.Get("token");
-            var userClaims = new List<Claim>();
-
-            if (jsonToken != null)
-            {
-                JwtSecurityToken jwtToken = new JwtSecurityToken(jsonToken);
-                userClaims = jwtToken.Claims.ToList();
-            }
-
-            string returnVal = "";
-            switch (claim)
-            {
-                case JWTUserClaims.UserName:
-                    returnVal = userClaims.FirstOrDefault(s => s.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
-                    break;
-                case JWTUserClaims.UserId:
-                    returnVal = userClaims.FirstOrDefault(s => s.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
-                    break;
-                default:
-                    break;
-            }
-
-            return returnVal;
-        }
     }
-    public enum JWTUserClaims { UserName, UserId }
 }

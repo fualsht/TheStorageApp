@@ -243,17 +243,17 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
+                            Id = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e5e628fe-3439-4807-bc76-1eb15107da4c",
+                            ConcurrencyStamp = "3bc08895-81b4-495a-b3fb-0e676757a4b9",
                             Email = "system@email.com",
                             EmailConfirmed = false,
                             FirstName = "system",
                             LastName = "user",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
-                            RoleId = "3bde63db-ea28-4bc8-8681-6caafd168810",
-                            SecurityStamp = "a6955a31-6c2b-4a4f-9630-35008703b415",
+                            RoleId = "67425bbd-e461-4828-b76b-9145119eb5dc",
+                            SecurityStamp = "8398b508-c9cf-4561-b7a4-42fcec34f4df",
                             TwoFactorEnabled = false,
                             UserName = "<SYSTEM>"
                         });
@@ -298,12 +298,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "274c6b22-0253-4ef6-9218-2f8ea31c376f",
+                            Id = "ef77b27a-9671-45f4-9cdf-f9ba8afb6fe7",
                             Color = "555555",
-                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(868),
-                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(1311),
+                            CreatedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            CreatedOn = new DateTime(2021, 5, 23, 20, 51, 9, 870, DateTimeKind.Local).AddTicks(49),
+                            ModifiedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            ModifiedOn = new DateTime(2021, 5, 23, 20, 51, 9, 870, DateTimeKind.Local).AddTicks(536),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -422,11 +422,11 @@ namespace TheStorageApp.API.Migrations
                     b.Property<string>("PluralName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("PrimaryColor")
-                        .HasColumnType("int");
+                    b.Property<string>("PrimaryColor")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("SecondaryColor")
-                        .HasColumnType("int");
+                    b.Property<string>("SecondaryColor")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<byte[]>("SmallImage")
                         .HasColumnType("longblob");
@@ -610,13 +610,13 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "47f8e1bc-dd4f-4c49-bc9c-6349531be3bc",
+                            Id = "094d3b63-a83c-416f-bd6c-2cc0d091c989",
                             Address = "",
-                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7253),
+                            CreatedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            CreatedOn = new DateTime(2021, 5, 23, 20, 51, 9, 886, DateTimeKind.Local).AddTicks(1318),
                             GPSLocation = "",
-                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7674),
+                            ModifiedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            ModifiedOn = new DateTime(2021, 5, 23, 20, 51, 9, 886, DateTimeKind.Local).AddTicks(1773),
                             Name = "<DEFAULT>",
                             Website = ""
                         });
@@ -656,12 +656,12 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4cf76393-93bf-4b1c-9e96-b3bc02339a2f",
+                            Id = "442bfa66-a881-4aa1-ace5-2d15c2b0f3c7",
                             Color = "555555",
-                            CreatedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            CreatedOn = new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(4613),
-                            ModifiedById = "35faffa4-7a40-4b6f-8ca2-e96273ae42ce",
-                            ModifiedOn = new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(5060),
+                            CreatedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            CreatedOn = new DateTime(2021, 5, 23, 20, 51, 9, 890, DateTimeKind.Local).AddTicks(5665),
+                            ModifiedById = "98e507f0-40e4-4e81-8bb0-432d4f24e28b",
+                            ModifiedOn = new DateTime(2021, 5, 23, 20, 51, 9, 890, DateTimeKind.Local).AddTicks(6111),
                             Name = "<DEFAULT>"
                         });
                 });
@@ -680,20 +680,20 @@ namespace TheStorageApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3bde63db-ea28-4bc8-8681-6caafd168810",
-                            ConcurrencyStamp = "9a62e004-9248-45a3-8bcf-581ddb746b21",
+                            Id = "67425bbd-e461-4828-b76b-9145119eb5dc",
+                            ConcurrencyStamp = "a8c96a4b-34ed-4c83-9a4a-81b825beda0a",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "dcdb914f-5957-4786-9f63-0768eeb8feed",
-                            ConcurrencyStamp = "2024f0f8-94fa-4f5f-bfd0-3f4c8246e0b0",
+                            Id = "50a3e167-696f-4ce1-804f-b45ff1184f67",
+                            ConcurrencyStamp = "ebf90578-7f51-4366-ae2c-d85c6a8069cb",
                             Name = "Guest"
                         },
                         new
                         {
-                            Id = "2ea741b4-f8f1-49d0-9f43-8fa057b48fe6",
-                            ConcurrencyStamp = "c549ba7f-62e4-4411-b54b-85d28fc9928d",
+                            Id = "e07cf1ce-aba2-4698-aadf-6c209faacec5",
+                            ConcurrencyStamp = "80b81e7d-9e51-4da3-b80d-254bd0370364",
                             Name = "User"
                         });
                 });

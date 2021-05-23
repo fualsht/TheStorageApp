@@ -10,47 +10,18 @@
     </div>
 
     <div class="main">
-        @if (isLoggedIn())
-        {
-            <div>
-                @Body
-            </div>
-        }
-        else
-        {
-            <div class="top-row px-4">
-                <UserMenu />
-            </div>
-            <div class="content px-4">
-                @Body
-            </div>
-        }
+        <div class="top-row px-4">
+            <UserMenu />
+        </div>
+        <div>
+            @Body
+        </div>
     </div>
 </div>
 
 @code{
-    List<System.Security.Claims.Claim> userClaims { get; set; } = new List<System.Security.Claims.Claim>();
-
     protected override Task OnInitializedAsync()
     {
-        string jsonToken = _cookieController.Get("token");
-
-        if (jsonToken != null)
-        {
-            System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtToken = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(jsonToken);
-            userClaims = jwtToken.Claims.ToList();
-        }
-
         return base.OnInitializedAsync();
-    }
-
-    public bool isLoggedIn()
-    {
-        bool returnval = false;
-
-        if (userClaims.Count > 0)
-            returnval = true;
-
-        return returnval;
     }
 }

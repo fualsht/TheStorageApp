@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TheStorageApp.Website.Models
 {
-    public class Model
+    public class Model : IModel
     {
         public bool IsSelected { get; set; } = false;
         public string Id { get; set; }
@@ -25,5 +25,11 @@ namespace TheStorageApp.Website.Models
         public Field[] Fields { get; set; }
         public ModelRelationship[] SourceModelRelationships { get; set; }
         public ModelRelationship[] RelatedModelRelationships { get; set; }
+        public Model()
+        {
+            //Fields = new Field[0];
+            //SourceModelRelationships = new ModelRelationship[0];
+            //RelatedModelRelationships = new ModelRelationship[0];
+        }
     }
 }

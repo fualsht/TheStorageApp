@@ -1,16 +1,17 @@
 ﻿@namespace TheStorageApp.Website.Shared
 @inherits LayoutComponentBase
+@inject AuthorizationController _authorizationService
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <ul class="navbar-nav list-group-horizontal">
-            @if (IsSigndIn())
+            @if (@_authorizationService.isLoggedIn())
             {
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Hello @user.UserName</a>
+                    <a class="nav-link" href="#">Hello @_authorizationService.GetUserClaim(JWTUserClaims.UserName)</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" aria-current="page" href="~">Logout</a>
+                    <a class="nav-link text-dark" aria-current="page" href="/Authorization/LogOut">Logout</a>
                 </li>
             }
             else
@@ -27,11 +28,5 @@
 </nav>
 
 @code {
-    public AppUser user = new AppUser { FirstName = "Dereck", LastName = "CLements", UserName = "Fulasht" };
-
-    private bool IsSigndIn()
-    {
-        return false;
-    }
 }
 

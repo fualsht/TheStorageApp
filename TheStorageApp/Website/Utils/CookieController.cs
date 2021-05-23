@@ -15,8 +15,6 @@ namespace TheStorageApp.Website.Utils
             _HttpContextAccessor = httpContextAccessor;
         }
 
-        
-
         public void Delete(string key)
         {
             CookieOptions op = new CookieOptions { Expires = DateTime.Now.AddMinutes(-10) };

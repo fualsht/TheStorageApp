@@ -50,9 +50,8 @@ namespace TheStorageApp.Website.Controllers
                 HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(jwtSecurityToken.Claims));
 
                 _httpContextCookieController.Set("token", jwt.Token, jwt.Expire);
-                
-                
-                return Redirect("/home/index");
+
+                return Redirect("~/");
             }
             else
             {

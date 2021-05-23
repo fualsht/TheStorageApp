@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TheStorageApp.API.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -185,8 +185,8 @@ namespace TheStorageApp.API.Migrations
                     Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     SmallImage = table.Column<byte[]>(type: "longblob", nullable: true),
                     LargeImage = table.Column<byte[]>(type: "longblob", nullable: true),
-                    PrimaryColor = table.Column<int>(type: "int", nullable: false),
-                    SecondaryColor = table.Column<int>(type: "int", nullable: false),
+                    PrimaryColor = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    SecondaryColor = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     CreatedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ModifiedById = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true),
@@ -511,37 +511,37 @@ namespace TheStorageApp.API.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "3bde63db-ea28-4bc8-8681-6caafd168810", null, "9a62e004-9248-45a3-8bcf-581ddb746b21", "AppRole", "Admin", null });
+                values: new object[] { "67425bbd-e461-4828-b76b-9145119eb5dc", null, "a8c96a4b-34ed-4c83-9a4a-81b825beda0a", "AppRole", "Admin", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "dcdb914f-5957-4786-9f63-0768eeb8feed", null, "2024f0f8-94fa-4f5f-bfd0-3f4c8246e0b0", "AppRole", "Guest", null });
+                values: new object[] { "50a3e167-696f-4ce1-804f-b45ff1184f67", null, "ebf90578-7f51-4366-ae2c-d85c6a8069cb", "AppRole", "Guest", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "AppUserId", "ConcurrencyStamp", "Discriminator", "Name", "NormalizedName" },
-                values: new object[] { "2ea741b4-f8f1-49d0-9f43-8fa057b48fe6", null, "c549ba7f-62e4-4411-b54b-85d28fc9928d", "AppRole", "User", null });
+                values: new object[] { "e07cf1ce-aba2-4698-aadf-6c209faacec5", null, "80b81e7d-9e51-4da3-b80d-254bd0370364", "AppRole", "User", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", 0, "e5e628fe-3439-4807-bc76-1eb15107da4c", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "3bde63db-ea28-4bc8-8681-6caafd168810", "a6955a31-6c2b-4a4f-9630-35008703b415", false, "<SYSTEM>" });
+                values: new object[] { "98e507f0-40e4-4e81-8bb0-432d4f24e28b", 0, "3bc08895-81b4-495a-b3fb-0e676757a4b9", "system@email.com", false, "system", "user", false, null, null, null, null, null, false, "67425bbd-e461-4828-b76b-9145119eb5dc", "8398b508-c9cf-4561-b7a4-42fcec34f4df", false, "<SYSTEM>" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name", "ReceiptId" },
-                values: new object[] { "274c6b22-0253-4ef6-9218-2f8ea31c376f", "555555", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(868), "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 299, DateTimeKind.Local).AddTicks(1311), "<DEFAULT>", null });
+                values: new object[] { "ef77b27a-9671-45f4-9cdf-f9ba8afb6fe7", "555555", "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 870, DateTimeKind.Local).AddTicks(49), "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 870, DateTimeKind.Local).AddTicks(536), "<DEFAULT>", null });
 
             migrationBuilder.InsertData(
                 table: "Shops",
                 columns: new[] { "Id", "Address", "CreatedById", "CreatedOn", "GPSLocation", "ModifiedById", "ModifiedOn", "Name", "Website" },
-                values: new object[] { "47f8e1bc-dd4f-4c49-bc9c-6349531be3bc", "", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7253), "", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 315, DateTimeKind.Local).AddTicks(7674), "<DEFAULT>", "" });
+                values: new object[] { "094d3b63-a83c-416f-bd6c-2cc0d091c989", "", "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 886, DateTimeKind.Local).AddTicks(1318), "", "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 886, DateTimeKind.Local).AddTicks(1773), "<DEFAULT>", "" });
 
             migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "Id", "Color", "CreatedById", "CreatedOn", "ModifiedById", "ModifiedOn", "Name" },
-                values: new object[] { "4cf76393-93bf-4b1c-9e96-b3bc02339a2f", "555555", "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(4613), "35faffa4-7a40-4b6f-8ca2-e96273ae42ce", new DateTime(2021, 5, 19, 19, 47, 38, 320, DateTimeKind.Local).AddTicks(5060), "<DEFAULT>" });
+                values: new object[] { "442bfa66-a881-4aa1-ace5-2d15c2b0f3c7", "555555", "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 890, DateTimeKind.Local).AddTicks(5665), "98e507f0-40e4-4e81-8bb0-432d4f24e28b", new DateTime(2021, 5, 23, 20, 51, 9, 890, DateTimeKind.Local).AddTicks(6111), "<DEFAULT>" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
