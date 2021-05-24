@@ -34,14 +34,14 @@ else
                         <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, model)">
                             <td>
                                 <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit" >
+                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit">
                                         @model.PrimaryColor;
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit" >
+                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit">
                                         @model.SecondaryColor;
                                     </div>
                                 </div>
@@ -49,8 +49,8 @@ else
                             <td>@model.Name</td>
                             <td>@model.PluralName</td>
                             <td>@model.Description</td>
-                            @*<td>@model.CreatedOn</td>
-                            <td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
+                            <td>@model.CreatedOn</td>
+                            @*<td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
                         </tr>
                     }
                     else
@@ -73,8 +73,8 @@ else
                             <td>@model.Name</td>
                             <td>@model.PluralName</td>
                             <td>@model.Description</td>
-                            @*<td>@model.CreatedOn</td>
-                            <td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
+                            <td>@model.CreatedOn.ToShortDateString()</td>
+                            @*<td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
                         </tr>
                     }
 

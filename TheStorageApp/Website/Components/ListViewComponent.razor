@@ -1,28 +1,35 @@
-﻿<!--<h3>StaticListComponent</h3>-->
-@* 
-Acceps a list of models inherited from IModel.
-    Column Names come from a ViewTable
-Renders a list of each model item in table form.
-Handles Selection and appeariance of list Items.
-*@
-<!--<table class="table table-hover">
+﻿
+    Requierments:
+        List of ListViewItems,
+        SelectedIdex,
+        SelectedItem,
+        SelectedItems,
+
+    Optional:
+        SelectedRowColor,
+        BackgroundRowColor,
+        ForeGroundRowColor
+        BackgroundHeaderColor,
+        ForeGroundHeaderColor
+
+<table class="table table-hover">
     <thead>
         <tr>
-            @foreach (var field in DataObject.ModelViewModel)
+            @foreach (var item in Items)
             {
-                @if (field.IsVizibile)
+                @if (item.IsVisible)
                 {
-                    <td>@field.FieldName</td>
+                    <td>@item.ToString()</td>
                 }
             }
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in DataObject.ModelViewModel)
+        @foreach (var item in Items)
         {
             if (item.IsSelected)
             {
-                @foreach (var field in DataObject)
+                @foreach (var field in ListViewItem.ItemFieldPropertyNames)
                 {
                     <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
                         <td>@field.ToString()</td>
@@ -32,7 +39,7 @@ Handles Selection and appeariance of list Items.
             }
             else
             {
-                @foreach (var field in DataObject)
+                @foreach (var field in ListViewItem.ItemFieldPropertyNames)
                 {
                     <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
                         <td>@field.ToString()</td>
@@ -40,26 +47,26 @@ Handles Selection and appeariance of list Items.
                 }
             }
         }
-        </tbody>
+    </tbody>
 </table>
 
 @code {
     [Parameter]
-    public List<IModel> Source { get; set; }
+    public List<ListViewItem> Items { get; set; }
 
     protected override Task OnInitializedAsync()
     {
         return base.OnInitializedAsync();
     }
 
-    private void OnRowClick(MouseEventArgs e, IModel model)
+    private void OnRowClick(MouseEventArgs e, ListViewItem item)
     {
         if (e.AltKey || e.ShiftKey)
         {
             if (e.ShiftKey)
             {
-                int startIndex = DataObject.IndexOf(DataObject.FirstOrDefault(x => x.IsSelected));
-                int endIndex = DataObject.IndexOf(model);
+                int startIndex = Items.IndexOf(Items.FirstOrDefault(x => x.IsSelected));
+                int endIndex = Items.IndexOf(item);
                 if (startIndex <= endIndex)
                 {
                     SelectRange(startIndex, endIndex);
@@ -69,37 +76,37 @@ Handles Selection and appeariance of list Items.
                     SelectRange(endIndex + 1, startIndex + 1);
                 }
             }
-            ToggleSelect(model);
+            ToggleSelect(item);
         }
         else
         {
-            Select(model);
+            Select(item);
         }
     }
 
     public void SelectRange(int start, int end)
     {
-        foreach (var item in DataObject)
+        foreach (var item in Items)
         {
             item.IsSelected = false;
         }
         for (int i = start; i < end; i++)
         {
-            DataObject[i].IsSelected = true;
+            Items[i].IsSelected = true;
         }
     }
 
-    public void Select(IModel model)
+    public void Select(ListViewItem model)
     {
-        foreach (var item in DataObject)
+        foreach (var item in Items)
         {
             item.IsSelected = false;
         }
         model.IsSelected = true;
     }
 
-    public void ToggleSelect(IModel model)
+    public void ToggleSelect(ListViewItem item)
     {
-        model.IsSelected = !model.IsSelected;
+        item.IsSelected = !item.IsSelected;
     }
-}-->
+}

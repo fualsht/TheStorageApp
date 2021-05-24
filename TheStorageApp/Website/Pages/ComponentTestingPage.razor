@@ -1,0 +1,35 @@
+﻿@page "/ComponentTestingPage"
+<h3>ComponentTestingPage</h3>
+
+<TheStorageApp.Website.Components.ListViewComponent Items="ItemList"></TheStorageApp.Website.Components.ListViewComponent>
+
+@code {
+    public List<ListViewItem> ItemList { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        TheStorageApp.Website.Models.Model model = new TheStorageApp.Website.Models.Model();
+        model.Id = Guid.NewGuid().ToString();
+        model.Name = "New";
+        model.PluralName = "News";
+        model.Description = "";
+        model.PrimaryColor = "ffffff";
+        model.SecondaryColor = "ffffff";
+        model.SmallImage = new byte[0];
+        model.LargeImage = new byte[0];
+        model.CreatedOn = DateTime.Now;
+        model.ModifiedOn = DateTime.Now;
+        model.Id = Guid.NewGuid().ToString();
+        model.Description = "";
+        model.CreatedBy = null;
+        model.ModifiedBy = null;
+        model.CreatedById = "";
+        model.ModifiedById = "";
+        model.IsSelected = true;
+
+        ItemList = new List<ListViewItem>();
+        ItemList.Add(new ListViewItem(model));
+
+        return base.OnInitializedAsync();
+    }
+}
