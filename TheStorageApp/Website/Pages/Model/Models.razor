@@ -14,73 +14,7 @@ else
 {
     @if (_authorizationController.IsInRole("adminrole"))
     {
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Primary Color</th>
-                    <th>Secondary Color</th>
-                    <th>Name</th>
-                    <th>Plural Name</th>
-                    <th>Description</th>
-                    <td>Created On</td>
-                    <th>Created By</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var model in _modelService.Models)
-                {
-                    if (model.IsSelected)
-                    {
-                        <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, model)">
-                            <td>
-                                <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit">
-                                        @model.PrimaryColor;
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit">
-                                        @model.SecondaryColor;
-                                    </div>
-                                </div>
-                            </td>
-                            <td>@model.Name</td>
-                            <td>@model.PluralName</td>
-                            <td>@model.Description</td>
-                            <td>@model.CreatedOn</td>
-                            @*<td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr class="clickable-row" @onclick="(e) => OnRowClick(e, model)">
-                            <td>
-                                <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.PrimaryColor; width:auto; height:inherit">
-                                        @model.PrimaryColor;
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="media">
-                                    <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit" >
-                                        @model.SecondaryColor;
-                                    </div>
-                                </div>
-                            </td>
-                            <td>@model.Name</td>
-                            <td>@model.PluralName</td>
-                            <td>@model.Description</td>
-                            <td>@model.CreatedOn.ToShortDateString()</td>
-                            @*<td>@model.CreatedBy.FirstName @model.CreatedBy.LastName</td>*@
-                        </tr>
-                    }
-
-                }
-            </tbody>
-        </table>
+        <ListViewComponent Items="Items"></ListViewComponent>
 
         <button class="btn btn-primary" @onclick="NewModel">New</button>
         <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
@@ -91,15 +25,30 @@ else
 }
 
 @code {
+    List<ListViewItem> Items { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await _modelService.GetModelsAsync();
-        if (_modelService.Models.Count() > 0)
-        {
-            _modelService.Models[0].IsSelected = true;
-        }
+        Items = AsListViewItemList<Model>(_modelService.Models);
+        //if (_modelService.Models.Count() > 0)
+        //{
+        //    _modelService.Models[0].IsSelected = true;
+        //}
+
         await base.OnInitializedAsync();
+    }
+
+    private List<ListViewItem> AsListViewItemList<T>(List<T> obj)
+    {
+        List<ListViewItem> lvi = new List<ListViewItem>();
+
+        foreach (var item in obj)
+        {
+            lvi.Add(new ListViewItem(item));
+        }
+
+        return lvi;
     }
 
     private void NewModel()

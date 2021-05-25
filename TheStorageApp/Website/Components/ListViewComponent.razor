@@ -1,4 +1,26 @@
-﻿
+﻿    @*
+        Info:
+        The Objective of the ListViewComponent is Create a listview that can take a KeyValuePair and Display a listview on the screen dynamically.
+        The ListView requiers a ListViewViewModel whitch intern contains the following properties:
+            -FiledHeaders
+                -IsFieldFilterEnabled
+                -AutoFillLastColumn
+                -FieldHeaders
+                    -Name
+                    -Description
+                    -Vizibility
+                    -Index
+                    -Width
+            -ModelData
+        Schema and Data are seperated in the Database.
+        The Schema is a list of fields with user specific customizations:
+                                                            -Vizibility
+                                                            -Width
+                                                            -Index
+        Data is matched to the field when displayed.
+        List view data is automaticaly sorted into their respective column indecies.
+
+
     Requierments:
         List of ListViewItems,
         SelectedIdex,
@@ -11,16 +33,14 @@
         ForeGroundRowColor
         BackgroundHeaderColor,
         ForeGroundHeaderColor
+*@
 
 <table class="table table-hover">
     <thead>
         <tr>
-            @foreach (var item in Items)
+            @foreach (var item in GetValueMetaData(typeof(Model)))
             {
-                @if (item.IsVisible)
-                {
-                    <td>@item.ToString()</td>
-                }
+                <td>@item</td>
             }
         </tr>
     </thead>
@@ -29,22 +49,15 @@
         {
             if (item.IsSelected)
             {
-                @foreach (var field in ListViewItem.ItemFieldPropertyNames)
-                {
-                    <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
-                        <td>@field.ToString()</td>
-                    </tr>
-
-                }
+                <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
+                    <ListViewItemComponent ModelObject="item.Item" IsSelected="item.IsSelected"></ListViewItemComponent>
+                </tr>
             }
             else
             {
-                @foreach (var field in ListViewItem.ItemFieldPropertyNames)
-                {
-                    <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
-                        <td>@field.ToString()</td>
-                    </tr>
-                }
+                <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
+                    <ListViewItemComponent ModelObject="item.Item" IsSelected="item.IsSelected"></ListViewItemComponent>
+                </tr>
             }
         }
     </tbody>
@@ -56,6 +69,7 @@
 
     protected override Task OnInitializedAsync()
     {
+
         return base.OnInitializedAsync();
     }
 
@@ -108,5 +122,17 @@
     public void ToggleSelect(ListViewItem item)
     {
         item.IsSelected = !item.IsSelected;
+    }
+
+    public string[] GetValueMetaData(Type type)
+    {
+        List<string> values = new List<string>();
+        var properties = type.GetProperties();
+        foreach (var property in properties)
+        {
+            var name = property.Name;
+            values.Add(name);
+        }
+        return values.ToArray();
     }
 }

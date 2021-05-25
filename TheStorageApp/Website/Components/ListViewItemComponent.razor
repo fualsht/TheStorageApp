@@ -1,0 +1,65 @@
+﻿
+@foreach (var item in GetValueMetaData(ModelObject))
+{
+    <td>@item.Value</td>
+}
+
+@* Control Template for Colors
+    <td>
+    <div class="media">
+        <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit">
+            @model.SecondaryColor;
+        </div>
+    </div>
+</td>*@
+
+@code {
+    [Parameter]
+    public bool IsSelected { get; set; } = false;
+
+    object _modelObject;
+    [Parameter]
+    public object ModelObject
+    {
+        get
+        {
+            return _modelObject;
+        }
+        set
+        {
+            _modelObject = value;
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+    public ValueMetaData[] GetValueMetaData(object obj, string[] requestedProperties = null)
+    {
+        List<ValueMetaData> values = new List<ValueMetaData>();
+        var properties = obj.GetType().GetProperties();
+        foreach (var property in properties)
+        {
+            var name = property.Name;
+            var value = property.GetValue(obj);
+            values.Add(new ValueMetaData(name, property.PropertyType, property.GetValue(obj)));
+        }
+        return values.ToArray();
+    }
+
+    public class ValueMetaData
+    {
+        public string Name { get; set; }
+        public Type PropertyType { get; }
+        public object Value { get; }
+
+        public ValueMetaData(string name, Type type, object value)
+        {
+            Name = name;
+            PropertyType = type;
+            Value = value;
+        }
+    }
+}
