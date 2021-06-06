@@ -1,35 +1,46 @@
 ﻿
-@foreach (var item in GetValueMetaData(ModelObject))
+@foreach (var item in ListViewItem.PropertyValueSet)
 {
-    <td>@item.Value</td>
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Text)
+    {
+        <td>@item.Value.ValueAsString</td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Number)
+    {
+        <td>@item.Value.ValueAsDecimal.ToString()</td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Money)
+    {
+        <td>@item.Value.ValueAsString</td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Color)
+    {
+        <td><ColorPicker Title="Primary" MyColor="@item.Value.ValueAsColorString"></ColorPicker></td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Image)
+    {
+        <td><img src="data:image;base64,@System.Convert.ToBase64String(item.Value.ValueAsImage)" /></td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Integer)
+    {
+        <td>@item.Value.ValueAsInteger.ToString()</td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.DateTime)
+    {
+        <td>@item.Value.ValueAsDateTime.ToShortDateString()</td>
+    }
+    if (item.Value.FieldDataType == ClassAttrinutes.FieldDataTypes.Bool)
+    {
+        <td>@item.Value.ValueAsBool.ToString()</td>
+    }
 }
-
-@* Control Template for Colors
-    <td>
-    <div class="media">
-        <div class="mr-3" style="background-color: #@model.SecondaryColor; width:auto; height:inherit">
-            @model.SecondaryColor;
-        </div>
-    </div>
-</td>*@
 
 @code {
     [Parameter]
     public bool IsSelected { get; set; } = false;
 
-    object _modelObject;
     [Parameter]
-    public object ModelObject
-    {
-        get
-        {
-            return _modelObject;
-        }
-        set
-        {
-            _modelObject = value;
-        }
-    }
+    public ListViewItem ListViewItem { get; set; }
 
     protected override Task OnInitializedAsync()
     {

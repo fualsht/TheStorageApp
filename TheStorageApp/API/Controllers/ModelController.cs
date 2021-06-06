@@ -52,12 +52,19 @@ namespace TheStorageApp.API.Controllers
 
         [HttpGet]
         //[Authorize(AuthenticationSchemes = "Bearer")]
-        [Route("GetModel")]
+        [Route("GetModel/{id}")]
         public async Task<ActionResult<Model>> GetModel(string id)
         {
-            var model = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == id);
-            model.CreatedBy = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == model.CreatedById);
-            return Ok(model);
+            try
+            {
+                var model = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == id);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return this.InternalServerError(ex, "");
+            }
+           
         }
 
         [HttpGet]
@@ -74,7 +81,50 @@ namespace TheStorageApp.API.Controllers
         {
             try
             {
-                await _dataContext.Models.AddAsync(model);
+                Model newModel = new Model
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = model.Name,
+                    PluralName = model.PluralName,
+                    PrimaryColor = model.PrimaryColor,
+                    SecondaryColor = model.SecondaryColor,
+                    SmallImage = model.SmallImage,
+                    LargeImage = model.LargeImage,
+                    ModifiedById = model.ModifiedById,
+                    CreatedById = model.CreatedById,
+                    Description = model.Description,
+                    ModifiedOn = model.ModifiedOn,
+                    CreatedOn = model.CreatedOn
+                };
+
+
+                await _dataContext.Models.AddAsync(newModel);
+                await _dataContext.SaveChangesAsync();
+
+                List<Field> _fields = new List<Field>();
+                foreach (var field in model.Fields)
+                {
+                    Field newField = new Field
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = field.Name,
+                        Unique = field.Unique,
+                        Requiered = field.Requiered,
+                        ModifiedById = field.ModifiedById,
+                        CreatedById = field.CreatedById,
+                        CreatedOn = DateTime.Now,
+                        ModifiedOn = DateTime.Now,
+                        DataType = field.DataType,
+                        DataTypeId = field.DataTypeId,
+                        Description = field.Description,
+                        MaxSize = field.MaxSize,
+                        MinSize = field.MaxSize,
+                        ModelId = newModel.Id
+                    };
+                    //_fields.Add(field);
+                    await _dataContext.Fields.AddAsync(newField);
+                }
+                //await _dataContext.Fields.AddRangeAsync(_fields);
                 await _dataContext.SaveChangesAsync();
                 return Ok(model);
             }
@@ -85,13 +135,25 @@ namespace TheStorageApp.API.Controllers
             
         }
 
-        [HttpPost]
+        [HttpPut]
         //[Authorize(AuthenticationSchemes = "Bearer")]
         [Route("UpdateModel")]
-        public ActionResult<Model>UpdateModel([FromBody]Model model)
+        public async Task<ActionResult<Model>> UpdateModel([FromBody]Model model)
         {
-            var updatedmodel = _dataContext.Models.Update(model);
-            return Ok(updatedmodel);
+            try
+            {
+                var updatedmodel = _dataContext.Models.Update(model);
+                var changecount = await _dataContext.SaveChangesAsync();
+                if (changecount > 0)
+                    return Ok(updatedmodel.Entity);
+                else
+                    return Ok(null);
+                
+            }
+            catch (Exception ex)
+            {
+                return this.InternalServerError(ex, "Error");
+            }
         }
 
         [HttpDelete]
@@ -101,6 +163,28 @@ namespace TheStorageApp.API.Controllers
         {
             var updatedmodel = _dataContext.Models.Remove(model);
             return Ok(updatedmodel);
+        }
+
+        [HttpPost]
+        //[Authorize(AuthenticationSchemes = "Bearer")]
+        [Route("DeleteModels")]
+        public async Task<ActionResult<bool>> DeleteModels([FromBody]Model[] models)
+        {
+            //todo: Delete Related Fields frist
+            List<Model> itemsToDelete = new List<Model>();
+            foreach (Model model in models)
+            {
+                var item = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == model.Id);
+                itemsToDelete.Add(item);
+                _dataContext.Models.Remove(item);
+            }
+
+            var changecount = await _dataContext.SaveChangesAsync();
+
+            if (changecount > 0)
+                return Ok(true);
+            else
+                return Ok(false);
         }
     }
 }

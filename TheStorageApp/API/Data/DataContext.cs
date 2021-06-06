@@ -162,6 +162,7 @@ namespace TheStorageApp.API.Data
                 entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByModels).HasForeignKey(x => x.CreatedById);
                 entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByModels).HasForeignKey(x => x.ModifiedById);
                 entity.HasMany<Field>(x => x.Fields).WithOne(x => x.Model).HasForeignKey(e => e.Id);
+                //entity.HasMany<Field>(x => x.ModelFieldsLookup).WithOne(x => x.Model).HasForeignKey(x => x.ModelId);
             });
 
             modelBuilder.Entity<Field>(entity => 
@@ -170,6 +171,7 @@ namespace TheStorageApp.API.Data
                 entity.Property(p => p.Id).IsRequired().ValueGeneratedNever();
                 entity.HasOne<AppUser>(x => x.CreatedBy).WithMany(x => x.CreatedByFields).HasForeignKey(x => x.CreatedById);
                 entity.HasOne<AppUser>(x => x.ModifiedBy).WithMany(x => x.ModifiedByFields).HasForeignKey(x => x.ModifiedById);
+                entity.HasOne<Model>(x => x.Model).WithMany(x => x.Fields).HasForeignKey(x => x.ModelId);
             });
 
             modelBuilder.Entity<ModelRelationship>(entity =>

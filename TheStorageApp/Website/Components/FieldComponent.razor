@@ -1,0 +1,24 @@
+﻿@if (SelectedItem != null)
+{
+    @if (SelectedItem.FieldDataType == ClassAttrinutes.FieldDataTypes.Text)
+    {
+        <div class="input-group mb-3">
+            <div class="input-group-prepend col-4">
+                <span class="input-group-text" id="basic-addon3">Name</span>
+            </div>
+            <InputText class="form-control" @bind-Value="SelectedItem.ValueAsString"></InputText>
+        </div>
+    }
+}
+
+
+
+@code {
+    [Parameter]
+    public ItemField SelectedItem { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+}

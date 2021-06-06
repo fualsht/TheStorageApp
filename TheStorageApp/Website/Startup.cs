@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using TheStorageApp.Website.Services;
 using TheStorageApp.Website.Utils;
 
@@ -23,9 +24,9 @@ namespace TheStorageApp.Website
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages();//.AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; });
             services.AddServerSideBlazor();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews();//.AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; }); ;
 
             string uri = string.Empty;
             if (Debugger.IsAttached)
@@ -48,6 +49,7 @@ namespace TheStorageApp.Website
             services.AddScoped<TagsService>();
             services.AddScoped<ServerControllerService>();
             services.AddScoped<ModelService>();
+            services.AddScoped<FieldService>();
 
             services.AddMemoryCache();
             services.AddSession();

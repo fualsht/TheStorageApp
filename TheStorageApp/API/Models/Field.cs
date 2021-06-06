@@ -13,10 +13,10 @@ namespace TheStorageApp.API.Models
         public string Description { get; set; }
         public string CreatedById { get; set; }
         public DateTime CreatedOn { get; set; }
-        public AppUser CreatedBy { get; set; }
+        public virtual AppUser CreatedBy { get; set; }
         public string ModifiedById { get; set; }
         public DateTime ModifiedOn { get; set; }
-        public AppUser ModifiedBy { get; set; }
+        public virtual AppUser ModifiedBy { get; set; }
         public string DataTypeId { get; set; }
         public DataTypes DataType { get; set; }
         public int MinSize { get; set; }
@@ -24,8 +24,9 @@ namespace TheStorageApp.API.Models
         public bool Unique { get; set; }
         public bool Requiered { get; set; }
         public string ModelId { get; set; }
-        public Model Model { get; set; }
-        public ModelRelationship[] SourceModelRelationships { get; set; }
-        public ModelRelationship[] RelatedModelRelationships { get; set; }
+        public virtual Model Model { get; set; }
+        public virtual ICollection<Model> ModelLookupFields { get; set; }
+        public virtual ICollection<ModelRelationship> SourceModelRelationships { get; set; }
+        public virtual ICollection<ModelRelationship> RelatedModelRelationships { get; set; }
     }
 }

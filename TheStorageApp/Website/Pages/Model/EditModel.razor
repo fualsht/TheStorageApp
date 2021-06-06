@@ -1,9 +1,164 @@
-﻿@page "/EditModel"
+﻿@page "/EditModel/{Id}"
+@inject IHttpClientFactory _clientFactory
+@inject NavigationManager _navigationManager
+@inject ModelService _modelService
+@inject AuthorizationController _authorizationController
 
-<h3>EditModel</h3>
-
-
+@if (ModelItem == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-header text-secondary">
+                <h3>Fields</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col col-4">
+                        <div class="card">
+                            <div class="card-header text-secondary">
+                                <h3>New Model</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="row mb-3">
+                                        <label for="nameField" class="col-sm-3 col-form-label">Name</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" id="nameField" @bind="ModelItem.Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-3">
+                                        <label for="pluralNameField" class="col-sm-3 col-form-label">Plural Name</label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" id="pluralNameField" @bind="ModelItem.PluralName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-3">
+                                        <label for="PrimaryColorInput" class="col-sm-3 col-form-label">Primary Color</label>
+                                        <div class="col-sm-9">
+                                            <button id="PrimaryColorInput" class="btn btn-primary" @onclick="() => OpenModal()" style="width:100%; height:100%; background-color:@ModelItem.PrimaryColor" />
+                                            <ColorPicker Title="Primary" IsOpened="isPrimaryOpened" Closed="(val) => ClosedEvent(val)" MyColor="@ModelItem.PrimaryColor"></ColorPicker>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-3">
+                                        <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Secondary Color</label>
+                                        <div class="col-sm-9">
+                                            <button id="SecondaryColorInput" class="btn btn-primary" @onclick="() => OpenModal(true)" style="width:100%; height:100%; background-color:@ModelItem.SecondaryColor" />
+                                            <ColorPicker Title="Secondary" IsOpened="isSecondaryOpened" Closed="(val) => ClosedEvent(val, true)" MyColor="@ModelItem.SecondaryColor"></ColorPicker>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-3">
+                                        <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Description</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" aria-label="With textarea">@ModelItem.Description</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-8">
+                        <div class="card">
+                            <div class="card-header text-secondary">
+                                <h3>Fields</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    @if (v != null && v.Items != null)
+                                    {
+                                        <ListViewComponent Items="v.Items" ObjectType="typeof(Field)"></ListViewComponent>
+                                    }
+                                    <button class="btn btn-primary" @onclick="OnNewFieldClick">New</button>
+                                    <button class="btn btn-primary" @onclick="OnEditFieldClick">Edit</button>
+                                    <button class="btn btn-primary" @onclick="OnDeleteFieldClick">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" @onclick="SaveModelAsync">Save</button>
+                    <button class="btn btn-primary">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
+    [Parameter]
+    public string Id { get; set; } = "";
 
+    [Parameter]
+    public Model ModelItem { get; set; }
+
+    ListView v;
+
+    protected async override Task OnInitializedAsync()
+    {
+        ModelItem = new Model();
+        ModelItem = await _modelService.GetModelAsync(Id);
+
+        v = new ListView("test", ModelItem.Fields.ToArray());
+
+        await base.OnInitializedAsync();
+    }
+
+    bool isPrimaryOpened = false;
+    bool isSecondaryOpened = false;
+
+    void OpenModal(bool openSecondary = false)
+    {
+        if (openSecondary)
+        {
+            isSecondaryOpened = true;
+        }
+        else
+        {
+            isPrimaryOpened = true;
+        }
+    }
+
+    void ClosedEvent(string value, bool setSecondary = false)
+    {
+        if (setSecondary)
+        {
+            ModelItem.SecondaryColor = value;
+            isSecondaryOpened = false;
+        }
+        else
+        {
+            ModelItem.PrimaryColor = value;
+            isPrimaryOpened = false;
+        }
+    }
+
+    private async Task SaveModelAsync(MouseEventArgs e)
+    {
+        await _modelService.UpdateModelAsync(ModelItem);
+    }
+
+    private void OnNewFieldClick()
+    {
+        _navigationManager.NavigateTo($"NewField/{ModelItem.Id}");
+    }
+    private void OnEditFieldClick()
+    {
+        
+    }
+    private void OnDeleteFieldClick()
+    {
+        
+    }
 }

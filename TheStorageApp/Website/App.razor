@@ -1,3 +1,28 @@
+<style>
+    .big-checkbox,
+    .big-checkbox::before {
+        font-size: 18px;
+        text-align: center;
+        height: 20px;
+        width: 20px;
+        margin: 10px;
+    }
+
+    /* The CSS rules below apply if you would like to stick to the default theme
+        and still get the blue backgroud color. If you use our Bootstrap theme they are redundant and can be removed */
+
+    .big-checkbox-selected,
+    .big-checkbox-selected::before {
+        font-size: 18px;
+        text-align: center;
+        height: 20px;
+        width: 20px;
+        background-color: blue;
+        border-color: blue;
+        margin: 10px;
+    }
+</style>
+
 @namespace  TheStorageApp.Website
 
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">

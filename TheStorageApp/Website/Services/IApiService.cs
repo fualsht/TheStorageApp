@@ -39,5 +39,9 @@ namespace TheStorageApp.Website.Services
         Task<HttpResponseMessage> ApiDelete(string uri, string id);
 
         Task<HttpResponseMessage> ApiDelete(string uri, string[] ids);
+
+        Task<HttpResponseMessage> ApiDelete(string uri, T id);
+
+        Task<HttpResponseMessage> ApiDelete(string uri, T[] ids);
     }
 }

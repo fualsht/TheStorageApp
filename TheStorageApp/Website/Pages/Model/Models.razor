@@ -4,9 +4,7 @@
 @inject ModelService _modelService
 @inject AuthorizationController _authorizationController
 
-<h3>Models</h3>
-
-@if (_modelService == null || _modelService.Models == null)
+@if (_modelService == null || listView == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -14,41 +12,34 @@ else
 {
     @if (_authorizationController.IsInRole("adminrole"))
     {
-        <ListViewComponent Items="Items"></ListViewComponent>
+        <div class="col">
+            <div class="card mt-md-4">
+                <div class="card-header text-secondary">
+                    <h3>Models</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <ListViewComponent Items="listView.Items" ObjectType="typeof(Model)"></ListViewComponent>
 
-        <button class="btn btn-primary" @onclick="NewModel">New</button>
-        <button class="btn btn-primary" @onclick="() => EditFistSelectedUser()">Edit</button>
-        <button class="btn btn-primary" @onclick="DeleteSeletedUsers">Delete</button>
+                        <button class="btn btn-primary" @onclick="NewModel">New</button>
+                        <button class="btn btn-primary" @onclick="() => EditFistSelectedModel()">Edit</button>
+                        <button class="btn btn-primary" @onclick="DeleteSeletedModels">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-
-
 }
 
 @code {
-    List<ListViewItem> Items { get; set; }
+    ListView listView { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await _modelService.GetModelsAsync();
-        Items = AsListViewItemList<Model>(_modelService.Models);
-        //if (_modelService.Models.Count() > 0)
-        //{
-        //    _modelService.Models[0].IsSelected = true;
-        //}
+        var items = await _modelService.GetModelsAsync();
+        listView = new ListView("Models", items);
 
         await base.OnInitializedAsync();
-    }
-
-    private List<ListViewItem> AsListViewItemList<T>(List<T> obj)
-    {
-        List<ListViewItem> lvi = new List<ListViewItem>();
-
-        foreach (var item in obj)
-        {
-            lvi.Add(new ListViewItem(item));
-        }
-
-        return lvi;
     }
 
     private void NewModel()
@@ -56,39 +47,20 @@ else
         _navigationManager.NavigateTo("NewModel");
     }
 
-    private void OnRowClick(MouseEventArgs e, Model model)
+    public void EditFistSelectedModel()
     {
-        if (e.AltKey || e.ShiftKey)
-        {
-            if (e.ShiftKey)
-            {
-                int startIndex = _modelService.Models.ToList().IndexOf(_modelService.Models.FirstOrDefault(x => x.IsSelected));
-                int endIndex = _modelService.Models.ToList().IndexOf(model);
-                if (startIndex <= endIndex)
-                {
-                    _modelService.SelectRange(startIndex, endIndex);
-                }
-                else
-                {
-                    _modelService.SelectRange(endIndex + 1, startIndex + 1);
-                }
-            }
-            _modelService.ToggleSelect(model);
-        }
-        else
-        {
-            _modelService.Select(model);
-        }
+        var f = listView.Items.FirstOrDefault(x => x.IsSelected == true).Id;
+        _navigationManager.NavigateTo("EditModel/" + f);
     }
 
-    public void EditFistSelectedUser()
+    private async Task DeleteSeletedModels()
     {
-        _navigationManager.NavigateTo("EditUser");
-    }
+        List<Model> _models = new List<Model>();
+        foreach (var item in listView.Items.Where(x => x.IsSelected))
+        {
+            _models.Add((Model)item.Item);
 
-    private async Task DeleteSeletedUsers()
-    {
-        //await _modelService.DeleteModelsAsync();
-        //_navigationManager.NavigateTo("Models");
+        }
+        await _modelService.DeleteModelsAsync(_models.ToArray());
     }
 }

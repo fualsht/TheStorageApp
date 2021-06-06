@@ -1,0 +1,73 @@
+﻿<ul class="nav nav-tabs">
+    @foreach (var tab in Tabs)
+    {
+        @if (tab.IsActive)
+        {
+            <li class="nav-item" @onclick="() => OnTabClick(tab)">
+                <a class="nav-link active" aria-current="page">@tab.Name</a>
+            </li>
+            continue;
+        }
+        
+        @if (tab.IsDisabled)
+        {
+            <li class="nav-item" @onclick="() => OnTabClick(tab)">
+                <a class="nav-link disabled" tabindex="-1" aria-disabled="true">@tab.Name</a>
+            </li>
+            continue;
+        }
+
+        <li class="nav-item" @onclick="() => OnTabClick(tab)">
+            <a class="nav-link" aria-current="page">@tab.Name</a>
+        </li>
+    }
+</ul>
+@code {
+    private RibbonTab _selectedTab;
+    public RibbonTab SelectedTab
+    {
+        get
+        {
+            return _selectedTab;
+        }
+        set
+        {
+            if (_selectedTab == null)
+                _selectedTab = value;
+            _selectedTab.IsActive = false;
+            value.IsActive = true;
+            _selectedTab = value;
+        }
+    }
+    List<RibbonTab> Tabs { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        Tabs = new List<RibbonTab>();
+        Tabs.Add(new RibbonTab("Home"));
+        Tabs.Add(new RibbonTab("Edit"));
+        SelectedTab = Tabs[0];
+        return base.OnInitializedAsync();
+    }
+
+    public void OnTabClick(RibbonTab tab)
+    {
+        SelectedTab.IsActive = false;
+        tab.IsActive = true;
+        SelectedTab = tab;
+    }
+
+    public class RibbonTab
+    {
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDisabled { get; set; }
+
+        public RibbonTab(string name, bool isActive = false, bool isDisabled = false)
+        {
+            Name = name;
+            IsActive = isActive;
+            IsDisabled = isDisabled;
+        }
+    }
+}

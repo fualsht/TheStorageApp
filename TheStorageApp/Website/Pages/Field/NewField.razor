@@ -1,0 +1,122 @@
+﻿@page "/NewField/{ParentModelId}"
+@inject FieldService _fieldService
+@inject ModelService _modelService
+
+<EditForm Model="SelectedField" class="card">
+    <div class="card-header">
+        New Field
+    </div>
+    @if (SelectedField != null)
+    {
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Name</span>
+                        </div>
+                        <InputText class="form-control" @bind-Value="SelectedField.Name"></InputText>
+                    </div>
+                </li>
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Description</span>
+                        </div>
+                        <InputText class="form-control" @bind-Value="SelectedField.Description"></InputText>
+                    </div>
+                </li>
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Data Type</span>
+                        </div>
+                        <InputSelect class="form-control" @bind-Value="SelectedField.DataType">
+                            @foreach (var typ in Enum.GetValues(typeof(DataType)))
+                                {
+                                <option value="@typ">@typ</option>
+                                }
+                        </InputSelect>
+                    </div>
+                    @*@if (SelectedField.DataType == DataType.LookUp)
+                    {
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend col-4">
+                                <span class="input-group-text" id="basic-addon3">Related Model</span>
+                            </div>
+                            <InputSelect class="form-control" @bind-Value="SelectedField.FieldModelLookup">
+                                @foreach (var typ in _modelService.GetModelsAsync().Result)
+                                    {
+                                        <option value="@typ.Name">@typ.Name</option>
+                                    }
+                            </InputSelect>
+                        </div>
+                    }*@
+                </li>
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Unique</span>
+                        </div>
+                        <div class="input-group-append">
+                            <InputCheckbox class="big-checkbox" @bind-Value="SelectedField.Unique"></InputCheckbox>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Requiered</span>
+                        </div>
+                        <div class="input-group-append">
+                            <InputCheckbox class="big-checkbox" @bind-Value="SelectedField.Requiered"></InputCheckbox>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Min Size</span>
+                        </div>
+                        <InputNumber class="form-control" @bind-Value="SelectedField.MinSize"></InputNumber>
+                    </div>
+                </li>
+                <li class="list-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend col-4">
+                            <span class="input-group-text" id="basic-addon3">Max Size</span>
+                        </div>
+                        <InputNumber class="form-control" @bind-Value="SelectedField.MaxSize"></InputNumber>
+                    </div>
+                </li>
+            </ul>
+            <button class="btn btn-primary" @onclick="Save">Save</button>
+            <button class="btn btn-primary" @onclick="Cancel">Cancel</button>
+        </div>
+    }
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public string ParentModelId { get; set; }
+
+    private Field SelectedField { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        SelectedField = Field.NewField(ParentModelId); //_modelService.Models.FirstOrDefault(x => x.IsSelected == true).Fields.FirstOrDefault(x => x.IsSelected == true);
+        return base.OnInitializedAsync();
+    }
+
+    async void Save()
+    {
+        var r = await _fieldService.AddFieldAsync(SelectedField);
+    }
+
+    void Cancel()
+    {
+
+    }
+}

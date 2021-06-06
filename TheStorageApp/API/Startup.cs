@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TheStorageApp.API.Data;
 using TheStorageApp.API.Models;
@@ -67,7 +68,7 @@ namespace TheStorageApp.API
             });
 
 
-            services.AddControllers();
+            services.AddControllers();//.AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; });
             services.AddHttpContextAccessor();
 
             services.AddSwaggerGen(c =>

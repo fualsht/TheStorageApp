@@ -38,7 +38,7 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            @foreach (var item in GetValueMetaData(typeof(Model)))
+            @foreach (var item in ListViewItem.columnNames(ObjectType))
             {
                 <td>@item</td>
             }
@@ -50,13 +50,13 @@
             if (item.IsSelected)
             {
                 <tr class="clickable-row bg-dark text-white" @onclick="(e) => OnRowClick(e, item)">
-                    <ListViewItemComponent ModelObject="item.Item" IsSelected="item.IsSelected"></ListViewItemComponent>
+                    <ListViewItemComponent ListViewItem="item" IsSelected="item.IsSelected"></ListViewItemComponent>
                 </tr>
             }
             else
             {
                 <tr class="clickable-row" @onclick="(e) => OnRowClick(e, item)">
-                    <ListViewItemComponent ModelObject="item.Item" IsSelected="item.IsSelected"></ListViewItemComponent>
+                    <ListViewItemComponent ListViewItem="item" IsSelected="item.IsSelected"></ListViewItemComponent>
                 </tr>
             }
         }
@@ -65,11 +65,16 @@
 
 @code {
     [Parameter]
-    public List<ListViewItem> Items { get; set; }
+    public List<ListViewItem> Items { get; set; } = new List<ListViewItem>();
+
+    [Parameter]
+    public List<ListViewItem> SelectedItems { get; set; } = new List<ListViewItem>();
+
+    [Parameter]
+    public Type ObjectType { get; set; }
 
     protected override Task OnInitializedAsync()
     {
-
         return base.OnInitializedAsync();
     }
 

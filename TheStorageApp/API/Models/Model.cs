@@ -21,8 +21,11 @@ namespace TheStorageApp.API.Models
         public string ModifiedById { get; set; }
         public DateTime ModifiedOn { get; set; }
         public virtual AppUser ModifiedBy { get; set; }
-        public Field[] Fields { get; set; }
-        public ModelRelationship[] SourceModelRelationships { get; set; }
-        public ModelRelationship[] RelatedModelRelationships { get; set; }
+        public virtual ICollection<Field> Fields { get; set; }
+        //public string FieldLookupModelId { get; set; }
+        //public virtual Model FieldLookupModel { get; set; }
+        public virtual ICollection<Field> ModelFieldsLookup { get; set; }
+        public virtual ICollection<ModelRelationship> SourceModelRelationships { get; set; }
+        public virtual ICollection<ModelRelationship> RelatedModelRelationships { get; set; }
     }
 }

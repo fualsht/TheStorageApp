@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -34,13 +36,20 @@ namespace TheStorageApp.Website.Services
         /// <returns>The responce object from the controller, No error checking is performed on this call.</returns>
         public virtual async Task<HttpResponseMessage> ApiGet(string uri)
         {
-            var client = _httpClientFactory.CreateClient("TGSClient");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("TGSClient");
+                string token = _httpContextCookieController.Get("token");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
-            string token = _httpContextCookieController.Get("token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.GetAsync(uri);
-            return response;
+                var response = await client.GetAsync(uri);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -175,6 +184,24 @@ namespace TheStorageApp.Website.Services
             var responce = await client.PostAsJsonAsync<string[]>(uri, ids);
 
             return responce;
+        }
+
+        public virtual async Task<HttpResponseMessage> ApiDelete(string uri, T[] items)
+        {
+            var client = _httpClientFactory.CreateClient("TGSClient");
+
+            string token = _httpContextCookieController.Get("token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
+
+            var responce = await client.PostAsJsonAsync<T[]>(uri, items);
+
+            return responce;
+        }
+
+        public Task<HttpResponseMessage> ApiDelete(string uri, T id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
