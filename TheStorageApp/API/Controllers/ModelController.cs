@@ -171,12 +171,13 @@ namespace TheStorageApp.API.Controllers
         public async Task<ActionResult<bool>> DeleteModels([FromBody]Model[] models)
         {
             //todo: Delete Related Fields frist
-            List<Model> itemsToDelete = new List<Model>();
             foreach (Model model in models)
             {
-                var item = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == model.Id);
-                itemsToDelete.Add(item);
-                _dataContext.Models.Remove(item);
+                var _model = await _dataContext.Models.FirstOrDefaultAsync(x => x.Id == model.Id);
+                var fields = from flds in _dataContext.Fields where flds.ModelId == model.Id select flds;
+                _dataContext.Fields.RemoveRange(fields);
+
+                _dataContext.Models.Remove(_model);
             }
 
             var changecount = await _dataContext.SaveChangesAsync();

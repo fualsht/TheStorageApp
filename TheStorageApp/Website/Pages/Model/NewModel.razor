@@ -76,10 +76,7 @@ else
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    @if (lv != null && lv.Items != null)
-                                    {
-                                        <ListViewComponent Items="lv.Items" ObjectType="typeof(Field)"></ListViewComponent>
-                                    }
+                                    <ListViewComponent @ref="listView1"></ListViewComponent>
                                     <button class="btn btn-primary" @onclick="OnNewFieldClick">New</button>
                                     <button class="btn btn-primary" @onclick="OnEditFieldClick">Edit</button>
                                     <button class="btn btn-primary" @onclick="OnDeleteFieldClick">Delete</button>
@@ -99,14 +96,18 @@ else
 @code {
     public Model ModelItem { get; set; }
 
-    ListView lv;
+    ListViewComponentBase listView1 { get; set; }
+
     protected override Task OnInitializedAsync()
     {
         string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
         ModelItem = _modelService.NewModel(userId);
-        lv = new ListView("Fields", ModelItem.Fields.ToArray());
+        if (listView1 != null)
+            listView1.LoadItems<Field>(ModelItem.Fields.ToArray());
+
         return base.OnInitializedAsync();
     }
+
 
     bool isPrimaryOpened = false;
     bool isSecondaryOpened = false;
@@ -143,6 +144,7 @@ else
     {
         await _fieldService.AddFieldsAsync(ModelItem.Fields.ToArray());
         await _modelService.AddModelAsync(ModelItem);
+        _navigationManager.NavigateTo("models");
     }
 
     private void OnNewFieldClick()
@@ -158,4 +160,13 @@ else
 
     }
 
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
+        ModelItem = _modelService.NewModel(userId);
+        if (listView1 != null)
+            listView1.LoadItems<Field>(ModelItem.Fields.ToArray());
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
 }

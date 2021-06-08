@@ -75,10 +75,7 @@ else
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    @if (v != null && v.Items != null)
-                                    {
-                                        <ListViewComponent Items="v.Items" ObjectType="typeof(Field)"></ListViewComponent>
-                                    }
+                                    <ListViewComponent @ref="listView"></ListViewComponent>
                                     <button class="btn btn-primary" @onclick="OnNewFieldClick">New</button>
                                     <button class="btn btn-primary" @onclick="OnEditFieldClick">Edit</button>
                                     <button class="btn btn-primary" @onclick="OnDeleteFieldClick">Delete</button>
@@ -103,16 +100,23 @@ else
     [Parameter]
     public Model ModelItem { get; set; }
 
-    ListView v;
+    ListViewComponentBase listView;
 
     protected async override Task OnInitializedAsync()
     {
         ModelItem = new Model();
-        ModelItem = await _modelService.GetModelAsync(Id);
-
-        v = new ListView("test", ModelItem.Fields.ToArray());
 
         await base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
+        ModelItem = _modelService.NewModel(userId);
+        if (listView != null)
+            listView.LoadItems<Field>(ModelItem.Fields.ToArray());
+
+        return base.OnAfterRenderAsync(firstRender);
     }
 
     bool isPrimaryOpened = false;
@@ -147,6 +151,7 @@ else
     private async Task SaveModelAsync(MouseEventArgs e)
     {
         await _modelService.UpdateModelAsync(ModelItem);
+        _navigationManager.NavigateTo("models");
     }
 
     private void OnNewFieldClick()
@@ -155,10 +160,10 @@ else
     }
     private void OnEditFieldClick()
     {
-        
+
     }
     private void OnDeleteFieldClick()
     {
-        
+
     }
 }

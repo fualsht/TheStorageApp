@@ -42,23 +42,5 @@ namespace TheStorageApp.Website.Components.ComponentModels
                 }
             }
         }
-
-        public static List<string> columnNames(Type type)
-        {
-            List<string> vals = new List<string>();
-
-            PropertyInfo[] properties = type.GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                var pt = property.GetCustomAttributes(typeof(ColumnDataAttribute), false).FirstOrDefault();
-                if (pt != null)
-                {
-                    var colName = ((ColumnDataAttribute)pt).ColumnName;
-                    vals.Add(colName);
-                }
-            }
-
-            return vals;
-        }
     }
 }

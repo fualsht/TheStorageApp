@@ -4,7 +4,7 @@
 @inject ModelService _modelService
 @inject AuthorizationController _authorizationController
 
-@if (_modelService == null || listView == null)
+@if (_modelService == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -19,10 +19,11 @@ else
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <ListViewComponent Items="listView.Items" ObjectType="typeof(Model)"></ListViewComponent>
+                        <ListViewComponent @ref="listView"></ListViewComponent>
 
                         <button class="btn btn-primary" @onclick="NewModel">New</button>
                         <button class="btn btn-primary" @onclick="() => EditFistSelectedModel()">Edit</button>
+                        <AlertMessageComponent @ref="alertComponent" OnOkClickCallback="AlertClose" ></AlertMessageComponent>
                         <button class="btn btn-primary" @onclick="DeleteSeletedModels">Delete</button>
                     </div>
                 </div>
@@ -31,13 +32,14 @@ else
     }
 }
 
-@code {
-    ListView listView { get; set; }
+@code { 
+    ListViewComponentBase listView { get; set; }
+    AlertMessageComponent alertComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var items = await _modelService.GetModelsAsync();
-        listView = new ListView("Models", items);
+        //lv = new ListView();
+        await RefreshListViewItems();
 
         await base.OnInitializedAsync();
     }
@@ -49,18 +51,34 @@ else
 
     public void EditFistSelectedModel()
     {
-        var f = listView.Items.FirstOrDefault(x => x.IsSelected == true).Id;
-        _navigationManager.NavigateTo("EditModel/" + f);
+        var f = listView.Items.FirstOrDefault(x => x.IsSelected == true);
+        _navigationManager.NavigateTo("EditModel/" + f.Id);
     }
 
-    private async Task DeleteSeletedModels()
+    private void DeleteSeletedModels()
+    {
+        alertComponent.ShowAlert("title", "message");
+
+    }
+
+    public async Task AlertClose()
     {
         List<Model> _models = new List<Model>();
         foreach (var item in listView.Items.Where(x => x.IsSelected))
         {
             _models.Add((Model)item.Item);
-
         }
         await _modelService.DeleteModelsAsync(_models.ToArray());
+        await RefreshListViewItems();
+    }
+
+    private async Task RefreshListViewItems()
+    {
+        var items = await _modelService.GetModelsAsync();
+        if (listView != null)
+        {
+            listView.LoadItems<Model>(items);
+            //lv.Refresh();
+        }
     }
 }
