@@ -1,0 +1,19 @@
+﻿<h3>FieldsEditor</h3>
+
+@if (Fields == null)
+{
+    <div>Loading...</div>
+}
+ else
+{
+    @foreach (var item in Fields)
+    {
+
+    }
+}
+
+
+@code {
+    [Parameter]
+    public List<Field> Fields { get; set; } = new List<Field>();
+}

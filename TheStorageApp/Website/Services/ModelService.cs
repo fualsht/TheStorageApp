@@ -22,16 +22,24 @@ namespace TheStorageApp.Website.Services
 
         public async Task<Model[]> GetModelsAsync()
         {
-            var responce = await this.ApiGet("api/Models/GetModels");
-            var Models = new List<Model>();
-
-            if (responce.IsSuccessStatusCode)
+            try
             {
-                var models = await responce.Content.ReadFromJsonAsync<Model[]>();
-                Models = models.ToList();
-            }
+                var responce = await this.ApiGet("api/Models/GetModels");
+                var Models = new List<Model>();
 
-            return Models.ToArray();
+                if (responce.IsSuccessStatusCode)
+                {
+                    var models = await responce.Content.ReadFromJsonAsync<Model[]>();
+                    Models = models.ToList();
+                }
+
+                return Models.ToArray();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
         }
 
         public async Task<Model> GetModelAsync(string id)
@@ -68,11 +76,24 @@ namespace TheStorageApp.Website.Services
 
         public async Task<Model> UpdateModelAsync(Model model)
         {
-            var client = _httpClientFactory.CreateClient("TGSClient");
-            var responce = await client.PutAsJsonAsync<Model>($"/api/Models/UpdateModel", model);
-            var updatedModel = await responce.Content.ReadFromJsonAsync<Model>();
+            try
+            {
+                var response = await ApiUpdate($"/api/models/updatemodel", model);
 
-            return updatedModel;
+                if (response.IsSuccessStatusCode)
+                {
+                    var updatedModel = await response.Content.ReadFromJsonAsync<Model>();
+                    return updatedModel;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
         }
 
         public async Task<bool> DeleteModelAsync(string id)

@@ -59,15 +59,23 @@ namespace TheStorageApp.Website.Services
         /// <returns>The responce object from the controller, No error checking is performed on this call.</returns>
         public virtual async Task<HttpResponseMessage> ApiGet(string uri, string[] ids)
         {
-            var client = _httpClientFactory.CreateClient("TGSClient");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("TGSClient");
 
-            string token = _httpContextCookieController.Get("token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
+                string token = _httpContextCookieController.Get("token");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
-            var response = await client.PostAsJsonAsync<string[]>(uri, ids);
+                var response = await client.PostAsJsonAsync<string[]>(uri, ids);
 
-            return response;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Oops! There is a problem!", ex);
+            }
+           
         }
 
         /// <summary>
@@ -118,15 +126,22 @@ namespace TheStorageApp.Website.Services
         /// <returns>The responce object from the controller, No error checking is performed on this call.</returns>
         public virtual async Task<HttpResponseMessage> ApiUpdate(string uri, T t)
         {
-            var client = _httpClientFactory.CreateClient("TGSClient");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("TGSClient");
 
-            string token = _httpContextCookieController.Get("token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
+                string token = _httpContextCookieController.Get("token");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Add("user", _httpContextCookieController.Get("user"));
 
-            var responce = await client.PutAsJsonAsync<T>(uri, t);
+                var responce = await client.PutAsJsonAsync<T>(uri, t);
 
-            return responce;
+                return responce;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Update Error: ", ex);
+            }
         }
 
         /// <summary>

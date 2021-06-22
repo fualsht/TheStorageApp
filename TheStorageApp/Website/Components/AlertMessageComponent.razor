@@ -8,7 +8,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">@ConfirmationTitle</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            @onclick="() => CloseAlert()">
+                            @onclick="() => CloseAlert(false)">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -17,11 +17,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            @onclick="() => CloseAlert()">
+                            @onclick="() => CloseAlert(false)">
                         Cancel
                     </button>
                     <button type="button" class="btn btn-danger"
-                            @onclick="CloseAlert">
+                            @onclick="() => CloseAlert(true)">
                         Ok
                     </button>
                 </div>

@@ -4,100 +4,39 @@
 @inject ModelService _modelService
 @inject AuthorizationController _authorizationController
 
-@if (ModelItem == null)
+@using TheStorageApp.Website.Pages.Field
+@using TheStorageApp.Website.Pages.View
+
+@if (TabCollection == null)
 {
     <div>Loading...</div>
 }
 else
 {
-    <div class="mt-4">
-        <div class="card">
-            <div class="card-header text-secondary">
-                <h3>Fields</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col col-4">
-                        <div class="card">
-                            <div class="card-header text-secondary">
-                                <h3>New Model</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="row mb-3">
-                                        <label for="nameField" class="col-sm-3 col-form-label">Name</label>
-                                        <div class="col-sm-9">
-                                            <input class="form-control" id="nameField" @bind="ModelItem.Name">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row mb-3">
-                                        <label for="pluralNameField" class="col-sm-3 col-form-label">Plural Name</label>
-                                        <div class="col-sm-9">
-                                            <input class="form-control" id="pluralNameField" @bind="ModelItem.PluralName">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row mb-3">
-                                        <label for="PrimaryColorInput" class="col-sm-3 col-form-label">Primary Color</label>
-                                        <div class="col-sm-9">
-                                            <button id="PrimaryColorInput" class="btn btn-primary" @onclick="() => OpenModal()" style="width:100%; height:100%; background-color:@ModelItem.PrimaryColor" />
-                                            <ColorPicker Title="Primary" IsOpened="isPrimaryOpened" Closed="(val) => ClosedEvent(val)" MyColor="@ModelItem.PrimaryColor"></ColorPicker>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row mb-3">
-                                        <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Secondary Color</label>
-                                        <div class="col-sm-9">
-                                            <button id="SecondaryColorInput" class="btn btn-primary" @onclick="() => OpenModal(true)" style="width:100%; height:100%; background-color:@ModelItem.SecondaryColor" />
-                                            <ColorPicker Title="Secondary" IsOpened="isSecondaryOpened" Closed="(val) => ClosedEvent(val, true)" MyColor="@ModelItem.SecondaryColor"></ColorPicker>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row mb-3">
-                                        <label for="SecondaryColorInput" class="col-sm-3 col-form-label">Description</label>
-                                        <div class="col-sm-9">
-                                            <textarea class="form-control" aria-label="With textarea">@ModelItem.Description</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col col-8">
-                        <div class="card">
-                            <div class="card-header text-secondary">
-                                <h3>Fields</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <ListViewComponent @ref="listView"></ListViewComponent>
-                                    <button class="btn btn-primary" @onclick="OnNewFieldClick">New</button>
-                                    <button class="btn btn-primary" @onclick="OnEditFieldClick">Edit</button>
-                                    <button class="btn btn-primary" @onclick="OnDeleteFieldClick">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <button class="btn btn-primary" @onclick="SaveModelAsync">Save</button>
-                    <button class="btn btn-primary">Delete</button>
-                </div>
-            </div>
-        </div>
+    <TabControlComponent TabCollection="TabCollection" OnTabSelectCallBack="OnTabClick"></TabControlComponent>
+    <div>
+        @if (element.Name == "General")
+        {
+            <ModelEditor ModelItem="ModelItem"></ModelEditor>
+        }
+        else if (element.Name == "Fields")
+        {
+            <FieldsEditor Fields="ModelItem.Fields.ToList()"></FieldsEditor>
+        }
+        else
+        {
+            <ViewEditor></ViewEditor>
+        }
     </div>
 }
 
 @code {
+    public TabControlCollection TabCollection { get; set; } = new TabControlCollection();
+    public UiElement element { get; set; }
+
     [Parameter]
     public string Id { get; set; } = "";
 
-    [Parameter]
     public Model ModelItem { get; set; }
 
     ListViewComponentBase listView;
@@ -105,18 +44,28 @@ else
     protected async override Task OnInitializedAsync()
     {
         ModelItem = new Model();
+        TabCollection.Add("General", true, null);
+        TabCollection.Add("Fields", false, null);
+        TabCollection.Add("Views", false, null);
+        element = TabCollection.FirstOrDefault();
 
         await base.OnInitializedAsync();
     }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
-        ModelItem = _modelService.NewModel(userId);
-        if (listView != null)
-            listView.LoadItems<Field>(ModelItem.Fields.ToArray());
+        //if (firstRender)
+        //{
+        //    await Refresh();
+        //}
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
-        return base.OnAfterRenderAsync(firstRender);
+    async Task Refresh()
+    {
+        ModelItem = await _modelService.GetModelAsync(Id);
+        listView.LoadItems<Field>(ModelItem.Fields.ToArray());
+        this.StateHasChanged();
     }
 
     bool isPrimaryOpened = false;
@@ -165,5 +114,10 @@ else
     private void OnDeleteFieldClick()
     {
 
+    }
+
+    private void OnTabClick(TabSelectEventArgs eventArgs)
+    {
+        element = eventArgs.SelectedItem;
     }
 }

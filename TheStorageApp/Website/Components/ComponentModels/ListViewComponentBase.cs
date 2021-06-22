@@ -11,27 +11,30 @@ namespace TheStorageApp.Website.Components.ComponentModels
 {
     public class ListViewComponentBase: ComponentBase
     {
-        public ListViewComponentBase()
-        {
-            string s = "";
-        }
-
         [Parameter]
         public string Name { get; set; } = "";
 
         public List<ListViewItem> Items { get; set; } = new List<ListViewItem>();
         public string[] ColumnNames { get; set; } = new string[0];
 
-        public void LoadItems<T>(T[] items)
+        public bool LoadItems<T>(T[] items)
         {
-            Items = new List<ListViewItem>();
-            ColumnNames = columnNames(typeof(T)).ToArray();
-
-            foreach (var item in items)
+            try
             {
-                Items.Add(new ListViewItem(item));
+                Items = new List<ListViewItem>();
+                ColumnNames = columnNames(typeof(T)).ToArray();
+
+                foreach (var item in items)
+                {
+                    Items.Add(new ListViewItem(item));
+                }
+                StateHasChanged();
+                return true;
             }
-            StateHasChanged();
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public void Refresh()

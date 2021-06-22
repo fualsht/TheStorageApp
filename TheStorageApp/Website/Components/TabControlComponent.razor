@@ -1,0 +1,29 @@
+﻿@inherits ComponentBase
+
+
+@if (TabCollection == null)
+{
+    <div>No Items to display...</div>
+}
+else
+{
+    <ul class="nav nav-pills border-1 border-bottom border-light mb-0 pb-0">
+        @foreach (var item in TabCollection)
+        {
+            @if (item.IsSelected)
+            {
+                <li class="nav-item border-2 border-bottom border-light pb-0" style="border-radius: 4px 4px 0px 0px;">
+                    <button class="nav-link m-0 bg-light" @onclick="e => OnUiElementClick(e, item)">@item.Name</button>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item border-1 border-bottom border-light pb-0" style="border-radius: 4px 4px 0px 0px;">
+                    <button class="nav-link m-0" @onclick="e => OnUiElementClick(e, item)">@item.Name</button>
+                </li>
+            }
+        }
+    </ul>
+}
+
+

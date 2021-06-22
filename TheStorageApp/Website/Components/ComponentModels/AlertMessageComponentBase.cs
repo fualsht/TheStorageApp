@@ -13,7 +13,7 @@ namespace TheStorageApp.Website.Components.ComponentModels
         public string ConfirmationMessage { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnOkClickCallback { get; set; }
+        public EventCallback<AlertMessageArgs> OnCloseCallback { get; set; }
 
         public void ShowAlert(string title, string message)
         {
@@ -23,13 +23,25 @@ namespace TheStorageApp.Website.Components.ComponentModels
             this.StateHasChanged();
         }
 
-        public async Task CloseAlert()
+        public async Task CloseAlert(bool result)
         {
-            await OnOkClickCallback.InvokeAsync();
+            AlertMessageArgs args = new AlertMessageArgs(result);
+
+            await OnCloseCallback.InvokeAsync(args);
             ConfirmationTitle = "";
             ConfirmationMessage = "";
             AlertIsVizibile = false;
             this.StateHasChanged();
         }
+    }
+
+    public class AlertMessageArgs
+    {
+        public AlertMessageArgs(bool? result)
+        {
+            Result = result;
+        }
+
+        public bool? Result { get; set; }
     }
 }

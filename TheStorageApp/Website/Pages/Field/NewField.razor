@@ -38,20 +38,20 @@
                                 }
                         </InputSelect>
                     </div>
-                    @*@if (SelectedField.DataType == DataType.LookUp)
+                    @if (SelectedField.DataType == DataType.LookUp)
                     {
                         <div class="input-group mb-3">
                             <div class="input-group-prepend col-4">
                                 <span class="input-group-text" id="basic-addon3">Related Model</span>
                             </div>
-                            <InputSelect class="form-control" @bind-Value="SelectedField.FieldModelLookup">
-                                @foreach (var typ in _modelService.GetModelsAsync().Result)
+                            <InputSelect class="form-control" @bind-Value="SelectedField.Model">
+                                @foreach (var typ in models)
                                     {
                                         <option value="@typ.Name">@typ.Name</option>
                                     }
                             </InputSelect>
                         </div>
-                    }*@
+                    }
                 </li>
                 <li class="list-group">
                     <div class="input-group mb-3">
@@ -104,10 +104,13 @@
 
     private Field SelectedField { get; set; }
 
-    protected override Task OnInitializedAsync()
+    Model[] models = new Model[0];
+
+    protected override async Task OnInitializedAsync()
     {
         SelectedField = Field.NewField(ParentModelId); //_modelService.Models.FirstOrDefault(x => x.IsSelected == true).Fields.FirstOrDefault(x => x.IsSelected == true);
-        return base.OnInitializedAsync();
+        models = await _modelService.GetModelsAsync();
+        await base.OnInitializedAsync();
     }
 
     async void Save()

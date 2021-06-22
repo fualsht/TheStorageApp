@@ -76,7 +76,7 @@ else
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <ListViewComponent @ref="listView1"></ListViewComponent>
+                                    <ListViewComponent @ref="listView"></ListViewComponent>
                                     <button class="btn btn-primary" @onclick="OnNewFieldClick">New</button>
                                     <button class="btn btn-primary" @onclick="OnEditFieldClick">Edit</button>
                                     <button class="btn btn-primary" @onclick="OnDeleteFieldClick">Delete</button>
@@ -96,18 +96,35 @@ else
 @code {
     public Model ModelItem { get; set; }
 
-    ListViewComponentBase listView1 { get; set; }
+    ListViewComponentBase listView { get; set; }
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
-        ModelItem = _modelService.NewModel(userId);
-        if (listView1 != null)
-            listView1.LoadItems<Field>(ModelItem.Fields.ToArray());
 
-        return base.OnInitializedAsync();
+
+        await base.OnInitializedAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Refresh();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task Refresh()
+    {
+        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
+        ModelItem = await Task.Run(() => _modelService.NewModel(userId));
+     
+        listView = new ListViewComponentBase();
+        var v = await Task.Run(() => listView.LoadItems<Field>(ModelItem.Fields.ToArray()));
+
+        this.StateHasChanged();
+
+    }
 
     bool isPrimaryOpened = false;
     bool isSecondaryOpened = false;
@@ -158,15 +175,5 @@ else
     private void OnDeleteFieldClick()
     {
 
-    }
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        string userId = _authorizationController.GetUserClaim(JWTUserClaims.UserId);
-        ModelItem = _modelService.NewModel(userId);
-        if (listView1 != null)
-            listView1.LoadItems<Field>(ModelItem.Fields.ToArray());
-
-        return base.OnAfterRenderAsync(firstRender);
     }
 }

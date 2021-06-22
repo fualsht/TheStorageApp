@@ -11,22 +11,38 @@ namespace TheStorageApp.Website.Services
 {
     public class FieldService : WebServiceBase<Field>
     {
-        List<Field> Fields { get; set; }
         public FieldService(IHttpClientFactory httpClient, IHttpContextAccessor contextFactory, CookieController httpContextCookieController) : 
             base(httpClient, contextFactory, httpContextCookieController)
         {
-            Fields = new List<Field>();
         }
 
-        public async Task GetFieldsAsync()
+        public async Task<Field[]> GetFieldsAsync()
         {
             var responce = await this.ApiGet("api/Fields/GetFields");
-            Fields = new List<Field>();
 
             if (responce.IsSuccessStatusCode)
             {
                 var fields = await responce.Content.ReadFromJsonAsync<Field[]>();
-                Fields = fields.ToList();
+                return fields.ToArray();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<Field> GetFieldAsync(string id)
+        {
+            var responce = await this.ApiGet("api/Fields/GetField/" + id);
+
+            if (responce.IsSuccessStatusCode)
+            {
+                var field = await responce.Content.ReadFromJsonAsync<Field>();
+                return field;
+            }
+            else
+            {
+                return null;
             }
         }
 

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Model\Mappings\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 

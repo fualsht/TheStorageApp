@@ -23,7 +23,7 @@ else
 
                         <button class="btn btn-primary" @onclick="NewModel">New</button>
                         <button class="btn btn-primary" @onclick="() => EditFistSelectedModel()">Edit</button>
-                        <AlertMessageComponent @ref="alertComponent" OnOkClickCallback="AlertClose" ></AlertMessageComponent>
+                        <AlertMessageComponent @ref="alertComponent" OnCloseCallback="(e) => AlertClose(e)" ></AlertMessageComponent>
                         <button class="btn btn-primary" @onclick="DeleteSeletedModels">Delete</button>
                     </div>
                 </div>
@@ -33,8 +33,8 @@ else
 }
 
 @code { 
-    ListViewComponentBase listView { get; set; }
-    AlertMessageComponent alertComponent { get; set; }
+        ListViewComponentBase listView { get; set; }
+        AlertMessageComponent alertComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,15 +61,18 @@ else
 
     }
 
-    public async Task AlertClose()
+    public async Task AlertClose(AlertMessageArgs args)
     {
-        List<Model> _models = new List<Model>();
-        foreach (var item in listView.Items.Where(x => x.IsSelected))
+        if (args.Result == true)
         {
-            _models.Add((Model)item.Item);
+            List<Model> _models = new List<Model>();
+            foreach (var item in listView.Items.Where(x => x.IsSelected))
+            {
+                _models.Add((Model)item.Item);
+            }
+            await _modelService.DeleteModelsAsync(_models.ToArray());
+            await RefreshListViewItems();
         }
-        await _modelService.DeleteModelsAsync(_models.ToArray());
-        await RefreshListViewItems();
     }
 
     private async Task RefreshListViewItems()
@@ -78,7 +81,6 @@ else
         if (listView != null)
         {
             listView.LoadItems<Model>(items);
-            //lv.Refresh();
         }
     }
 }
